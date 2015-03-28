@@ -1,0 +1,900 @@
+[{
+	"id": "MAGE",
+	"type": 2,
+	"name": "Jaina",
+	"power": {
+		"name": "Fireball",
+		"text": "Deal 1 dmg to a target.",
+		"cost": 2,
+		"actions": {
+			"id": 3,
+			"quantity": 1
+		}
+	}
+},
+{
+	"id": "DRUID",
+	"type": 2,
+	"name": "Malfurion",
+	"power": {
+		"name": "Bear form",
+		"text": "You hero gets +1 ATK for this turn and 1 armor.",
+		"cost": 2,
+		"actions": [{
+			"id": 6,
+			"target": {
+        "id": 7
+      },
+			"enchantment": {
+				"name": "Bear form",
+				"text": "This hero gets +1 ATK until the end of the turn.",
+				"atkModifier": 1,
+				"temporary": true
+			}
+		},
+		{
+			"id": 0,
+			"quantity": 1,
+			"target": 1
+		}]
+	}
+},
+{
+	"id": "ABOMINATION",
+	"type": 1,
+	"name": "Abomination",
+	"text": "<b>Taunt</b>. <b>Deathrattle:</b> Deal 2 damage to ALL characters.",
+	"cost": 5,
+	"attack": 4,
+	"health": 4,
+	"abilities": 2,
+	"deathrattles": {
+		"id": 3,
+		"quantity": 2,
+		"target": {
+			"id": 6,
+			"group": {
+				"owner": 3
+			}
+		}
+	}
+},
+{
+	"id": "ACOLYTE_OF_PAIN",
+	"type": 1,
+	"name": "Acolyte of Pain",
+	"text": "Whenever this minion takes damage, draw a card.",
+	"cost": 3,
+	"attack": 1,
+	"health": 3,
+	"triggerPowers": {
+		"event": {
+      "id": 5,
+		  "damagedCharacters": { "id": 7 }
+    },
+		"actions": {
+			"id": 5
+		}
+	}
+},
+{
+	"id": "MANA_WYRM",
+	"type": 1,
+	"name": "Mana Wyrm",
+	"text": "Whenever you cast a spell, gain +1 Attack.",
+	"cost": 1,
+	"attack": 1,
+	"health": 3,
+	"triggerPowers": {
+		"event": 3,
+		"owningPlayer": 1,
+		"cardType": 4,
+		"actions": {
+			"id": 6,
+			"target": {
+        "id": 7
+      },
+			"enchantment": {
+				"name": "Mana drink",
+				"text": "+1 ATK",
+				"atkModifier": 1
+			}
+		}
+	}
+},
+{
+	"id": "NOVICE_ENGINEER",
+	"type": 1,
+	"name": "Novice Engineer",
+	"text": "<b>Battlecry:</b> Draw a card.",
+	"cost": 2,
+	"attack": 1,
+	"health": 1,
+	"battlecry": {
+		"id": 5
+	}
+},
+{
+	"id": "ABUSIVE_SERGEANT",
+	"type": 1,
+	"name": "Abusive Sergeant",
+	"text": "<b>Battlecry:</b> Give a minion +2 ATK this turn.",
+	"cost": 1,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": 6,
+		"target": {
+      "id": 4,
+      "quantity": 1,
+      "group": {
+        "owner": 3,
+        "subtype": 511
+      }
+    },
+		"enchantment": {
+			"name": "Abused by the sergeant",
+			"text": "+2 ATK",
+			"temporary": true,
+			"atkModifier": 2
+		}
+	}
+},
+{
+	"id": "BLOODFEN_RAPTOR",
+	"type": 1,
+	"subtype": 2,
+	"name": "Bloodfen Raptor",
+	"text": "",
+	"cost": 2,
+	"attack": 3,
+	"health": 2
+},
+{
+	"id": "RIVER_CROCOLISK",
+	"type": 1,
+	"subtype": 2,
+	"name": "River Crocolisk",
+	"text": "",
+	"cost": 2,
+	"attack": 2,
+	"health": 3
+},
+{
+	"id": "BOULDERFIST_OGRE",
+	"type": 1,
+	"name": "Boulderfist Ogre",
+	"text": "",
+	"cost": 6,
+	"attack": 6,
+	"health": 7
+},
+{
+	"id": "MAGMA_RAGER",
+	"type": 1,
+	"name": "Magma Rager",
+	"text": "",
+	"cost": 3,
+	"attack": 5,
+	"health": 1
+},
+{
+	"id": "MURLOC_RAIDER",
+	"type": 1,
+	"subtype": 64,
+	"name": "Murloc Raider",
+	"text": "",
+	"cost": 1,
+	"attack": 2,
+	"health": 1
+},
+{
+	"id": "NIGHTBLADE",
+	"type": 1,
+	"name": "Nightblade",
+	"text": "<b>Battlecry:</b> Deal 3 damage to the enemy hero.",
+	"cost": 5,
+	"attack": 4,
+	"health": 4,
+	"battlecry": {
+		"id": 3,
+		"quantity": 3,
+		"target": {
+			"id": 2
+		}
+	}
+},
+{
+	"id": "OASIS_SNAPJAW",
+	"type": 1,
+	"name": "Oasis Snapjaw",
+	"subtype": 2,
+	"text": "",
+	"cost": 4,
+	"attack": 2,
+	"health": 7
+},
+{
+	"id": "RECKLESS_ROCKETEER",
+	"type": 1,
+	"name": "Reckless Rocketeer",
+	"text": "<b>Charge</b>",
+	"cost": 6,
+	"attack": 5,
+	"health": 2,
+	"abilities": 1
+},
+{
+	"id": "SENJIN_SHIELDMASTA",
+	"type": 1,
+	"name": "Senjin Shieldmasta",
+	"text": "<b>Taunt</b>",
+	"cost": 4,
+	"attack": 3,
+	"health": 5,
+	"abilities": 2
+},
+{
+	"id": "STONETUSK_BOAR",
+	"type": 1,
+	"name": "Stonetusk Boar",
+	"text": "<b>Charge</b>",
+	"subtype": 2,
+	"cost": 1,
+	"attack": 1,
+	"health": 1,
+	"abilities": 1
+},
+{
+	"id": "VODOO_DOCTOR",
+	"type": 1,
+	"name": "Vodoo Doctor",
+	"text": "<b>Battlecry:</b> Restore 2 Health",
+	"cost": 1,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": 10,
+		"quantity": 2
+	}
+},
+{
+	"id": "WOLF_RIDER",
+	"type": 1,
+	"name": "Wolf Rider",
+	"text": "<b>Charge</b>",
+	"cost": 3,
+	"attack": 3,
+	"health": 1,
+	"abilities": 1
+},
+{
+	"id": "BLUEGILL_WARRIOR",
+	"type": 1,
+	"name": "Bluegill Warrior",
+	"text": "<b>Charge</b>",
+	"subtype": 64,
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+	"abilities": 1
+},
+{
+	"id": "BOOTY_BAY_BODYGUARD",
+	"type": 1,
+	"name": "Booty Bay Bodyguard",
+	"text": "<b>Taunt</b>",
+	"cost": 5,
+	"attack": 5,
+	"health": 4,
+	"abilities": 2
+},
+{
+	"id": "CHILLWIND_YETI",
+	"type": 1,
+	"name": "Chillwind Yeti",
+	"text": "",
+	"cost": 4,
+	"attack": 4,
+	"health": 5
+},
+{
+	"id": "CORE_HOUND",
+	"type": 1,
+	"name": "Core Hound",
+	"text": "",
+	"subtype": 2,
+	"cost": 7,
+	"attack": 9,
+	"health": 5
+},
+{
+	"id": "DARKSCALE_HEALER",
+	"type": 1,
+	"name": "Darkscale Healer",
+	"text": "<b>Battlecry:</b> Restore 2 Health to all friendly characters",
+	"cost": 5,
+	"attack": 4,
+	"health": 5,
+	"battlecry": {
+		"id": 10,
+		"quantity": 2,
+		"target": {
+			"id": 6,
+			"group": {
+				"owner": 1
+			}
+		}
+	}
+},
+{
+	"id": "MECHANICAL_DRAGONLING",
+	"type": 1,
+	"name": "Mechanical Dragonling",
+	"text": "",
+	"subtype": 32,
+	"cost": 0,
+	"attack": 2,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "DRAGONLING_MECHANIC",
+	"type": 1,
+	"name": "Dragonling Mechanic",
+	"text": "<b>Battlecry:</b> Summon a 2/1 Mechanical Dragonling",
+	"cost": 4,
+	"attack": 2,
+	"health": 4,
+	"battlecry": {
+		"id": 16,
+		"minion": "MECHANICAL_DRAGONLING",
+		"quantity": 1,
+		"targetOwner": 1
+	}
+},
+{
+	"id": "ELVEN_ARCHER",
+	"type": 1,
+	"name": "Elven Archer",
+	"text": "<b>Battlecry:</b> Deal 1 damage.",
+	"cost": 1,
+	"attack": 1,
+	"health": 1,
+	"battlecry": {
+		"id": 3,
+		"quantity": 1
+	}
+},
+{
+	"id": "FROSTWOLF_GRUNT",
+	"type": 1,
+	"name": "Frostwolf Grunt",
+	"text": "<b>Taunt</b>",
+	"cost": 2,
+	"attack": 2,
+	"health": 2,
+	"abilities": 2
+},
+{
+	"id": "GNOMISH_INVENTOR",
+	"type": 1,
+	"name": "Gnomish Inventor",
+	"text": "<b>Battlecry:</b> Draw a card.",
+	"cost": 4,
+	"attack": 2,
+	"health": 4,
+	"battlecry": {
+		"id": 5
+	}
+},
+{
+	"id": "GOLDSHIRE_FOOTMAN",
+	"type": 1,
+	"name": "Goldshire Footman",
+	"text": "<b>Taunt</b>",
+	"cost": 1,
+	"attack": 1,
+	"health": 2,
+	"abilities": 2
+},
+{
+	"id": "GURUBASHI_BERSERKER",
+	"type": 1,
+	"name": "Gurubashi Berserker",
+	"text": "Whenever this minion takes damage, gain +3 Attack.",
+	"cost": 5,
+	"attack": 2,
+	"health": 7,
+	"triggerPowers": {
+		"event": {
+      "id": 5,
+		  "damagedCharacters": { "id": 7 }
+    },
+		"actions": {
+			"id": 6,
+      "target": {
+        "id": 7
+      },
+			"enchantment": {
+				"name": "Enraged!",
+				"text": "+3 ATK",
+				"atkModifier": 3
+			}
+		}
+	}
+},
+{
+	"id": "IRONFORGE_RIFLEMAN",
+	"type": 1,
+	"name": "Ironforge Rifleman",
+	"text": "<b>Battlecry:</b> Deal 1 damage.",
+	"cost": 3,
+	"attack": 2,
+	"health": 2,
+	"battlecry": {
+		"id": 3,
+		"quantity": 1
+	}
+},
+{
+	"id": "IRONFUR_GRIZZLY",
+	"type": 1,
+	"name": "Ironfur Grizzly",
+	"text": "<b>Taunt</b>",
+	"subtype": 2,
+	"cost": 3,
+	"attack": 3,
+	"health": 3,
+	"abilities": 2
+},
+{
+	"id": "LORD_OF_THE_ARENA",
+	"type": 1,
+	"name": "Lord of the Arena",
+	"text": "<b>Taunt</b>",
+	"cost": 6,
+	"attack": 6,
+	"health": 5,
+	"abilities": 2
+},
+{
+	"id": "MURLOC_SCOUT",
+	"type": 1,
+	"name": "Murloc Scout",
+	"text": "",
+	"subtype": 64,
+	"cost": 0,
+	"attack": 1,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "MURLOC_TIDEHUNTER",
+	"type": 1,
+	"name": "Murloc Tidehunter",
+	"text": "<b>Battlecry:</b> Summon a 1/1 Murloc Scout",
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": 16,
+		"minion": "MURLOC_SCOUT",
+		"quantity": 1,
+		"targetOwner": 1
+	}
+},
+{
+	"id": "BOAR",
+	"type": 1,
+	"name": "Boar",
+	"text": "",
+	"subtype": 2,
+	"cost": 0,
+	"attack": 1,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "RAZORFEN_HUNTER",
+	"type": 1,
+	"name": "Razorfen Hunter",
+	"text": "<b>Battlecry:</b> Summon a 1/1 Boar",
+	"cost": 3,
+	"attack": 2,
+	"health": 3,
+	"battlecry": {
+		"id": 16,
+		"minion": "BOAR",
+		"quantity": 1,
+		"targetOwner": 1
+	}
+},
+{
+	"id": "SHATTERED_SUN_CLERIC",
+	"type": 1,
+	"name": "Shattered Sun Cleric",
+	"text": "<b>Battlecry:</b> Give a friendly minion +1/+1",
+	"cost": 3,
+	"attack": 3,
+	"health": 2,
+	"battlecry": {
+		"id": 6,
+		"target": {
+      "id": 4,
+      "quantity": 1,
+      "group": {
+        "owner": 1,
+        "subtype": 511
+      }
+    },
+		"enchantment": {
+			"name": "Sunwell energy drink",
+			"text": "+1/+1",
+			"atkModifier": 1,
+			"maxHPModifier": 1
+		}
+	}
+},
+{
+	"id": "SILVERBACK_PATRIARCH",
+	"type": 1,
+	"name": "Silverback Patriarch",
+	"text": "<b>Taunt</b>",
+	"subtype": 2,
+	"cost": 3,
+	"attack": 1,
+	"health": 4,
+	"abilities": 2
+},
+{
+	"id": "STORMPIKE_COMMANDO",
+	"type": 1,
+	"name": "Stormpike Commando",
+	"text": "<b>Battlecry:</b> Deal 2 damage.",
+	"cost": 5,
+	"attack": 4,
+	"health": 2,
+	"battlecry": {
+		"id": 3,
+		"quantity": 2
+	}
+},
+{
+	"id": "STORMWIND_KNIGHT",
+	"type": 1,
+	"name": "Stormwind Knight",
+	"text": "<b>Charge</b>",
+	"cost": 4,
+	"attack": 2,
+	"health": 5,
+	"abilities": 1
+},
+{
+	"id": "WAR_GOLEM",
+	"type": 1,
+	"name": "War Golem",
+	"text": "",
+	"cost": 7,
+	"attack": 7,
+	"health": 7
+},
+{
+	"id": "CLAW",
+	"type": 4,
+	"name": "Claw",
+	"text": "Give your hero +2 Attack this turn and 2 Armor.",
+	"cost": 1,
+	"actions": [{
+		"id": 6,
+		"target": { "id": 0 },
+		"enchantment": {
+			"name": "Claw",
+			"text": "Give your hero +2 ATK",
+			"atkModifier": 2,
+			"temporary": true
+		}
+	},
+	{
+		"id": 0,
+		"quantity": 1,
+		"target": 1
+	}]
+},
+{
+	"id": "HEALING_TOUCH",
+	"type": 4,
+	"name": "Healing Touch",
+	"text": "Restore 8 Health.",
+	"cost": 3,
+	"actions": {
+		"id": 10,
+		"quantity": 8
+	}
+},
+{
+	"id": "INNERVATE",
+	"type": 4,
+	"name": "Innervate",
+	"text": "Gain 2 Mana Crystals this turn only.",
+	"cost": 0,
+	"actions": {
+		"id": 1,
+		"quantity": 2
+	}
+},
+{
+	"id": "MARK_OF_THE_WILD",
+	"type": 4,
+	"name": "Mark of the Wild",
+	"text": "Give a minion Taunt and +2/+2.",
+	"cost": 2,
+	"actions": {
+		"id": 6,
+		"target": {
+      "id": 4,
+      "quantity": 1,
+      "group": {
+        "owner": 3,
+        "subtype": 511
+      }
+    },
+		"enchantment": {
+			"name": "Mark of the Wild",
+			"text": "This minion gains Taunt and +2/+2",
+			"atkModifier": 2,
+			"maxHPModifier": 2,
+			"abilities": 2
+		}
+	}
+},
+{
+	"id": "WILD_GROWTH",
+	"type": 4,
+	"name": "Wild Growth",
+	"text": "Gain an empty Mana Crystal.",
+	"cost": 2,
+	"actions": {
+		"id": 1,
+		"quantity": 1,
+		"permanent": true
+	}
+},
+{
+	"id": "IRONBARK_PROTECTOR",
+	"type": 1,
+	"name": "Ironbark Protector",
+	"text": "<b>Taunt</b>",
+	"cost": 8,
+	"attack": 8,
+	"health": 8,
+	"abilities": 2
+},
+{
+	"id": "MOONFIRE",
+	"type": 4,
+	"name": "Moonfire",
+	"text": "Deal 1 damage.",
+	"cost": 0,
+	"actions": {
+		"id": 3,
+		"quantity": 1
+	}
+},
+{
+	"id": "STARFIRE",
+	"type": 4,
+	"name": "Starfire",
+	"text": "Deal 5 damage. Draw a card.",
+	"cost": 6,
+	"actions": [{
+		"id": 3,
+		"quantity": 5
+	},
+	{
+		"id": 5
+	}]
+},
+{
+	"id": "SWIPE",
+	"type": 4,
+	"name": "Swipe",
+	"text": "Deal 4 damage to an enemy and 1 damage to all enemies.",
+	"cost": 4,
+	"actions": [{
+		"id": 3,
+		"quantity": 4,
+		"target": {
+			"id": 4,
+			"quantity": 1,
+			"group": {
+				"owner": 2
+			}
+		}
+	},
+	{
+		"id": 3,
+		"quantity": 1,
+		"target": {
+			"id": 6,
+			"group": {
+				"owner": 2
+			}
+		}
+	}]
+}, {
+	"id": "ARCANE_EXPLOSION",
+	"type": 4,
+	"name": "Arcane Explosion",
+	"text": "Deal 1 damage to all enemy minions.",
+	"cost": 2,
+	"actions": {
+    "id": 3,
+    "quantity": 1,
+    "target": {
+      "id": 6,
+      "group": {
+        "owner": 2,
+        "subtype": 511
+      }
+    }
+  }
+}, {
+	"id": "ARCANE_INTELLECT",
+	"type": 4,
+	"name": "Arcane Intellect",
+	"text": "Draw 2 cards.",
+	"cost": 3,
+	"actions": {
+    "id": 5,
+    "quantity": 2
+  }
+}, {
+	"id": "ARCANE_MISSILES",
+	"type": 4,
+	"name": "Arcane Missiles",
+	"text": "Deal 3 damage randomly split among enemy characters.",
+	"cost": 1,
+	"actions": {
+    "id": 3,
+    "quantity": 1,
+    "target": {
+      "id": 5,
+      "quantity": 3,
+      "withReplacement": true,
+      "group": {
+        "owner": 2,
+        "subtype": 1023
+      }
+    }
+  }
+}, {
+	"id": "FIREBALL",
+	"type": 4,
+	"name": "Fireball",
+	"text": "Deal 6 damage.",
+	"cost": 4,
+	"actions": {
+    "id": 3,
+    "quantity": 6,
+    "target": {
+      "id": 4,
+      "quantity": 1
+    }
+  }
+}, {
+	"id": "FLAMESTRIKE",
+	"type": 4,
+	"name": "Flamestrike",
+	"text": "Deal 4 damage to all enemy minions.",
+	"cost": 7,
+	"actions": {
+    "id": 3,
+    "quantity": 4,
+    "target": {
+      "id": 6,
+      "group": {
+        "owner": 2,
+        "subtype": 511
+      }
+    }
+  }
+}, {
+	"id": "FROST_NOVA",
+	"type": 4,
+	"name": "Frost Nova",
+	"text": "<b>Freeze</b> all enemy minions.",
+	"cost": 3,
+	"actions": {
+    "id": 12,
+    "target": {
+      "id": 6,
+      "group": {
+        "owner": 2,
+        "subtype": 511
+      }
+    }
+  }
+}, {
+	"id": "FROSTBOLT",
+	"type": 4,
+	"name": "Frostbolt",
+	"text": "Deal 3 damage to a character and <b>Freeze</b> it.",
+	"cost": 2,
+	"actions": {
+    "id": 8,
+    "quantity": 3,
+    "target": {
+      "id": 4,
+      "quantity": 1,
+      "group": {
+        "owner": 3,
+        "subtype": 1023
+      }
+    }
+  }
+}, {
+	"id": "MIRROR_IMAGE_MINION",
+	"type": 1,
+	"name": "Mirror Image",
+	"text": "",
+	"cost": 0,
+	"attack": 0,
+	"health": 2,
+  "abilities": 2,
+  "collectible": false
+},
+{
+	"id": "MIRROR_IMAGE_SPELL",
+	"type": 4,
+	"name": "Mirror Image",
+	"text": "Summon two 0/2 minions with <b>Taunt</b>.",
+	"cost": 1,
+	"actions": {
+		"id": 16,
+		"minion": "MIRROR_IMAGE_MINION",
+		"quantity": 2,
+		"targetOwner": 1
+	}
+}, {
+	"id": "WATER_ELEMENTAL",
+	"type": 1,
+	"name": "Water Elemental",
+	"text": "<b>Freeze</b> any character damaged by this minion.",
+	"cost": 4,
+	"attack": 3,
+	"health": 6,
+  "triggerPowers": {
+    "event": {
+      "id": 5,
+      "damagers": { "id": 7 },
+      "acceptedSources": 1
+    },
+    "actions": {
+      "id": 12,
+      "target": {
+        "id": 3,
+        "params": 3
+      }
+    }
+  }
+}, {
+	"id": "IRONBEAK_OWL",
+	"type": 1,
+	"name": "Ironbeak Owl",
+	"text": "<b>Battlecry:</b> Silence a minion.",
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+  "battlecry": {
+    "id": 13,
+    "target": {
+      "id": 4,
+      "quantity": 1,
+      "group": {
+        "owner": 3,
+        "subtype": 511
+      }
+    }
+  }
+}]

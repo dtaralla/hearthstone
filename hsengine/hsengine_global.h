@@ -1,0 +1,12 @@
+#ifndef HSENGINE_GLOBAL_H
+#define HSENGINE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(HSENGINE_LIBRARY)
+#  define HSENGINESHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define HSENGINESHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // HSENGINE_GLOBAL_H

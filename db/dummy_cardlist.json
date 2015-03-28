@@ -1,0 +1,166 @@
+[{
+  "id": "THE_COIN",
+  "type": 4,
+  "name": "The Coin",
+  "cost": 0,
+  "text": "Gives you +1 Mana Crystal until the end of this turn.",
+  "actions": {
+    "id": 1,
+    "quantity": 1
+  }
+}, {
+  "id": "EXPLOSION",
+  "type": 4,
+  "name": "Explosion",
+  "cost": 1,
+  "text": "Deal 2 dmg to all enemies.",
+  "actions": {
+    "id": 2,
+    "quantity": 2,
+    "targetOwner": 2
+  }
+}, {
+  "id": "MASS_HEALING",
+  "type": 4,
+  "name": "Mass healing",
+  "cost": 1,
+  "text": "All allied characters are healed for 1 HP.",
+  "actions": {
+    "id": 6,
+    "quantity": 1,
+    "targetOwner": 1
+  }
+}, {
+  "id": "BOAR",
+  "type": 1,
+  "name": "Boar",
+  "text": "<b>Charge</b>",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "abilities": [1, 2]
+}, {
+  "id": "VOIDWALKER",
+  "type": 1,
+  "subtype": 4,
+  "name": "Voidwalker",
+  "text": "<b>Taunt</b>",
+  "cost": 1,
+  "health": 3,
+  "attack": 1,
+  "abilities": 2
+}, {
+  "id": "TOXIC_SHEEP",
+  "type": 1,
+  "name": "Toxic sheep",
+  "text": "<b>Deathrattle:</b> Deal 1 dmg to a target.",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "deathrattles": {
+    "id": 3,
+    "quantity": 1
+  }
+}, {
+  "id": "QUIET",
+  "type": 4,
+  "name": "Quiet!",
+  "text": "Silence a minion.",
+  "cost": 1,
+  "actions": {
+    "id": 8
+  }
+}, {
+  "id": "DRAW_CURSE",
+  "type": 4,
+  "name": "Draw curse",
+  "text": "Enchant an ally Demon: <i>Whenever an enemy demon dies, draw a card and silence a minion</i>.",
+  "cost": 0,
+  "actions": {
+    "id": 5,
+    "targetType": 4,
+    "targetOwner": 1,
+    "enchantment": {
+      "name": "Cursed by the deck",
+      "text": "Whenever an enemy demon dies, draw a card and silence a minion",
+      "triggerPowers": {
+        "event": 8,
+        "owningPlayer": 2,
+        "minionType": 4,
+        "actions": [
+          {
+            "id": 4
+          }, {
+            "id": 8
+          }
+        ]
+      }
+    }
+  }
+}, {
+  "id": "UPGRADED_TOXIC_SHEEP",
+  "type": 1,
+  "name": "Buffed Toxic sheep",
+  "text": "<b>Deathrattle:</b> Deal 1 dmg to a target.",
+  "cost": 1,
+  "health": 5,
+  "attack": 1,
+  "deathrattles": {
+    "id": 3,
+    "quantity": 1
+  }
+}, {
+  "id": "DARK_CULTIST",
+  "type": 1,
+  "name": "Dark Cultist",
+  "text": "<b>Deathrattle:</b> Heal a random friendly minion  for 3 health.",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "deathrattles": {
+    "id": 7,
+    "quantity": 3,
+    "onRandomTarget": true,
+    "targetOwner": 1,
+    "targetType": 511
+  }
+}, {
+  "id": "MAGE",
+  "type": 2,
+  "name": "Jaina",
+  "power": {
+    "name": "Fireball",
+    "text": "Deal 2 dmg to a target.",
+    "cost": 2,
+    "actions": {
+      "id": 3,
+      "quantity": 2
+    }
+  }
+}, {
+  "id": "DRUID",
+  "type": 2,
+  "name": "Malfurion",
+  "power": {
+    "name": "Bear form",
+    "text": "You hero gets +1 ATK for this turn and 1 armor.",
+    "cost": 2,
+    "actions": [
+      {
+        "id": 5,
+        "targetOwner": 1,
+        "heroOnly": true,
+        "enchantment": {
+          "name": "Bear form",
+          "text": "This hero gets +1 ATK until the end of the turn.",
+          "atkModifier": 1,
+          "temporary": true
+        }
+      }, {
+        "id": 0,
+        "quantity": 1,
+        "target": 1
+      }
+    ]
+  }
+}]

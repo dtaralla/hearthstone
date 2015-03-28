@@ -1,0 +1,900 @@
+[{
+	"id": "MAGE",
+	"type": $CARD_HERO,
+	"name": "Jaina",
+	"power": {
+		"name": "Fireball",
+		"text": "Deal 1 dmg to a target.",
+		"cost": 2,
+		"actions": {
+			"id": $DEAL_DMG,
+			"quantity": 1
+		}
+	}
+},
+{
+	"id": "DRUID",
+	"type": $CARD_HERO,
+	"name": "Malfurion",
+	"power": {
+		"name": "Bear form",
+		"text": "You hero gets +1 ATK for this turn and 1 armor.",
+		"cost": 2,
+		"actions": [{
+			"id": $ENCHANT_CHARACTER,
+			"target": {
+        "id": $TARGET_THIS
+      },
+			"enchantment": {
+				"name": "Bear form",
+				"text": "This hero gets +1 ATK until the end of the turn.",
+				"atkModifier": 1,
+				"temporary": true
+			}
+		},
+		{
+			"id": $ADD_ARMOR,
+			"quantity": 1,
+			"target": $OWNER_ALLY
+		}]
+	}
+},
+{
+	"id": "ABOMINATION",
+	"type": $CARD_MINION,
+	"name": "Abomination",
+	"text": "<b>Taunt</b>. <b>Deathrattle:</b> Deal 2 damage to ALL characters.",
+	"cost": 5,
+	"attack": 4,
+	"health": 4,
+	"abilities": $ABILITY_TAUNT,
+	"deathrattles": {
+		"id": $DEAL_DMG,
+		"quantity": 2,
+		"target": {
+			"id": $TARGET_GROUP,
+			"group": {
+				"owner": $OWNER_ANY
+			}
+		}
+	}
+},
+{
+	"id": "ACOLYTE_OF_PAIN",
+	"type": $CARD_MINION,
+	"name": "Acolyte of Pain",
+	"text": "Whenever this minion takes damage, draw a card.",
+	"cost": 3,
+	"attack": 1,
+	"health": 3,
+	"triggerPowers": {
+		"event": {
+      "id": $CHARACTER_DAMAGED,
+		  "damagedCharacters": { "id": $TARGET_THIS }
+    },
+		"actions": {
+			"id": $DRAW_CARD
+		}
+	}
+},
+{
+	"id": "MANA_WYRM",
+	"type": $CARD_MINION,
+	"name": "Mana Wyrm",
+	"text": "Whenever you cast a spell, gain +1 Attack.",
+	"cost": 1,
+	"attack": 1,
+	"health": 3,
+	"triggerPowers": {
+		"event": $BEFORE_CARD_PLAYED,
+		"owningPlayer": $OWNER_ALLY,
+		"cardType": $CARD_SPELL,
+		"actions": {
+			"id": $ENCHANT_CHARACTER,
+			"target": {
+        "id": $TARGET_THIS
+      },
+			"enchantment": {
+				"name": "Mana drink",
+				"text": "+1 ATK",
+				"atkModifier": 1
+			}
+		}
+	}
+},
+{
+	"id": "NOVICE_ENGINEER",
+	"type": $CARD_MINION,
+	"name": "Novice Engineer",
+	"text": "<b>Battlecry:</b> Draw a card.",
+	"cost": 2,
+	"attack": 1,
+	"health": 1,
+	"battlecry": {
+		"id": $DRAW_CARD
+	}
+},
+{
+	"id": "ABUSIVE_SERGEANT",
+	"type": $CARD_MINION,
+	"name": "Abusive Sergeant",
+	"text": "<b>Battlecry:</b> Give a minion +2 ATK this turn.",
+	"cost": 1,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": $ENCHANT_CHARACTER,
+		"target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1,
+      "group": {
+        "owner": $OWNER_ANY,
+        "subtype": $TYPE_MINION
+      }
+    },
+		"enchantment": {
+			"name": "Abused by the sergeant",
+			"text": "+2 ATK",
+			"temporary": true,
+			"atkModifier": 2
+		}
+	}
+},
+{
+	"id": "BLOODFEN_RAPTOR",
+	"type": $CARD_MINION,
+	"subtype": $TYPE_BEAST,
+	"name": "Bloodfen Raptor",
+	"text": "",
+	"cost": 2,
+	"attack": 3,
+	"health": 2
+},
+{
+	"id": "RIVER_CROCOLISK",
+	"type": $CARD_MINION,
+	"subtype": $TYPE_BEAST,
+	"name": "River Crocolisk",
+	"text": "",
+	"cost": 2,
+	"attack": 2,
+	"health": 3
+},
+{
+	"id": "BOULDERFIST_OGRE",
+	"type": $CARD_MINION,
+	"name": "Boulderfist Ogre",
+	"text": "",
+	"cost": 6,
+	"attack": 6,
+	"health": 7
+},
+{
+	"id": "MAGMA_RAGER",
+	"type": $CARD_MINION,
+	"name": "Magma Rager",
+	"text": "",
+	"cost": 3,
+	"attack": 5,
+	"health": 1
+},
+{
+	"id": "MURLOC_RAIDER",
+	"type": $CARD_MINION,
+	"subtype": $TYPE_MURLOC,
+	"name": "Murloc Raider",
+	"text": "",
+	"cost": 1,
+	"attack": 2,
+	"health": 1
+},
+{
+	"id": "NIGHTBLADE",
+	"type": $CARD_MINION,
+	"name": "Nightblade",
+	"text": "<b>Battlecry:</b> Deal 3 damage to the enemy hero.",
+	"cost": 5,
+	"attack": 4,
+	"health": 4,
+	"battlecry": {
+		"id": $DEAL_DMG,
+		"quantity": 3,
+		"target": {
+			"id": $TARGET_ENEMY_HERO
+		}
+	}
+},
+{
+	"id": "OASIS_SNAPJAW",
+	"type": $CARD_MINION,
+	"name": "Oasis Snapjaw",
+	"subtype": $TYPE_BEAST,
+	"text": "",
+	"cost": 4,
+	"attack": 2,
+	"health": 7
+},
+{
+	"id": "RECKLESS_ROCKETEER",
+	"type": $CARD_MINION,
+	"name": "Reckless Rocketeer",
+	"text": "<b>Charge</b>",
+	"cost": 6,
+	"attack": 5,
+	"health": 2,
+	"abilities": $ABILITY_CHARGE
+},
+{
+	"id": "SENJIN_SHIELDMASTA",
+	"type": $CARD_MINION,
+	"name": "Senjin Shieldmasta",
+	"text": "<b>Taunt</b>",
+	"cost": 4,
+	"attack": 3,
+	"health": 5,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "STONETUSK_BOAR",
+	"type": $CARD_MINION,
+	"name": "Stonetusk Boar",
+	"text": "<b>Charge</b>",
+	"subtype": $TYPE_BEAST,
+	"cost": 1,
+	"attack": 1,
+	"health": 1,
+	"abilities": $ABILITY_CHARGE
+},
+{
+	"id": "VODOO_DOCTOR",
+	"type": $CARD_MINION,
+	"name": "Vodoo Doctor",
+	"text": "<b>Battlecry:</b> Restore 2 Health",
+	"cost": 1,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": $HEAL,
+		"quantity": 2
+	}
+},
+{
+	"id": "WOLF_RIDER",
+	"type": $CARD_MINION,
+	"name": "Wolf Rider",
+	"text": "<b>Charge</b>",
+	"cost": 3,
+	"attack": 3,
+	"health": 1,
+	"abilities": $ABILITY_CHARGE
+},
+{
+	"id": "BLUEGILL_WARRIOR",
+	"type": $CARD_MINION,
+	"name": "Bluegill Warrior",
+	"text": "<b>Charge</b>",
+	"subtype": $TYPE_MURLOC,
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+	"abilities": $ABILITY_CHARGE
+},
+{
+	"id": "BOOTY_BAY_BODYGUARD",
+	"type": $CARD_MINION,
+	"name": "Booty Bay Bodyguard",
+	"text": "<b>Taunt</b>",
+	"cost": 5,
+	"attack": 5,
+	"health": 4,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "CHILLWIND_YETI",
+	"type": $CARD_MINION,
+	"name": "Chillwind Yeti",
+	"text": "",
+	"cost": 4,
+	"attack": 4,
+	"health": 5
+},
+{
+	"id": "CORE_HOUND",
+	"type": $CARD_MINION,
+	"name": "Core Hound",
+	"text": "",
+	"subtype": $TYPE_BEAST,
+	"cost": 7,
+	"attack": 9,
+	"health": 5
+},
+{
+	"id": "DARKSCALE_HEALER",
+	"type": $CARD_MINION,
+	"name": "Darkscale Healer",
+	"text": "<b>Battlecry:</b> Restore 2 Health to all friendly characters",
+	"cost": 5,
+	"attack": 4,
+	"health": 5,
+	"battlecry": {
+		"id": $HEAL,
+		"quantity": 2,
+		"target": {
+			"id": $TARGET_GROUP,
+			"group": {
+				"owner": $OWNER_ALLY
+			}
+		}
+	}
+},
+{
+	"id": "MECHANICAL_DRAGONLING",
+	"type": $CARD_MINION,
+	"name": "Mechanical Dragonling",
+	"text": "",
+	"subtype": $TYPE_MECH,
+	"cost": 0,
+	"attack": 2,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "DRAGONLING_MECHANIC",
+	"type": $CARD_MINION,
+	"name": "Dragonling Mechanic",
+	"text": "<b>Battlecry:</b> Summon a 2/1 Mechanical Dragonling",
+	"cost": 4,
+	"attack": 2,
+	"health": 4,
+	"battlecry": {
+		"id": $SUMMON_MINIONS,
+		"minion": "MECHANICAL_DRAGONLING",
+		"quantity": 1,
+		"targetOwner": $OWNER_ALLY
+	}
+},
+{
+	"id": "ELVEN_ARCHER",
+	"type": $CARD_MINION,
+	"name": "Elven Archer",
+	"text": "<b>Battlecry:</b> Deal 1 damage.",
+	"cost": 1,
+	"attack": 1,
+	"health": 1,
+	"battlecry": {
+		"id": $DEAL_DMG,
+		"quantity": 1
+	}
+},
+{
+	"id": "FROSTWOLF_GRUNT",
+	"type": $CARD_MINION,
+	"name": "Frostwolf Grunt",
+	"text": "<b>Taunt</b>",
+	"cost": 2,
+	"attack": 2,
+	"health": 2,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "GNOMISH_INVENTOR",
+	"type": $CARD_MINION,
+	"name": "Gnomish Inventor",
+	"text": "<b>Battlecry:</b> Draw a card.",
+	"cost": 4,
+	"attack": 2,
+	"health": 4,
+	"battlecry": {
+		"id": $DRAW_CARD
+	}
+},
+{
+	"id": "GOLDSHIRE_FOOTMAN",
+	"type": $CARD_MINION,
+	"name": "Goldshire Footman",
+	"text": "<b>Taunt</b>",
+	"cost": 1,
+	"attack": 1,
+	"health": 2,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "GURUBASHI_BERSERKER",
+	"type": $CARD_MINION,
+	"name": "Gurubashi Berserker",
+	"text": "Whenever this minion takes damage, gain +3 Attack.",
+	"cost": 5,
+	"attack": 2,
+	"health": 7,
+	"triggerPowers": {
+		"event": {
+      "id": $CHARACTER_DAMAGED,
+		  "damagedCharacters": { "id": $TARGET_THIS }
+    },
+		"actions": {
+			"id": $ENCHANT_CHARACTER,
+      "target": {
+        "id": $TARGET_THIS
+      },
+			"enchantment": {
+				"name": "Enraged!",
+				"text": "+3 ATK",
+				"atkModifier": 3
+			}
+		}
+	}
+},
+{
+	"id": "IRONFORGE_RIFLEMAN",
+	"type": $CARD_MINION,
+	"name": "Ironforge Rifleman",
+	"text": "<b>Battlecry:</b> Deal 1 damage.",
+	"cost": 3,
+	"attack": 2,
+	"health": 2,
+	"battlecry": {
+		"id": $DEAL_DMG,
+		"quantity": 1
+	}
+},
+{
+	"id": "IRONFUR_GRIZZLY",
+	"type": $CARD_MINION,
+	"name": "Ironfur Grizzly",
+	"text": "<b>Taunt</b>",
+	"subtype": $TYPE_BEAST,
+	"cost": 3,
+	"attack": 3,
+	"health": 3,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "LORD_OF_THE_ARENA",
+	"type": $CARD_MINION,
+	"name": "Lord of the Arena",
+	"text": "<b>Taunt</b>",
+	"cost": 6,
+	"attack": 6,
+	"health": 5,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "MURLOC_SCOUT",
+	"type": $CARD_MINION,
+	"name": "Murloc Scout",
+	"text": "",
+	"subtype": $TYPE_MURLOC,
+	"cost": 0,
+	"attack": 1,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "MURLOC_TIDEHUNTER",
+	"type": $CARD_MINION,
+	"name": "Murloc Tidehunter",
+	"text": "<b>Battlecry:</b> Summon a 1/1 Murloc Scout",
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+	"battlecry": {
+		"id": $SUMMON_MINIONS,
+		"minion": "MURLOC_SCOUT",
+		"quantity": 1,
+		"targetOwner": $OWNER_ALLY
+	}
+},
+{
+	"id": "BOAR",
+	"type": $CARD_MINION,
+	"name": "Boar",
+	"text": "",
+	"subtype": $TYPE_BEAST,
+	"cost": 0,
+	"attack": 1,
+	"health": 1,
+  "collectible": false
+},
+{
+	"id": "RAZORFEN_HUNTER",
+	"type": $CARD_MINION,
+	"name": "Razorfen Hunter",
+	"text": "<b>Battlecry:</b> Summon a 1/1 Boar",
+	"cost": 3,
+	"attack": 2,
+	"health": 3,
+	"battlecry": {
+		"id": $SUMMON_MINIONS,
+		"minion": "BOAR",
+		"quantity": 1,
+		"targetOwner": $OWNER_ALLY
+	}
+},
+{
+	"id": "SHATTERED_SUN_CLERIC",
+	"type": $CARD_MINION,
+	"name": "Shattered Sun Cleric",
+	"text": "<b>Battlecry:</b> Give a friendly minion +1/+1",
+	"cost": 3,
+	"attack": 3,
+	"health": 2,
+	"battlecry": {
+		"id": $ENCHANT_CHARACTER,
+		"target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1,
+      "group": {
+        "owner": $OWNER_ALLY,
+        "subtype": $TYPE_MINION
+      }
+    },
+		"enchantment": {
+			"name": "Sunwell energy drink",
+			"text": "+1/+1",
+			"atkModifier": 1,
+			"maxHPModifier": 1
+		}
+	}
+},
+{
+	"id": "SILVERBACK_PATRIARCH",
+	"type": $CARD_MINION,
+	"name": "Silverback Patriarch",
+	"text": "<b>Taunt</b>",
+	"subtype": $TYPE_BEAST,
+	"cost": 3,
+	"attack": 1,
+	"health": 4,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "STORMPIKE_COMMANDO",
+	"type": $CARD_MINION,
+	"name": "Stormpike Commando",
+	"text": "<b>Battlecry:</b> Deal 2 damage.",
+	"cost": 5,
+	"attack": 4,
+	"health": 2,
+	"battlecry": {
+		"id": $DEAL_DMG,
+		"quantity": 2
+	}
+},
+{
+	"id": "STORMWIND_KNIGHT",
+	"type": $CARD_MINION,
+	"name": "Stormwind Knight",
+	"text": "<b>Charge</b>",
+	"cost": 4,
+	"attack": 2,
+	"health": 5,
+	"abilities": $ABILITY_CHARGE
+},
+{
+	"id": "WAR_GOLEM",
+	"type": $CARD_MINION,
+	"name": "War Golem",
+	"text": "",
+	"cost": 7,
+	"attack": 7,
+	"health": 7
+},
+{
+	"id": "CLAW",
+	"type": $CARD_SPELL,
+	"name": "Claw",
+	"text": "Give your hero +2 Attack this turn and 2 Armor.",
+	"cost": 1,
+	"actions": [{
+		"id": $ENCHANT_CHARACTER,
+		"target": { "id": $TARGET_ALLY_HERO },
+		"enchantment": {
+			"name": "Claw",
+			"text": "Give your hero +2 ATK",
+			"atkModifier": 2,
+			"temporary": true
+		}
+	},
+	{
+		"id": $ADD_ARMOR,
+		"quantity": 1,
+		"target": $OWNER_ALLY
+	}]
+},
+{
+	"id": "HEALING_TOUCH",
+	"type": $CARD_SPELL,
+	"name": "Healing Touch",
+	"text": "Restore 8 Health.",
+	"cost": 3,
+	"actions": {
+		"id": $HEAL,
+		"quantity": 8
+	}
+},
+{
+	"id": "INNERVATE",
+	"type": $CARD_SPELL,
+	"name": "Innervate",
+	"text": "Gain 2 Mana Crystals this turn only.",
+	"cost": 0,
+	"actions": {
+		"id": $ADD_MANA,
+		"quantity": 2
+	}
+},
+{
+	"id": "MARK_OF_THE_WILD",
+	"type": $CARD_SPELL,
+	"name": "Mark of the Wild",
+	"text": "Give a minion Taunt and +2/+2.",
+	"cost": 2,
+	"actions": {
+		"id": $ENCHANT_CHARACTER,
+		"target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1,
+      "group": {
+        "owner": $OWNER_ANY,
+        "subtype": $TYPE_MINION
+      }
+    },
+		"enchantment": {
+			"name": "Mark of the Wild",
+			"text": "This minion gains Taunt and +2/+2",
+			"atkModifier": 2,
+			"maxHPModifier": 2,
+			"abilities": $ABILITY_TAUNT
+		}
+	}
+},
+{
+	"id": "WILD_GROWTH",
+	"type": $CARD_SPELL,
+	"name": "Wild Growth",
+	"text": "Gain an empty Mana Crystal.",
+	"cost": 2,
+	"actions": {
+		"id": $ADD_MANA,
+		"quantity": 1,
+		"permanent": true
+	}
+},
+{
+	"id": "IRONBARK_PROTECTOR",
+	"type": $CARD_MINION,
+	"name": "Ironbark Protector",
+	"text": "<b>Taunt</b>",
+	"cost": 8,
+	"attack": 8,
+	"health": 8,
+	"abilities": $ABILITY_TAUNT
+},
+{
+	"id": "MOONFIRE",
+	"type": $CARD_SPELL,
+	"name": "Moonfire",
+	"text": "Deal 1 damage.",
+	"cost": 0,
+	"actions": {
+		"id": $DEAL_DMG,
+		"quantity": 1
+	}
+},
+{
+	"id": "STARFIRE",
+	"type": $CARD_SPELL,
+	"name": "Starfire",
+	"text": "Deal 5 damage. Draw a card.",
+	"cost": 6,
+	"actions": [{
+		"id": $DEAL_DMG,
+		"quantity": 5
+	},
+	{
+		"id": $DRAW_CARD
+	}]
+},
+{
+	"id": "SWIPE",
+	"type": $CARD_SPELL,
+	"name": "Swipe",
+	"text": "Deal 4 damage to an enemy and 1 damage to all enemies.",
+	"cost": 4,
+	"actions": [{
+		"id": $DEAL_DMG,
+		"quantity": 4,
+		"target": {
+			"id": $SELECT_N_IN_GROUP,
+			"quantity": 1,
+			"group": {
+				"owner": $OWNER_ENEMY
+			}
+		}
+	},
+	{
+		"id": $DEAL_DMG,
+		"quantity": 1,
+		"target": {
+			"id": $TARGET_GROUP,
+			"group": {
+				"owner": $OWNER_ENEMY
+			}
+		}
+	}]
+}, {
+	"id": "ARCANE_EXPLOSION",
+	"type": $CARD_SPELL,
+	"name": "Arcane Explosion",
+	"text": "Deal 1 damage to all enemy minions.",
+	"cost": 2,
+	"actions": {
+    "id": $DEAL_DMG,
+    "quantity": 1,
+    "target": {
+      "id": $TARGET_GROUP,
+      "group": {
+        "owner": $OWNER_ENEMY,
+        "subtype": $TYPE_MINION
+      }
+    }
+  }
+}, {
+	"id": "ARCANE_INTELLECT",
+	"type": $CARD_SPELL,
+	"name": "Arcane Intellect",
+	"text": "Draw 2 cards.",
+	"cost": 3,
+	"actions": {
+    "id": $DRAW_CARD,
+    "quantity": 2
+  }
+}, {
+	"id": "ARCANE_MISSILES",
+	"type": $CARD_SPELL,
+	"name": "Arcane Missiles",
+	"text": "Deal 3 damage randomly split among enemy characters.",
+	"cost": 1,
+	"actions": {
+    "id": $DEAL_DMG,
+    "quantity": 1,
+    "target": {
+      "id": $PICK_N_FROM_GROUP,
+      "quantity": 3,
+      "withReplacement": true,
+      "group": {
+        "owner": $OWNER_ENEMY,
+        "subtype": $TYPE_CHARACTER
+      }
+    }
+  }
+}, {
+	"id": "FIREBALL",
+	"type": $CARD_SPELL,
+	"name": "Fireball",
+	"text": "Deal 6 damage.",
+	"cost": 4,
+	"actions": {
+    "id": $DEAL_DMG,
+    "quantity": 6,
+    "target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1
+    }
+  }
+}, {
+	"id": "FLAMESTRIKE",
+	"type": $CARD_SPELL,
+	"name": "Flamestrike",
+	"text": "Deal 4 damage to all enemy minions.",
+	"cost": 7,
+	"actions": {
+    "id": $DEAL_DMG,
+    "quantity": 4,
+    "target": {
+      "id": $TARGET_GROUP,
+      "group": {
+        "owner": $OWNER_ENEMY,
+        "subtype": $TYPE_MINION
+      }
+    }
+  }
+}, {
+	"id": "FROST_NOVA",
+	"type": $CARD_SPELL,
+	"name": "Frost Nova",
+	"text": "<b>Freeze</b> all enemy minions.",
+	"cost": 3,
+	"actions": {
+    "id": $SET_FROZEN,
+    "target": {
+      "id": $TARGET_GROUP,
+      "group": {
+        "owner": $OWNER_ENEMY,
+        "subtype": $TYPE_MINION
+      }
+    }
+  }
+}, {
+	"id": "FROSTBOLT",
+	"type": $CARD_SPELL,
+	"name": "Frostbolt",
+	"text": "Deal 3 damage to a character and <b>Freeze</b> it.",
+	"cost": 2,
+	"actions": {
+    "id": $FREEZE_AFTER_DMG,
+    "quantity": 3,
+    "target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1,
+      "group": {
+        "owner": $OWNER_ANY,
+        "subtype": $TYPE_CHARACTER
+      }
+    }
+  }
+}, {
+	"id": "MIRROR_IMAGE_MINION",
+	"type": $CARD_MINION,
+	"name": "Mirror Image",
+	"text": "",
+	"cost": 0,
+	"attack": 0,
+	"health": 2,
+  "abilities": $ABILITY_TAUNT,
+  "collectible": false
+},
+{
+	"id": "MIRROR_IMAGE_SPELL",
+	"type": $CARD_SPELL,
+	"name": "Mirror Image",
+	"text": "Summon two 0/2 minions with <b>Taunt</b>.",
+	"cost": 1,
+	"actions": {
+		"id": $SUMMON_MINIONS,
+		"minion": "MIRROR_IMAGE_MINION",
+		"quantity": 2,
+		"targetOwner": $OWNER_ALLY
+	}
+}, {
+	"id": "WATER_ELEMENTAL",
+	"type": $CARD_MINION,
+	"name": "Water Elemental",
+	"text": "<b>Freeze</b> any character damaged by this minion.",
+	"cost": 4,
+	"attack": 3,
+	"health": 6,
+  "triggerPowers": {
+    "event": {
+      "id": $CHARACTER_DAMAGED,
+      "damagers": { "id": $TARGET_THIS },
+      "acceptedSources": $DMG_SOURCE_CHARACTER
+    },
+    "actions": {
+      "id": $SET_FROZEN,
+      "target": {
+        "id": $EVENT_CHARACTER_PARAMS,
+        "params": $DAMAGED_CHARACTER
+      }
+    }
+  }
+}, {
+	"id": "IRONBEAK_OWL",
+	"type": $CARD_MINION,
+	"name": "Ironbeak Owl",
+	"text": "<b>Battlecry:</b> Silence a minion.",
+	"cost": 2,
+	"attack": 2,
+	"health": 1,
+  "battlecry": {
+    "id": $SILENCE_TARGET,
+    "target": {
+      "id": $SELECT_N_IN_GROUP,
+      "quantity": 1,
+      "group": {
+        "owner": $OWNER_ANY,
+        "subtype": $TYPE_MINION
+      }
+    }
+  }
+}]

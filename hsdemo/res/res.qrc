@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>cardBack.png</file>
+        <file>emptyCard.png</file>
+        <file>emptySpell.png</file>
+    </qresource>
+</RCC>

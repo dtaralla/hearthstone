@@ -1,0 +1,166 @@
+[{
+  "id": "THE_COIN",
+  "type": $CARD_SPELL,
+  "name": "The Coin",
+  "cost": 0,
+  "text": "Gives you +1 Mana Crystal until the end of this turn.",
+  "actions": {
+    "id": $ADD_MANA,
+    "quantity": 1
+  }
+}, {
+  "id": "EXPLOSION",
+  "type": $CARD_SPELL,
+  "name": "Explosion",
+  "cost": 1,
+  "text": "Deal 2 dmg to all enemies.",
+  "actions": {
+    "id": $DEAL_DMG_TO_GROUP,
+    "quantity": 2,
+    "targetOwner": $ENEMY
+  }
+}, {
+  "id": "MASS_HEALING",
+  "type": $CARD_SPELL,
+  "name": "Mass healing",
+  "cost": 1,
+  "text": "All allied characters are healed for 1 HP.",
+  "actions": {
+    "id": $HEAL_GROUP,
+    "quantity": 1,
+    "targetOwner": $ALLY
+  }
+}, {
+  "id": "BOAR",
+  "type": $CARD_MINION,
+  "name": "Boar",
+  "text": "<b>Charge</b>",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "abilities": [$CHARGE, $TAUNT]
+}, {
+  "id": "VOIDWALKER",
+  "type": $CARD_MINION,
+  "subtype": $TYPE_DEMON,
+  "name": "Voidwalker",
+  "text": "<b>Taunt</b>",
+  "cost": 1,
+  "health": 3,
+  "attack": 1,
+  "abilities": $TAUNT
+}, {
+  "id": "TOXIC_SHEEP",
+  "type": $CARD_MINION,
+  "name": "Toxic sheep",
+  "text": "<b>Deathrattle:</b> Deal 1 dmg to a target.",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "deathrattles": {
+    "id": $DEAL_DMG_TO_TARGET,
+    "quantity": 1
+  }
+}, {
+  "id": "QUIET",
+  "type": $CARD_SPELL,
+  "name": "Quiet!",
+  "text": "Silence a minion.",
+  "cost": 1,
+  "actions": {
+    "id": $SILENCE_TARGET
+  }
+}, {
+  "id": "DRAW_CURSE",
+  "type": $CARD_SPELL,
+  "name": "Draw curse",
+  "text": "Enchant an ally Demon: <i>Whenever an enemy demon dies, draw a card and silence a minion</i>.",
+  "cost": 0,
+  "actions": {
+    "id": $ENCHANT_CHARACTER,
+    "targetType": $TYPE_DEMON,
+    "targetOwner": $ALLY,
+    "enchantment": {
+      "name": "Cursed by the deck",
+      "text": "Whenever an enemy demon dies, draw a card and silence a minion",
+      "triggerPowers": {
+        "event": $MINION_KILLED,
+        "owningPlayer": $ENEMY,
+        "minionType": $TYPE_DEMON,
+        "actions": [
+          {
+            "id": $DRAW_CARD
+          }, {
+            "id": $SILENCE_TARGET
+          }
+        ]
+      }
+    }
+  }
+}, {
+  "id": "UPGRADED_TOXIC_SHEEP",
+  "type": $CARD_MINION,
+  "name": "Buffed Toxic sheep",
+  "text": "<b>Deathrattle:</b> Deal 1 dmg to a target.",
+  "cost": 1,
+  "health": 5,
+  "attack": 1,
+  "deathrattles": {
+    "id": $DEAL_DMG_TO_TARGET,
+    "quantity": 1
+  }
+}, {
+  "id": "DARK_CULTIST",
+  "type": $CARD_MINION,
+  "name": "Dark Cultist",
+  "text": "<b>Deathrattle:</b> Heal a random friendly minion  for 3 health.",
+  "cost": 1,
+  "health": 1,
+  "attack": 1,
+  "deathrattles": {
+    "id": $HEAL_TARGET,
+    "quantity": 3,
+    "onRandomTarget": true,
+    "targetOwner": $ALLY,
+    "targetType": $TYPE_MINION
+  }
+}, {
+  "id": "MAGE",
+  "type": $CARD_HERO,
+  "name": "Jaina",
+  "power": {
+    "name": "Fireball",
+    "text": "Deal 2 dmg to a target.",
+    "cost": 2,
+    "actions": {
+      "id": $DEAL_DMG_TO_TARGET,
+      "quantity": 2
+    }
+  }
+}, {
+  "id": "DRUID",
+  "type": $CARD_HERO,
+  "name": "Malfurion",
+  "power": {
+    "name": "Bear form",
+    "text": "You hero gets +1 ATK for this turn and 1 armor.",
+    "cost": 2,
+    "actions": [
+      {
+        "id": $ENCHANT_CHARACTER,
+        "targetOwner": $ALLY,
+        "heroOnly": true,
+        "enchantment": {
+          "name": "Bear form",
+          "text": "This hero gets +1 ATK until the end of the turn.",
+          "atkModifier": 1,
+          "temporary": true
+        }
+      }, {
+        "id": $ADD_ARMOR,
+        "quantity": 1,
+        "target": $ALLY
+      }
+    ]
+  }
+}]

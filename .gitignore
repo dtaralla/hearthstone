@@ -1,0 +1,9 @@
+*.user
+*.o
+*.exe
+*.moc
+*.autosave
+*.csv
+scripts/clfs/*
+hsengine/doc/*
+Doxyfile

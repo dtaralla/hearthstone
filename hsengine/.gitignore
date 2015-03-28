@@ -1,0 +1,13 @@
+*.user
+*.o
+*.exe
+*.moc
+*.autosave
+trainingSets/*
+*.csv
+inputs/aaron/dbs/*
+inputs/aaron/scripts/clfs/*
+inputs/aaron/*.old
+*.pyc
+doc/*
+Doxyfile

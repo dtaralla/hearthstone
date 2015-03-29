@@ -14,7 +14,6 @@
  */
 #define continue_label(label) goto label
 
-#include <QThread>
 #include <QtDebug>
 #include "game_globals.h"
 
@@ -158,9 +157,16 @@ namespace TradeUtils {
 
 }
 
-class Game : public QThread
+class Game : public QObject
 {
     Q_OBJECT
+signals:
+    void finished();
+
+public slots:
+    void enterGameLoop();
+    void quitGame();
+
 public:
     static bool IsDBGenerationModeOn();
     static void InitializeGlobals(bool DBGenerationModeOn);
@@ -169,14 +175,13 @@ public:
          const QString& p2Name, Hero* p2Hero, const QString& p2Deck, PlayerInput* p2Input);
     ~Game();
 
-    void start(Priority p = InheritPriority);
-    void run();
-    void quitGame();
+    void initPlayers(QThread* moveTo = NULL);
 
     void nextTurn();
     void summonMinion(Minion* toPlay, int position = -1);
     void trigger(const Event& e);
 
+    int id() const;
     QVector<float> environment() const;
     QVector<Character*>* attackableTargets(const Character* atker) const;
     Player* opponentOf(const Player* p) const;
@@ -202,8 +207,10 @@ public:
     BoardControlScore* meta_BoardControlScore();
 
 private:
+    static int mNextGameID;
     static bool m_dbGenerationMode;
 
+    int mId;
     Player* m_player1;
     Player* m_player2;
     Player* m_curPlayer;

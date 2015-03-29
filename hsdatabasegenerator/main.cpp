@@ -3,18 +3,32 @@
 #include "game.h"
 #include "carddb.h"
 #include "inputs/databasebuilder.h"
+#include "gamethreadpool.h"
+#include "consoleprogressbar.h"
+#include <iostream>
+
+#ifdef QT_NO_DEBUG
+#define PATH "../../../hearthstone/db/"
+#else
+#define PATH "../../hearthstone/db/"
+#endif
+
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
 int main(int argc, char *argv[])
 {
+    std::cout << "\nHearthstone Simulator Database utility (c) David Taralla, ULg\n";
+
     qInstallMessageHandler(myMessageOutput);
-    if (argc < 4)
-        qCritical() << "Required params: cardDB hero1_id hero2_id [seed=0]";
+    if (argc < 6) {
+        std::cout << "Usage: cardDB hero1_id hero2_id howManyGames maxThreads [seed=0]";
+        return -2;
+    }
     QCoreApplication a(argc, argv);
     const QStringList& ARGS = QCoreApplication::arguments();
-    if (argc > 4) {
-        int seed = ARGS.at(4).toInt();
+    if (argc > 6) {
+        int seed = ARGS.at(6).toInt();
         if (seed < 0)
             qsrand(time(NULL));
         else
@@ -24,17 +38,24 @@ int main(int argc, char *argv[])
         qsrand(0);
 
 
-    const QString PATH("../../hearthstone/db/");
     CardDB* const CARD_DB = CardDB::Instance();
 
     Game::InitializeGlobals(true);
     CARD_DB->buildCardDB(PATH + ARGS.at(1));
 
-    // Create game with random decks and start it
-    Game g("David", CARD_DB->buildHero(ARGS.at(2)), "", new DatabaseBuilder(),
-           "Aaron", CARD_DB->buildHero(ARGS.at(3)), "", new DatabaseBuilder());
-    g.connect(&g, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));
-    g.start();
+    std::cout << "CMD: Simulate " << ARGS.at(4).toStdString()
+              << " games, with at most " << ARGS.at(5).toStdString()
+              << " concurrent jobs\n";
+    QThread consoleThread;
+    ConsoleProgressBar::Instance()->moveToThread(&consoleThread);
+    consoleThread.start(QThread::HighPriority);
+
+    GameThreadPool pool(ARGS.at(2), ARGS.at(3), ARGS.at(4).toInt(), ARGS.at(5).toInt());
+    pool.connect(&pool, SIGNAL(progress(int)), ConsoleProgressBar::Instance(), SLOT(update(int)));
+    pool.connect(&pool, SIGNAL(finished()), &consoleThread, SLOT(quit()));
+    pool.connect(&pool, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));
+
+    pool.start();
 
     return a.exec();
 }

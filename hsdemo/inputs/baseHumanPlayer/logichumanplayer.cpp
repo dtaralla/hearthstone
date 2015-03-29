@@ -63,7 +63,7 @@ void LogicHumanPlayer::onArmorAdded(IORequest* ir)
     m_log << *h << "got its armor modified";
     m_flushLog();
     m_gui->refreshCard(h, h->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 
@@ -75,7 +75,7 @@ void LogicHumanPlayer::onAttack(IORequest* ir)
     m_flushLog();
     m_gui->refreshCard(atker, atker->owner() == m_player);
     m_gui->refreshCard(target, target->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onBattlecry(IORequest* ir)
@@ -85,7 +85,7 @@ void LogicHumanPlayer::onBattlecry(IORequest* ir)
     m_log << *issuingMinion << "executes its battlecry:" << *bc;
     m_flushLog();
 
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onCharacterDamagedOrHealed(IORequest* ir)
@@ -96,7 +96,7 @@ void LogicHumanPlayer::onCharacterDamagedOrHealed(IORequest* ir)
     m_flushLog();
 
     m_gui->refreshCard(c, c->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onCardEnchanted(IORequest* ir)
@@ -106,7 +106,7 @@ void LogicHumanPlayer::onCardEnchanted(IORequest* ir)
     m_flushLog();
 
     m_gui->refreshCard(c, c->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onCardDrawn(IORequest* ir)
@@ -128,7 +128,7 @@ void LogicHumanPlayer::onCardDrawn(IORequest* ir)
             m_gui->refreshDeck(m_player->opponent()->deckSize(), false);
         }
     }
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onCardPutInHand(IORequest* ir)
@@ -146,7 +146,7 @@ void LogicHumanPlayer::onCardPutInHand(IORequest* ir)
         m_gui->addCardToEnemyHand();
     }
 
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onCardRemovedFromHand(IORequest* ir)
@@ -157,7 +157,7 @@ void LogicHumanPlayer::onCardRemovedFromHand(IORequest* ir)
     m_flushLog();
 
     m_gui->removeCardFromHand(cardRemoved, cardRemoved->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onDeathRattle(IORequest* ir)
@@ -167,7 +167,7 @@ void LogicHumanPlayer::onDeathRattle(IORequest* ir)
     m_log << *issuingChar << "executes its death rattle:" << *dr;
     m_flushLog();
 
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onDrawnCardDestroyed(IORequest* ir)
@@ -177,7 +177,7 @@ void LogicHumanPlayer::onDrawnCardDestroyed(IORequest* ir)
           << "has too many cards; the received" << *drawnCard->base()
           << "is put to graveyard";
     m_flushLog();
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onGameEnded(IORequest* ir)
@@ -200,7 +200,7 @@ void LogicHumanPlayer::onGameEnded(IORequest* ir)
     }
 
     m_flushLog();
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onManaUpdate(IORequest* ir)
@@ -211,7 +211,7 @@ void LogicHumanPlayer::onManaUpdate(IORequest* ir)
           << ir->extra("maxMana").toInt();
     m_flushLog();
     m_gui->refreshMana(target, target == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onMinionDestroyed(IORequest* ir)
@@ -221,7 +221,7 @@ void LogicHumanPlayer::onMinionDestroyed(IORequest* ir)
     m_flushLog();
 
     m_gui->destroyMinion(destroyedMinion, destroyedMinion->owner() == m_player);
-    ir->deleteLater();
+    ir->clearRef();
 }
 
 void LogicHumanPlayer::onMinionSummoned(IORequest* ir)

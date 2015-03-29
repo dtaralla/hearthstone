@@ -7,13 +7,15 @@
 #include "inputs/scriptedplayer.h"
 #include "inputs/randomplayer.h"
 #include "inputs/aaron.h"
+#include "gamecontroller.h"
 #include <Python.h>
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
 int main(int argc, char *argv[])
 {
-    qsrand(time(NULL));
+    //qsrand(time(NULL));
+    qsrand(0);
     qInstallMessageHandler(myMessageOutput);
     if (argc < 7)
         qCritical() << "Required params: cardDB hero1_id hero2_id deck1.json deck2.json player2Type[in 0 1 2 3]";
@@ -56,11 +58,12 @@ int main(int argc, char *argv[])
             break;
     }
 
-    // Create game and start it
-    Game g("David", CARD_DB->buildHero(ARGS.at(2)), PATH + ARGS.at(4), p1Input,
-           "Aaron", CARD_DB->buildHero(ARGS.at(3)), PATH + ARGS.at(5), p2Input);
-    g.connect(&g, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));
-    g.start();
+    Game* g = new Game(
+        "David", CARD_DB->buildHero(ARGS.at(2)), PATH + ARGS.at(4), p1Input,
+        "Aaron", CARD_DB->buildHero(ARGS.at(3)), PATH + ARGS.at(5), p2Input);
+    GameController game(g);
+    game.connect(&game, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));
+    game.startGame();
 
     return a.exec();
 }

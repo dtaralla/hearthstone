@@ -43,7 +43,7 @@ public:
         TARGET_SELECTION
     };
 
-    explicit IORequest(Player* source, RequestType type);
+    explicit IORequest(Player* source, RequestType type, int refCount=2);
     ~IORequest();
 
     RequestType type() const;
@@ -56,8 +56,10 @@ public:
 
     void setResponse(void* r);
     void* response() const;
+    void clearRef();
 
 private:
+    int mRefCount;
     Player* m_source;
     RequestType m_type;
     QHash<QString, QVariant> m_extras;

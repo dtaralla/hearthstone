@@ -740,7 +740,8 @@ void CardDB::mParseTriggerPower(const QJsonObject& trgPower,
             if (eventObj.value("damagedCharacters").isObject())
                 damagedCharacters = mParseTarget(eventObj.value("damagedCharacters").toObject(), Event::CHARACTER_DAMAGED);
 
-            t = new CharacterDamagedTrigger(as, damagers, damagedCharacters,
+            t = new CharacterDamagedTrigger(as, QSharedPointer<TargetExpression>(damagers),
+                                            QSharedPointer<TargetExpression>(damagedCharacters),
                                             (CharacterDamagedTrigger::SourceType) eventObj.value("acceptedSources").toInt(CharacterDamagedTrigger::ANY));
             break;
         }

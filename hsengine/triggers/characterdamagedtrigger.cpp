@@ -4,8 +4,8 @@
 #include "expressions/target/targetexpression.h"
 
 CharacterDamagedTrigger::CharacterDamagedTrigger(QVector<Action*>* actions,
-                                                 TargetExpression* damagers,
-                                                 TargetExpression* damagedCharacters,
+                                                 const QSharedPointer<TargetExpression>& damagers,
+                                                 const QSharedPointer<TargetExpression>& damagedCharacters,
                                                  SourceType accepedSources) :
     Trigger(actions),
     m_damagers(damagers),
@@ -19,8 +19,8 @@ CharacterDamagedTrigger::CharacterDamagedTrigger(QVector<Action*>* actions,
 }
 
 CharacterDamagedTrigger::CharacterDamagedTrigger(Action* action,
-                                                 TargetExpression* damagers,
-                                                 TargetExpression* damagedCharacters,
+                                                 const QSharedPointer<TargetExpression>& damagers,
+                                                 const QSharedPointer<TargetExpression>& damagedCharacters,
                                                  SourceType accepedSources) :
     Trigger(action),
     m_damagers(damagers),
@@ -104,6 +104,5 @@ bool CharacterDamagedTrigger::listensTo(const Event& e) const
 
 Trigger* CharacterDamagedTrigger::clone() const
 {
-    return new CharacterDamagedTrigger(m_actions, m_damagers.data(),
-                                       m_damagedCharacters.data(), m_acceptedSources);
+    return new CharacterDamagedTrigger(m_actions, m_damagers, m_damagedCharacters, m_acceptedSources);
 }

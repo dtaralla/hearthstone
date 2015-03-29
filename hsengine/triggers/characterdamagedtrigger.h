@@ -17,11 +17,11 @@ public:
         SPELL
     };
 
-    CharacterDamagedTrigger(QVector<Action*>* actions, TargetExpression* damagers = NULL,
-                            TargetExpression* damagedCharacters = NULL,
+    CharacterDamagedTrigger(QVector<Action*>* actions, const QSharedPointer<TargetExpression>& damagers,
+                            const QSharedPointer<TargetExpression>& damagedCharacters,
                             SourceType accepedSources = ANY);
-    CharacterDamagedTrigger(Action* action, TargetExpression* damager = NULL,
-                            TargetExpression* damagedCharacter = NULL,
+    CharacterDamagedTrigger(Action* action, const QSharedPointer<TargetExpression>& damagers,
+                            const QSharedPointer<TargetExpression>& damagedCharacters,
                             SourceType accepedSources = ANY);
     ~CharacterDamagedTrigger();
 

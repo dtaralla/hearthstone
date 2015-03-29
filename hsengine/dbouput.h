@@ -26,7 +26,7 @@ private:
         TARGET
     };
 
-    static QHash<Game*, DBOutput*> mInstances;
+    static QHash<int, DBOutput*> mInstances;
     QString mPlayActionFile;
     QString mTargetedActionFile;
     QTextStream mOs_playAction;

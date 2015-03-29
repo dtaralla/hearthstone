@@ -9,7 +9,7 @@
 #include <QLockFile>
 #include <QDir>
 
-QHash<Game*, DBOutput*> DBOutput::mInstances;
+QHash<int, DBOutput*> DBOutput::mInstances;
 
 
 DBOutput::DBOutput() :
@@ -48,10 +48,10 @@ DBOutput::~DBOutput()
 
 DBOutput* DBOutput::Instance(Game* g)
 {
-    DBOutput* instance = mInstances.value(g, NULL);
+    DBOutput* instance = mInstances.value(g->id(), NULL);
     if (instance == NULL) {
         instance = new DBOutput();
-        mInstances.insert(g, instance);
+        mInstances.insert(g->id(), instance);
     }
 
     return instance;
@@ -59,7 +59,7 @@ DBOutput* DBOutput::Instance(Game* g)
 
 void DBOutput::DestroyInstance(Game* g)
 {
-    delete mInstances.take(g);
+    delete mInstances.take(g->id());
 }
 
 void DBOutput::buffer(const QVector<float>& environment, Action* a)

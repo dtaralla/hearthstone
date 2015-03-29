@@ -13,6 +13,7 @@
 #include "carddb.h"
 #include "dbouput.h"
 #include "game.h"
+#include "gamecontroller.h"
 
 Player::Player(Hero* hero, PlayerInput* myInput, PlayerInput* hisInput,
                const QString& name) :
@@ -31,9 +32,13 @@ Player::Player(Hero* hero, PlayerInput* myInput, PlayerInput* hisInput,
 
 Player::~Player()
 {
+    m_myInput->deleteLater();
     delete m_endTurnAction;
     delete m_hero;
-    delete m_myInput;
+    qDeleteAll(m_deck);
+    qDeleteAll(m_graveyard);
+    qDeleteAll(m_minions);
+    qDeleteAll(m_hand);
 }
 
 void Player::initPlayer()
@@ -490,7 +495,7 @@ Action* Player::endTurnAction()
 
 Game* Player::game() const
 {
-    return (Game*) thread();
+    return ((GameThread*) thread())->game();
 }
 
 Player* Player::opponent() const

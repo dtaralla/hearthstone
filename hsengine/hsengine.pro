@@ -12,6 +12,10 @@ TEMPLATE = lib
 DEFINES += HSENGINE_LIBRARY \
            QT_USE_QSTRINGBUILDER
 
+CONFIG(release, debug|release) {
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
 SOURCES += game.cpp \
     cardinfo.cpp \
     spellinfo.cpp \
@@ -59,7 +63,9 @@ SOURCES += game.cpp \
     expressions/target/eventcharacterparamexpression.cpp \
     actions/targettedaction.cpp \
     game_globals.cpp \
-    dbouput.cpp
+    dbouput.cpp \
+    gamecontroller.cpp \
+    gamethread.cpp
 
 HEADERS += game.h \
     cardinfo.h \
@@ -111,7 +117,9 @@ HEADERS += game.h \
     actions/cardactions.h \
     actions/allactions.h \
     game_globals.h \
-    dbouput.h
+    dbouput.h \
+    gamecontroller.h \
+    gamethread.h
 
 unix {
     target.path = /usr/lib

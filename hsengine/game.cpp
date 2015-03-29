@@ -254,6 +254,7 @@ void minionsToStructs(const QVector<Minion*>* minions, QMap<int, HP_ATK*>* struc
 
 
 bool Game::m_dbGenerationMode = false;
+int Game::mNextGameID = 0;
 
 QVector<Action*>* Game::mAttackActions()
 {
@@ -288,10 +289,17 @@ void Game::InitializeGlobals(bool DBGenerationModeOn)
 
 Game::Game(const QString& p1Name, Hero* p1Hero, const QString& p1Deck, PlayerInput* p1Input,
            const QString& p2Name, Hero* p2Hero, const QString& p2Deck, PlayerInput* p2Input) :
-    QThread(NULL),
+    QObject(NULL),
+    mId(mNextGameID++),
     m_player1(new Player(p1Hero, p1Input, p2Input, p1Name)),
     m_player2(new Player(p2Hero, p2Input, p1Input, p2Name))
 {
+    // Player inputs live in the main thread which has the default event loop.
+    // This way, they are able to receive signals emitted by the Player objects.
+    // On the contrary, as Players live in this thread, which has NO event loop
+    // if start() is called instead of exec(), these won't be able to receive
+    // signals even though they are able to send some.
+
     // Attach decks to players
     if (p1Deck.isEmpty())
         CardDB::Instance()->buildRandomDeck(m_player1);
@@ -316,23 +324,31 @@ Game::Game(const QString& p1Name, Hero* p1Hero, const QString& p1Deck, PlayerInp
 
 Game::~Game()
 {
+    delete m_player1;
+    delete m_player2;
+    DBOutput::DestroyInstance(this);
+
 }
 
-void Game::start(QThread::Priority p)
+void Game::initPlayers(QThread* moveTo)
 {
-    // Put players in this thread, but not their inputs
-    m_player1->moveToThread(this);
-    m_player2->moveToThread(this);
+    if (moveTo != NULL) {
+        // Put players in this thread, but not their inputs
+        m_player1->moveToThread(moveTo);
+        m_player2->moveToThread(moveTo);
+    }
 
     // Init them
     m_player1->initPlayer();
     m_player2->initPlayer();
-
-    // Start new thread
-    QThread::start(p);
 }
 
-void Game::run()
+void Game::quitGame()
+{
+    emit finished();
+}
+
+void Game::enterGameLoop()
 {
     // Give starting hand to 1st player
     m_curPlayer->drawCard();
@@ -355,7 +371,6 @@ void Game::run()
 
     // Make the first player draw a card and have an additional mana cristal
     m_curPlayer->newTurn();
-
 
     // Game loop
     while (!m_player1->hero()->dying() && !m_player2->hero()->dying()) {
@@ -410,16 +425,7 @@ void Game::run()
         m_player2->loose();
     }
 
-    if (IsDBGenerationModeOn())
-        quitGame();
-}
-
-void Game::quitGame()
-{
-    qWarning() << "Exiting game thread";
-    delete m_player1;
-    delete m_player2;
-    DBOutput::DestroyInstance(this);
+    quitGame();
 }
 
 void Game::mUpdateState(Action* move, const Event* e)
@@ -701,6 +707,11 @@ void Game::trigger(const Event& e)
         }
         delete toTrigger;
     }
+}
+
+int Game::id() const
+{
+    return mId;
 }
 
 QVector<Character*>* Game::attackableTargets(const Character* atker) const

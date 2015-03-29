@@ -43,16 +43,10 @@ Enchantment::Enchantment(const Enchantment& e) :
 
 Enchantment::~Enchantment()
 {
-    if (m_specialized) {
-        foreach (QVector<Trigger*>* v, m_triggerPowers) {
-            qDeleteAll(*v);
-            delete v;
-        }
+    foreach (QVector<Trigger*>* v, m_triggerPowers) {
+        qDeleteAll(*v);
+        delete v;
     }
-
-    // Note that the prototype enchantment of this instance will never have
-    // its powers deleted -> memory leak? No, because the prototype enchantment
-    // needs only to be deleted when the game is quit.
 }
 
 QString Enchantment::name() const

@@ -33,8 +33,12 @@ void DamageAndFreezeAction::resolve(const Event* e)
 
     if (m_freezeAction == NULL)
         m_freezeAction = (FreezeAction*) FreezeAction(-1, m_target).setSourceCard(m_card);
-    m_freezeAction->forceTargets(m_lastTargets);
-    m_freezeAction->resolve(e);
+
+    // If the damage killed the target, this won't be in m_lastTargets!
+    if (!m_lastTargets.empty()) {
+        m_freezeAction->forceTargets(m_lastTargets);
+        m_freezeAction->resolve(e);
+    }
 }
 
 DamageAndFreezeAction* DamageAndFreezeAction::cloneFlyweight() const

@@ -44,7 +44,7 @@ void* IORequest::response() const
 
 void IORequest::clearRef()
 {
-    if (mRefCount-- <= 0)
+    if (--mRefCount <= 0)
         delete this;
 }
 

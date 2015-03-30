@@ -347,7 +347,10 @@ void CardDB::buildRandomDeck(Player* forPlayer)
 {
     QVector<Card*> deck;
     QList<const CardInfo*> db = mCardFlyweights.values();
-    int amounts[db.size()] = { 0 };
+    int amounts[db.size()];
+    for (int i = 0; i < db.size(); i += 1)
+        amounts[i] = 0;
+
     const int size = db.size() - 2; // exclude coin, excess mana
     deck.reserve(30);
     while (deck.size() < 30) {

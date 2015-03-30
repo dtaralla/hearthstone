@@ -26,7 +26,7 @@ LogicHumanPlayer::LogicHumanPlayer() :
 
 LogicHumanPlayer::~LogicHumanPlayer()
 {
-    delete m_gui;
+    m_gui->deleteLater();
 }
 
 void LogicHumanPlayer::attachPlayer(Player* p)

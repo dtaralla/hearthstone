@@ -9,7 +9,7 @@ class DealDmgHealingAction : public DamagingSpellAction
 {
 public:
     DealDmgHealingAction(int id, const QSharedPointer<TargetExpression>& target, int quantity);
-    ~DealDmgHealingAction();
+    virtual ~DealDmgHealingAction();
 
     ActionType type() const;
     void resolve(const Event* e = NULL);

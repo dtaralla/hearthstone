@@ -32,7 +32,7 @@ Player::Player(Hero* hero, PlayerInput* myInput, PlayerInput* hisInput,
 
 Player::~Player()
 {
-    m_myInput->deleteLater();
+    delete m_myInput;
     delete m_endTurnAction;
     delete m_hero;
     qDeleteAll(m_deck);

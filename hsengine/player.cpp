@@ -314,19 +314,19 @@ void Player::removeFromHand(Card* c)
 
 void Player::win()
 {
-    IORequest* ir = new IORequest(this, IORequest::WON);
+    IORequest* ir = new IORequest(this, IORequest::WON, 1);
     emit gameEnded(ir);
 }
 
 void Player::loose()
 {
-    IORequest* ir = new IORequest(this, IORequest::LOST);
+    IORequest* ir = new IORequest(this, IORequest::LOST, 1);
     emit gameEnded(ir);
 }
 
 void Player::tie()
 {
-    IORequest* ir = new IORequest(this, IORequest::TIE);
+    IORequest* ir = new IORequest(this, IORequest::TIE, 1);
     emit gameEnded(ir);
 }
 

@@ -351,12 +351,17 @@ void Player::summonMinion(Minion* m, int position)
         m->setHasAttacked(true); // Cannot attack at the turn it was summoned
 }
 
+void Player::putCardInGraveyard(Card* c)
+{
+    m_graveyard.append(c);
+}
+
 void Player::putKilledMinionToGraveyard(Minion* m)
 {
     // Logically put minion into graveyard
     bool found = m_minions.removeOne(m);
     Q_ASSERT(found);
-    m_graveyard.append(m);
+    putCardInGraveyard(m);
 
     // Tell the view the minion was destroyed/put in graveyard
     IORequest* ir = new IORequest(this, IORequest::DESTROY_MINION);

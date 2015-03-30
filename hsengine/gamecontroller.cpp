@@ -26,7 +26,6 @@ GameController* GameController::setGame(Game* g)
     if (mWorkerThread.isRunning()) {
         mWorkerThread.quit();
         mWorkerThread.wait();
-        disconnect(&mWorkerThread, SIGNAL(finished()), 0, 0);
         disconnect(this, SIGNAL(startGame()), 0, 0);
         mWorkerThread.setGame(g);
     }

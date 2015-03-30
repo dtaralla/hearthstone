@@ -81,6 +81,9 @@ void PlayAction::resolve(const Event* e)
         }
         m->setBattlecryResolved(true);
     }
+    else if (m_card->type() == CardTypes::CARD_SPELL) {
+        m_card->owner()->putCardInGraveyard(m_card);
+    }
 }
 
 Action* PlayAction::cloneFlyweight() const

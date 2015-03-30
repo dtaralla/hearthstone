@@ -24,7 +24,7 @@ public:
     bool battlecryResolved() const;
 
     QVector<Action*>* deathRattles() const;
-    QVector<Action*>* battlecry() const;
+    const QVector<Action*>* battlecry() const;
 
 private:
     QVector<Action*>* m_playActionConsequences;

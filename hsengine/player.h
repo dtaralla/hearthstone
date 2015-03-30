@@ -63,6 +63,7 @@ public:
     void loose();
     void tie();
     void summonMinion(Minion* m, int position = -1);
+    void putCardInGraveyard(Card* c);
     void putKilledMinionToGraveyard(Minion* m);
     void executeAttack(Character* attacker, Character* target);
     void dealDamageHealing(Card* dmgHealingSource, Character* target, int quantity);

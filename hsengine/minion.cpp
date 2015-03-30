@@ -49,9 +49,9 @@ QVector<Action*>* Minion::deathRattles() const
     return new QVector<Action*>(m_deathRattles);
 }
 
-QVector<Action*>* Minion::battlecry() const
+const QVector<Action*>* Minion::battlecry() const
 {
-    return new QVector<Action*>(m_battlecry);
+    return &m_battlecry;
 }
 
 

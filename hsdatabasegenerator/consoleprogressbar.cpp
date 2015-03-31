@@ -36,4 +36,6 @@ void ConsoleProgressBar::update(int progress)
 
     std::cout << "\r"; // carriage return back to beginning of line
     std::cout << mProgressBars.toStdString() << " " << progress << "%";
+    if (progress >= 100)
+        std::cout << "\nAll games were successfuly simulated.\a\n";
 }

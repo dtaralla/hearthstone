@@ -5,6 +5,16 @@
  * namespace for predicting/computing possible trades.
  */
 
+/**
+ * @defgroup hsengine Hearthstone Simulator Engine
+ *
+ * @brief This module regroups all classes and files relative to the game
+ * engine.
+ *
+ * This module contains all files needed to build a standalone library of the
+ * game engine.
+ */
+
 #ifndef GAME_H
 #define GAME_H
 
@@ -157,27 +167,159 @@ namespace TradeUtils {
 
 }
 
+/**
+ * @brief The Game class represents the whole game context and presents an API
+ * to others classes to interact with it.
+ *
+ * The game can be in one of two modes: Database Generation mode and Play mode.
+ * \li In Database Generation mode, the game will use a DBOutput instance to
+ * output a database of targeted actions taken. Play actions won't be recorded;
+ * for that you should use the \ref hsdatabasegenerator shipped with this
+ * engine.
+ * \li In Play mode, the game is used to simulate Hearthstone, without any
+ * output.
+ *
+ * The Game class should always be initialized using InitializeGlobals() at the
+ * beginning of any program.
+ *
+ * After creating a Game object \c g, one should create a GameController object
+ * with \c g as constructor argument. One can also create a GameController
+ * with no arguments and use GameController::setGame() later with \c g as
+ * argument. See the sources of the GameThreadPool for an example of this last
+ * case.
+ *
+ * Before entering the game loop, initPlayers() should be called with the
+ * thread in which the object will live once started. This way, players are
+ * living in the same thread than the game object.
+ *
+ * Once everything is in place, emit a signal linked to the enterGameLoop()
+ * slot. This will start the game loop, i.e. the game will begin.
+ *
+ * @warning A Game object should \e always be encapsulated into a
+ * GameController that will take care of managing the thread in which the Game
+ * object and the players will live.
+ *
+ * @warning A Game object should \e always live in another thread than the main
+ * Qt event loop. This is managed automatically by the GameController it is
+ * linked to. The thread in which the Game object lives <em>has to be</em> a
+ * GameThread.
+ *
+ * @sa GameController, GameThread, hsdatabasegenerator
+ *
+ * @ingroup hsengine
+ */
 class Game : public QObject
 {
     Q_OBJECT
 signals:
+    /**
+     * @brief This signal is emitted by the game after the result of the game
+     * are sent to the players' PlayerInput's.
+     *
+     * The game is considered as finished at the time this signal is emitted.
+     */
     void finished();
 
 public slots:
+    /**
+     * @brief Start the execution of the game.
+     *
+     * @warning Make sure that:
+     * \li this object is living in another thread than the Qt event loop.
+     * \li the thread in which this object lives as an event loop running.
+     * \li initPlayers() has been called before this object was moved to the
+     * thread where it is going to execute.
+     *
+     * See the documentation of the Game class for more details.
+     */
     void enterGameLoop();
-    void quitGame();
 
 public:
+    /**
+     * @brief Tells whether the current mode is the Database Generation mode.
+     *
+     * See the documentation of the Game class for more details about game
+     * modes.
+     *
+     * @return \c true if in Database Generation mode, \c false otherwise.
+     */
     static bool IsDBGenerationModeOn();
+
+    /**
+     * @brief Initialize global variables used in the \ref hsengine.
+     *
+     * @warning Should always be called at the very beginning of any program
+     * linked to this library.
+     *
+     * @param DBGenerationModeOn Whether or not the program is going to be in
+     * Database Generation mode.
+     */
     static void InitializeGlobals(bool DBGenerationModeOn);
 
+    /**
+     * @brief Constructor.
+     *
+     * Creates a game, initializing its players and deciding which one of them
+     * will go first.
+     *
+     * @param p1Name Player 1's name.
+     * @param p1Hero Player 1's Hero.
+     * @param p1Deck Player 1's deck file. This should be the complete
+     * filename of the JSON file containing the deck you want to attach to
+     * Player 1. If an empty string is given, a random deck will be built and
+     * attached (see CardDB::buildRandomDeck()).
+     * @param p1Input Player 1's PlayerInput.
+     * @param p2Name Player 2's name.
+     * @param p2Hero Player 2's Hero.
+     * @param p2Deck Player 2's deck file. This should be the complete
+     * filename of the JSON file containing the deck you want to attach to
+     * Player 2. If an empty string is given, a random deck will be built and
+     * attached (see CardDB::buildRandomDeck()).
+     * @param p2Input Player 2's PlayerInput.
+     */
     Game(const QString& p1Name, Hero* p1Hero, const QString& p1Deck, PlayerInput* p1Input,
          const QString& p2Name, Hero* p2Hero, const QString& p2Deck, PlayerInput* p2Input);
+
+    /**
+     * @brief Destructor.
+     *
+     * Deletes Player 1, then Player 2. If any DBOutput instance was linked to
+     * this game (if in Database Generation mode), it will be deleted too.
+     */
     ~Game();
 
-    void initPlayers(QThread* moveTo = NULL);
+    /**
+     * @brief Initialize the players of the game.
+     *
+     * Move the players into the same thread than this Game object, then
+     * call their Player::initPlayer() methods.
+     *
+     * @warning This should always be called \e after the game has been moved
+     * to the thread in which it is going to be executed.
+     * @warning This should always be called \e before starting the game.
+     * @warning If this method is called from the \a moveTo thread, it has an
+     * undefined behavior.
+     */
+    void initPlayers();
 
+    /**
+     * @brief End the current player turn and begin the turn of the other
+     * player.
+     *
+     * The sequence executed is the following:
+     * -# Unfreeze characters that lost their attack phase because of a
+     * Abilities::FROZEN condition
+     * -# Trigger a Event::AT_TURN_END with \c player set to the player whose
+     * turn is ended
+     * -# Switch <em>current player</em> and <em>next player</em>
+     * -# Call the Player::nextTurn() method of the new current player
+     *
+     * @triggers
+     * Event::AT_TURN_END with
+     *      - \c player : the player whose turn is ended
+     */
     void nextTurn();
+
     void summonMinion(Minion* toPlay, int position = -1);
     void trigger(const Event& e);
 

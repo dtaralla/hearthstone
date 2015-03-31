@@ -19,8 +19,8 @@ if __name__ == "__main__":
     
     
     # ALL FEATURES
-    #random_state = check_random_state(0)
-    #hu.roc_precision(hu.dbs[1], random_state=random_state, test="all", show_plots=True)
+    random_state = check_random_state(0)
+    hu.roc_precision(hu.dbs[1], random_state=random_state, test="all", show_plots=True)
     
     
     # Not taking silence/enchant features for board minions

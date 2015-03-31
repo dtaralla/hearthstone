@@ -5,5 +5,4 @@
 *.autosave
 *.csv
 scripts/clfs/*
-hsengine/doc/*
-Doxyfile
+scripts/roc/*

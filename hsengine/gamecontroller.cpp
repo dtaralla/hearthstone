@@ -34,8 +34,8 @@ GameController* GameController::setGame(Game* g)
     }
 
 
-    g->initPlayers(&mWorkerThread);
-    g->moveToThread(&mWorkerThread);
+    g->moveToThread(&mWorkerThread); // The order of these two lines is important!
+    g->initPlayers();                // The order of these two lines is important!
     connect(&mWorkerThread, SIGNAL(finished()), g, SLOT(deleteLater()));
     connect(this, SIGNAL(startGame()), g, SLOT(enterGameLoop()));
     connect(g, SIGNAL(finished()), this, SIGNAL(finished()));

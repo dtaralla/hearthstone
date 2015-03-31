@@ -1,3 +1,19 @@
+/**
+ * @file main.cpp
+ *
+ * Contains the main program executed by the Hearthstone Simulator Database
+ * Generator.
+ *
+ * @sa hsdatabasegenerator
+ */
+
+/**
+ * @defgroup hsdatabasegenerator Hearthstone Simulator Database Generator
+ *
+ * @brief This module regroups the program and classes needed to build
+ * databases of [environment + action + board control score] samples.
+ */
+
 #include <QCoreApplication>
 #include <ctime>
 #include "game.h"

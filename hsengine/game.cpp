@@ -330,22 +330,15 @@ Game::~Game()
 
 }
 
-void Game::initPlayers(QThread* moveTo)
+void Game::initPlayers()
 {
-    if (moveTo != NULL) {
-        // Put players in this thread, but not their inputs
-        m_player1->moveToThread(moveTo);
-        m_player2->moveToThread(moveTo);
-    }
+    // Put players in this thread, but not their inputs
+    m_player1->moveToThread(thread());
+    m_player2->moveToThread(thread());
 
     // Init them
     m_player1->initPlayer();
     m_player2->initPlayer();
-}
-
-void Game::quitGame()
-{
-    emit finished();
 }
 
 void Game::enterGameLoop()
@@ -425,7 +418,7 @@ void Game::enterGameLoop()
         m_player2->loose();
     }
 
-    quitGame();
+    emit finished();
 }
 
 void Game::mUpdateState(Action* move, const Event* e)

@@ -61,11 +61,11 @@ SOURCES += game.cpp \
     actions/freezeaction.cpp \
     actions/damageandfreezeaction.cpp \
     expressions/target/eventcharacterparamexpression.cpp \
-    actions/targettedaction.cpp \
     game_globals.cpp \
     dbouput.cpp \
     gamecontroller.cpp \
-    gamethread.cpp
+    gamethread.cpp \
+    actions/targetedaction.cpp
 
 HEADERS += game.h \
     cardinfo.h \
@@ -113,13 +113,13 @@ HEADERS += game.h \
     actions/freezeaction.h \
     actions/damageandfreezeaction.h \
     expressions/target/eventcharacterparamexpression.h \
-    actions/targettedaction.h \
     actions/cardactions.h \
     actions/allactions.h \
     game_globals.h \
     dbouput.h \
     gamecontroller.h \
-    gamethread.h
+    gamethread.h \
+    actions/targetedaction.h
 
 unix {
     target.path = /usr/lib

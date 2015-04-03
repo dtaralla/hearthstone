@@ -9,7 +9,15 @@ from __future__ import unicode_literals
 # Only py3 print
 from __future__ import print_function
 
+import numpy as np
+from sklearn.externals import joblib
+from sklearn.ensemble import ExtraTreesClassifier
 import hearthstone_utils as hu
-  
-if __name__ == "__main__":
-    hu.trainClassifiersAndSave();
+
+print("Loading PLAY clf...")
+clf_play   = joblib.load("clfs/" + hu.dbs[0])
+
+print("Loading PLAY clf...")
+clf_target = joblib.load("clfs/" + hu.dbs[1])
+
+print("Ready to go!")

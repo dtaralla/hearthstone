@@ -1,7 +1,7 @@
 #ifndef FREEZEACTION_H
 #define FREEZEACTION_H
 
-#include "targettedaction.h"
+#include "targetedaction.h"
 
 class TargetExpression;
 

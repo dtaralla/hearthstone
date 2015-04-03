@@ -1,7 +1,7 @@
 #ifndef DAMAGINGSPELLACTION_H
 #define DAMAGINGSPELLACTION_H
 
-#include "targettedaction.h"
+#include "targetedaction.h"
 
 class DamagingSpellAction : public TargetedAction
 {

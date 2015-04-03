@@ -1,7 +1,7 @@
 #ifndef ENCHANTACTION_H
 #define ENCHANTACTION_H
 
-#include "targettedaction.h"
+#include "targetedaction.h"
 
 class Enchantment;
 

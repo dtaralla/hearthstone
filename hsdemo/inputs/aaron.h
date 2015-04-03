@@ -5,6 +5,7 @@
 #include "game_globals.h"
 
 class Player;
+class Character;
 
 class Aaron : public PlayerInput
 {
@@ -16,6 +17,7 @@ public:
 private:
     Player* m_me;
     Player* m_enemy;
+    Character* m_preselectedAttackTarget;
 
     // PlayerInput interface
 public slots:

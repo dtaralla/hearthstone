@@ -56,7 +56,7 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
     
     print("Loading training set...")    
     loaded = loadClassifiedDB(db + ".train.csv", random_state=random_state, usecols=usecols)#, skipheader=234100)
-    clf = ExtraTreesClassifier(n_estimators=100, max_features=1, random_state=random_state, n_jobs=-1)
+    clf = ExtraTreesClassifier(n_estimators=100, random_state=random_state, n_jobs=-1)
     
     print("Fitting...")
     clf.fit(loaded[:, 0:-2], loaded[:, -1])
@@ -102,16 +102,17 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
     
 def saveTrainedClassifier(db, clf):
     print("Loading data for classifier on " + db)
-    loaded = loadDB(db + ".train.csv")
+    loaded = loadClassifiedDB(db + ".train.csv", random_state=0)
 
     X_train = loaded[:, 0:-2]
     y_train = loaded[:, -1]
 
-    print("X_train size: {}.".format(X_train.shape))
-    print("y_train size: {}.".format(y_train.shape))
+    print("X_train size: {}.".format(loaded[:, 0:-2].shape))
+    print("y_train size: {}.".format(loaded[:, -1].shape))
 
     print("Fitting classifier...")
-    clf.fit(X_train, y_train)
+    clf.fit(loaded[:, 0:-2], loaded[:, -1])
+    loaded = 0
 
     print("Saving classifier...")
     if (os.path.exists("clfs/") == False):
@@ -140,7 +141,7 @@ def pValue(X_train, y_train, X_test, y_test, clf, N = 1000, seed = None):
 def trainClassifiersAndSave(computeScore=False):
     for db in dbs:
         if (not os.path.exists("clfs/" + db)):
-            clf = ExtraTreesRegressor(n_estimators=500, random_state=1, n_jobs=-1)
+            clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1)
             saveTrainedClassifier(db, clf)
         elif (computeScore):
             clf = joblib.load("clfs/" + db)
@@ -154,10 +155,10 @@ def trainClassifiersAndSave(computeScore=False):
             print("Normalized score is {}".format(clf.score(X_test, y_test)))
             X_test = y_test = 0
         
-def trainRFAndSave(computeScore=False):
+def trainRegressorsAndSave(computeScore=False):
     for db in dbs:
         if (not os.path.exists("clfs/" + db)):
-            clf = RandomForestRegressor(n_estimators=500, random_state=1, n_jobs=-1)
+            clf = ExtraTreesRegressor(n_estimators=500, random_state=1, n_jobs=-1)
             saveTrainedClassifier(db, clf)
         elif (computeScore):
             clf = joblib.load("clfs/" + db)
@@ -170,7 +171,6 @@ def trainRFAndSave(computeScore=False):
 
             print("Normalized score is {}".format(clf.score(X_test, y_test)))
             X_test = y_test = 0
-
 
 def normalizeScore(db, score):
     fname = DB_PATH + db + ".csv"
@@ -214,7 +214,7 @@ def scoreClassifiers_deprecated(step=50000):
 
         print("Normalized score is {}".format(1 - normalizeScore(db + ".csv", error)))
 
-def scoreClassifiers():
+def scoreRegressors():
     for db in dbs:
         print("\nLoading classifier {}...".format(db))
         clf = joblib.load("clfs/" + db)

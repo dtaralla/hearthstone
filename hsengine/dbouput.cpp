@@ -1,7 +1,7 @@
 #include "dbouput.h"
 #include "actions/action.h"
 #include "actions/attackaction.h"
-#include "actions/targettedaction.h"
+#include "actions/targetedaction.h"
 #include "actions/specialpoweraction.h"
 #include "character.h"
 #include "game.h"

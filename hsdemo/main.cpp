@@ -28,13 +28,6 @@ int main(int argc, char *argv[])
     Game::InitializeGlobals(false);
     CARD_DB->buildCardDB(PATH + ARGS.at(1));
 
-
-    /*Py_SetProgramName(argv[0]);  /* optional but recommended */
-    /*Py_Initialize();
-    PyRun_SimpleString("from time import time,ctime\n"
-                       "print 'Today is',ctime(time())\n");
-    Py_Finalize();*/
-
     // Create IO device for players and decide which decks to use
     PlayerInput* p1Input = new LogicHumanPlayer();
     PlayerInput* p2Input;

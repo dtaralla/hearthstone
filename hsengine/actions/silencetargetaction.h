@@ -1,7 +1,7 @@
 #ifndef SILENCEACTION_H
 #define SILENCEACTION_H
 
-#include "targettedaction.h"
+#include "targetedaction.h"
 
 class SilenceTargetAction : public TargetedAction
 {

@@ -21,7 +21,7 @@ import scipy.io as sio
 import hearthstone_utils as hu
   
 if __name__ == "__main__":
-    for f in glob.glob("*.roc.*.mat"):
+    for f in glob.glob("roc/*.roc.*.mat"):
         print(f)
         contents = sio.loadmat(f)
         plt.plot(contents['fpr'][0], contents['tpr'][0], label=f)
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.show()
     
-    for f in glob.glob("*.precall.*.mat"):
+    for f in glob.glob("roc/*.precall.*.mat"):
         print(f)
         contents = sio.loadmat(f)
         plt.plot(contents['recall'][0], contents['precision'][0], label=f)

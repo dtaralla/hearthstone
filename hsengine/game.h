@@ -303,12 +303,12 @@ public:
     void initPlayers();
 
     /**
-     * @brief End the current player turn and begin the turn of the other
+     * @brief Ends the current player turn and begin the turn of the other
      * player.
      *
      * The sequence executed is the following:
      * -# Unfreeze characters that lost their attack phase because of a
-     * Abilities::FROZEN condition
+     * FROZEN condition
      * -# Trigger a Event::AT_TURN_END with \c player set to the player whose
      * turn is ended
      * -# Switch <em>current player</em> and <em>next player</em>
@@ -320,10 +320,80 @@ public:
      */
     void nextTurn();
 
+    /**
+     * @brief Summons a minion at a given position amongst \a toPlay owner's
+     * on-board minions.
+     *
+     * The minion will not be able to attack this turn (unless it has the
+     * CHARGE ability).
+     *
+     * \a toPlay owner should have less than 7 minions currently on the
+     * battlefield.
+     *
+     * @param toPlay The minion to play (already removed from its owner's hand)
+     * @param position The position (between 0 and the number of minions of
+     * \a toPlay owner currently on the board included) where to put the
+     * summoned minion. Give -1 for the last position.
+     */
     void summonMinion(Minion* toPlay, int position = -1);
+
+    /**
+     * @brief Triggers an event.
+     *
+     * When an event fired, each and every card from both players hands and
+     * their side of the board will be asked whether or not they listen to the
+     * event, heroes included. Then, these cards will execute their event
+     * response one by one, in the order in which those cards were put into
+     * play. Each action is resolved using updateState(), and thus deaths are
+     * resolved between each action (and after all its consequences have been
+     * resolved themselves).
+     *
+     * @param e The event to trigger, with all its parameters set.
+     */
     void trigger(const Event& e);
 
+    /**
+     * @brief Gets the unique identifier of this game in the process.
+     *
+     * Can be used for differentiating games in a context where several games
+     * execute concurrently (see hsdatabasegenerator module).
+     *
+     * @return The unique ID of this game
+     */
     int id() const;
+
+    /**
+     * @brief environment Gets a list of numbers describing the current state of
+     * this game.
+     *
+     * Let N be the number of possible cards in the game.
+     *
+     * An environement is composed of:
+     * - [0 to 83] Description of minions on the battlefield: 14 x
+     * - [84 to 84+N] Description of the current player's hand; each variable
+     * is an integer number representing the amount of cards of ID (i-84) the
+     * current player has in his hand.
+     * - [84+N+1] Integer representing the amount of minions controlled by the
+     * current player
+     * - [84+N+2] Integer representing the amount of minions controlled by the
+     * next player
+     * - [84+N+3] Integer representing the amount of cards in the current
+     * player's hand
+     * - [84+N+4] Integer representing the amount of cards in the next player's
+     * hand
+     * - [84+N+5] Integer representing the remaining amount of mana the current
+     * player has
+     * - [84+N+6] Integer representing the maximum amount of mana available for
+     * the current player
+     * - [84+N+7] Integer representing the maximum amount of mana available for
+     * the next player <em>when it will be his turn</em>
+     *
+     * The list of 14 (minion_id, can_attack, current_HP, current_ATK,
+     * is_silenced, is_enchanted) tuples might contain missing data in the case
+     * where a player does not have 7 minions.
+     *
+     * @return
+     */
     QVector<float> environment() const;
     QVector<Character*>* attackableTargets(const Character* atker) const;
     Player* opponentOf(const Player* p) const;

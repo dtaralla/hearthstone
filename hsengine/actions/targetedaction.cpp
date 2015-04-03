@@ -1,4 +1,4 @@
-#include "targettedaction.h"
+#include "targetedaction.h"
 #include "expressions/target/targetexpression.h"
 #include "character.h"
 

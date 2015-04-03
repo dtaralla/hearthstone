@@ -11,15 +11,18 @@ class Enchantment;
 
 class ScriptedPlayer : public PlayerInput
 {
+    Q_OBJECT
+
 public:
     explicit ScriptedPlayer(QObject* parent = 0);
     virtual ~ScriptedPlayer();
-    void attachPlayer(Player* p);
+    virtual void attachPlayer(Player* p);
 
-private:
+protected:
     Player* m_me;
     Player* m_enemy;
 
+private:
     int m_cardScore(Card* c);
     int m_actionScore(Action* a);
     int m_dmgScore(int dmg, Character* onChar);

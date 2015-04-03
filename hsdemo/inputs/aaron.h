@@ -1,29 +1,29 @@
 #ifndef AARON_H
 #define AARON_H
 
-#include "playerinput.h"
-#include "game_globals.h"
+#include "scriptedplayer.h"
+#include <Python.h>
 
 class Player;
 class Character;
 
-class Aaron : public PlayerInput
+class Aaron : public ScriptedPlayer
 {
+    Q_OBJECT
+
 public:
     Aaron(QObject* parent = NULL);
     virtual ~Aaron();
-    void attachPlayer(Player* p);
 
 private:
-    Player* m_me;
-    Player* m_enemy;
     Character* m_preselectedAttackTarget;
+    PyObject* m_pyModule;
+    PyObject* m_pyPredPlayFunc;
+    PyObject* m_pyPredTargetFunc;
 
-    // PlayerInput interface
+    // ScriptedPlayer inherited members
 public slots:
-    void onEventTriggered(IORequest* ir);
     void askForAction(IORequest* ir);
-    void askForPosition(IORequest* ir);
     void askForTarget(IORequest* ir);
 };
 

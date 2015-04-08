@@ -41,10 +41,10 @@ private:
 
     // PlayerInput interface
 public slots:
-    void onEventTriggered(IORequest* ir);
-    void askForAction(IORequest* ir);
-    void askForPosition(IORequest* ir);
-    void askForTarget(IORequest* ir);
+    virtual void onEventTriggered(IORequest* ir);
+    virtual void askForAction(IORequest* ir);
+    virtual void askForPosition(IORequest* ir);
+    virtual void askForTarget(IORequest* ir);
 };
 
 #endif // SCRIPTEDPLAYER_H

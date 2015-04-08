@@ -59,7 +59,7 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
     clf = ExtraTreesClassifier(n_estimators=100, random_state=random_state, n_jobs=-1)
     
     print("Fitting...")
-    clf.fit(loaded[:, 0:-2], loaded[:, -1])
+    clf.fit(loaded[:, 0:-1], loaded[:, -1])
     classes = clf.classes_
     loaded = 0
     
@@ -69,7 +69,7 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
 
     
     print("Predict proba...")
-    y_score = clf.predict_proba(loaded[:, 0:-2])
+    y_score = clf.predict_proba(loaded[:, 0:-1])
     loaded = loaded[:, -1]
     clf = 0
     y_score = y_score[:, classes == 1]
@@ -104,14 +104,14 @@ def saveTrainedClassifier(db, clf):
     print("Loading data for classifier on " + db)
     loaded = loadClassifiedDB(db + ".train.csv", random_state=0)
 
-    X_train = loaded[:, 0:-2]
+    X_train = loaded[:, 0:-1]
     y_train = loaded[:, -1]
 
-    print("X_train size: {}.".format(loaded[:, 0:-2].shape))
+    print("X_train size: {}.".format(loaded[:, 0:-1].shape))
     print("y_train size: {}.".format(loaded[:, -1].shape))
 
     print("Fitting classifier...")
-    clf.fit(loaded[:, 0:-2], loaded[:, -1])
+    clf.fit(loaded[:, 0:-1], loaded[:, -1])
     loaded = 0
 
     print("Saving classifier...")
@@ -149,7 +149,7 @@ def trainClassifiersAndSave(computeScore=False):
         if (computeScore):
             print("Loading test data...")
             loaded = loadDB(db + ".csv")
-            X_test = loaded[:, 0:-2]
+            X_test = loaded[:, 0:-1]
             y_test = loaded[:, -1]
 
             print("Normalized score is {}".format(clf.score(X_test, y_test)))
@@ -166,7 +166,7 @@ def trainRegressorsAndSave(computeScore=False):
         if (computeScore):
             print("Loading test data...")
             loaded = loadDB(db + ".csv")
-            X_test = loaded[:, 0:-2]
+            X_test = loaded[:, 0:-1]
             y_test = loaded[:, -1]
 
             print("Normalized score is {}".format(clf.score(X_test, y_test)))
@@ -204,7 +204,7 @@ def scoreClassifiers_deprecated(step=50000):
 
             print("Loading test data, from line #{} to line #{}...".format(sh, num_lines - sf))
             loaded = loadDB(db + ".csv", skipheader=sh, skipfooter=sf)
-            X_test = loaded[:, 0:-2]
+            X_test = loaded[:, 0:-1]
             y_test = loaded[:, -1]
 
             print("Updating error...")
@@ -221,7 +221,7 @@ def scoreRegressors():
 
         print("Loading test data...")
         loaded = loadDB(db + ".csv")
-        X_test = loaded[:, 0:-2]
+        X_test = loaded[:, 0:-1]
         y_test = loaded[:, -1]
 
         print("Normalized score is {}".format(clf.score(X_test, y_test)))

@@ -46,8 +46,7 @@ int main(int argc, char *argv[])
 
         case 0:
         default:
-            //p2Input = new Aaron();
-            p2Input = new RandomPlayer(); // FIXME
+            p2Input = new Aaron();
             break;
     }
 

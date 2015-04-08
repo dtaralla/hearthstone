@@ -38,11 +38,11 @@ def predPlay(playActions):
     #print("Predicting for {} targeted actions...".format(samples.shape[0]))
     #sys.stdout.flush()
     y = clf_play.predict_proba(samples)
-    return y[:, playMask].tolist()
+    return y[:, playMask].flatten().tolist()
     
 def predTarget(targetActions):
     samples = np.array(targetActions)
     #print("Predicting for {} targeted actions...".format(samples.shape[0]))
     #sys.stdout.flush()
     y = clf_target.predict_proba(samples)
-    return y[:, targetMask].tolist()
+    return y[:, targetMask].flatten().tolist()

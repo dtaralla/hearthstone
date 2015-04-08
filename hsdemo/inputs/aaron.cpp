@@ -9,7 +9,10 @@
 #include <QCoreApplication>
 #include <iostream>
 
-#define PYCHECK(pyObject) if (pyObject == NULL) PyErr_Print();
+#define PYCHECK if (PyErr_Occurred() != NULL) { \
+        std::cout << "Python error\n"; \
+        PyErr_Print(); \
+    }
 
 Aaron::Aaron(QObject* parent) :
     ScriptedPlayer(parent),
@@ -19,7 +22,8 @@ Aaron::Aaron(QObject* parent) :
         qDebug() << "Initializing Python Interpreter...";
         Py_SetProgramName(const_cast<char*>(QCoreApplication::arguments().at(0).toStdString().data()));
         Py_Initialize();
-        PyRun_SimpleString("import sys\nsys.path.append('D:\\David\\SVN\\ULg\\hearthstone\\scripts')");
+        //PyRun_SimpleString("import sys\nsys.path.append('D:\\David\\SVN\\ULg\\hearthstone\\scripts')");
+        PyRun_SimpleString("import sys\nsys.path.append('D:\\Dev\\hearthstone\\scripts')");
 
 
         // Import init module
@@ -133,7 +137,7 @@ void Aaron::askForAction(IORequest* ir)
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyAtkToPredict);
         PyObject* pyAtkProbas = PyObject_CallObject(m_pyPredTargetFunc, pyArgs);
-        PYCHECK(pyAtkProbas)
+        PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyAtkToPredict);
 
@@ -155,7 +159,7 @@ void Aaron::askForAction(IORequest* ir)
             double ithProba = PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i));
             if (ithProba >= THRESHOLD) {
                 goodAttacks << curActionIt.value();
-                goodAttacks_target << targetsByAtk[i]->at(i - cumulativeTargetsPassed);
+                goodAttacks_target << targetsByAtk[k]->at(i - cumulativeTargetsPassed);
             }
         }
 
@@ -190,7 +194,7 @@ void Aaron::askForAction(IORequest* ir)
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyPlayToPredict);
         PyObject* pyPlayProbas = PyObject_CallObject(m_pyPredPlayFunc, pyArgs);
-        PYCHECK(pyPlayProbas)
+        PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyPlayToPredict);
 
@@ -237,13 +241,14 @@ void Aaron::askForAction(IORequest* ir)
             std::cout << '\t' << a->toString().toStdString() << '\n';
         }
 
-        if (qrand() % 2) {
+        if (!goodAttacks.empty() && (goodPlays.empty() || qrand() % 2)) {
             int i = qrand() % size;
             Action* choice = goodAttacks.at(i);
             std::cout << m_me->name().toStdString()
                       << ": I choose to " << choice->toString().toStdString()
                       << ' ' << goodAttacks_target.at(i)->toString().toStdString() << '\n';
             ir->setResponse(choice);
+            //m_preselectedAttackTarget = goodAttacks_target.at(i);
         }
         else {
             Action* choice = goodPlays.at(qrand() % goodPlays.size());
@@ -275,7 +280,7 @@ void Aaron::askForTarget(IORequest* ir)
         const int ENV_SIZE = ENV.size();
 
         // Compile possible targetting situations for python
-        PyObject* pyTargetToPredict  = PyList_New(targets->size());
+        PyObject* pyTargetToPredict = PyList_New(targets->size());
         int i = 0;
         foreach (Character* c, *targets) {
             PyObject* pyFeatures = PyList_New(ENV_SIZE + 5);
@@ -286,7 +291,10 @@ void Aaron::askForTarget(IORequest* ir)
             }
 
             // Put action-related features in the list
-            PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((TargetedAction*) action)->id()));
+            if (action->type() == ActionTypes::ATTACK)
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((AttackAction*) action)->id()));
+            else
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((TargetedAction*) action)->id()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 1, PyLong_FromLong(c->base()->id()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(c->hp()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(c->atk()));
@@ -300,7 +308,7 @@ void Aaron::askForTarget(IORequest* ir)
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyTargetToPredict);
         PyObject* pyTargetProbas = PyObject_CallObject(m_pyPredTargetFunc, pyArgs);
-        PYCHECK(pyTargetProbas)
+        PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyTargetToPredict);
 

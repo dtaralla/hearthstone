@@ -102,7 +102,7 @@ void Aaron::askForAction(IORequest* ir)
 
     QList<AttackAction*> goodAttacks;
     QList<Character*> goodAttacks_target;
-
+    QList<double> goodAttacks_probas;
     if (!atkActions.empty()) {
         // Translate attack actions into predictable samples
         QVector<Character*>* targetsByAtk[atkActions.size()];
@@ -156,8 +156,8 @@ void Aaron::askForAction(IORequest* ir)
                 k += 1;
             }
 
-            double ithProba = PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i));
-            if (ithProba >= THRESHOLD) {
+            goodAttacks_probas.append(PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i)));
+            if (goodAttacks_probas.last() >= THRESHOLD) {
                 goodAttacks << curActionIt.value();
                 goodAttacks_target << targetsByAtk[k]->at(i - cumulativeTargetsPassed);
             }
@@ -171,6 +171,7 @@ void Aaron::askForAction(IORequest* ir)
     }
 
     QList<Action*> goodPlays;
+    QList<double> goodPlays_probas;
     if (!playActions.empty()) {
         // Translate play actions into predictable samples
         PyObject* pyPlayToPredict = PyList_New(playActions.size());
@@ -202,8 +203,8 @@ void Aaron::askForAction(IORequest* ir)
         Py_ssize_t size = PyList_Size(pyPlayProbas);
         const double THRESHOLD = 0.68;
         for (int i = 0; i < size; i += 1) {
-            double ithProba = PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i));
-            if (ithProba >= THRESHOLD)
+            goodPlays_probas.append(PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i)));
+            if (goodPlays_probas.last() >= THRESHOLD)
                 goodPlays << playActions.at(i);
         }
 
@@ -232,30 +233,62 @@ void Aaron::askForAction(IORequest* ir)
     else {
         std::cout << m_me->name().toStdString()
                   << ": I determined that any action from the following list will help me gain board control:\n";
+        Action* bestAction = NULL;
+        double bestProba = 0;
         const int size = goodAttacks.size();
         for (int i = 0; i < size; i += 1) {
             std::cout << '\t' << goodAttacks.at(i)->toString().toStdString() << ' '
-                              << goodAttacks_target.at(i)->toString().toStdString() << '\n';
+                              << goodAttacks_target.at(i)->toString().toStdString()
+                              << " (Confidence: " << goodAttacks_probas.at(i) * 100
+                              << "%)\n";
+
+            if (bestProba < goodAttacks_probas.at(i)) {
+                bestProba = goodAttacks_probas.at(i);
+                bestAction = goodAttacks.at(i);
+                m_preselectedAttackTarget = goodAttacks_target.at(i);
+            }
         }
-        foreach (Action* a, goodPlays) {
-            std::cout << '\t' << a->toString().toStdString() << '\n';
+        const int size2 = goodPlays.size();
+        for (int i = 0; i < size2; i += 1) {
+            std::cout << '\t' << goodPlays.at(i)->toString().toStdString()
+                      << " (Confidence: " << goodPlays_probas.at(i) * 100
+                      << "%)\n";
+
+            if (bestProba < goodPlays_probas.at(i)) {
+                bestProba = goodPlays_probas.at(i);
+                bestAction = goodPlays.at(i);
+                m_preselectedAttackTarget = NULL;
+            }
         }
 
-        if (!goodAttacks.empty() && (goodPlays.empty() || qrand() % 2)) {
+        if (m_preselectedAttackTarget != NULL) {
+            std::cout << m_me->name().toStdString()
+                      << ": I choose to " << bestAction->toString().toStdString()
+                      << ' ' << m_preselectedAttackTarget->toString().toStdString()
+                      << '\n';
+        }
+        else {
+            std::cout << m_me->name().toStdString()
+                      << ": I choose to " << bestAction->toString().toStdString()
+                      << '\n';
+        }
+        ir->setResponse(bestAction);
+
+        /*if (!goodAttacks.empty() && (goodPlays.empty() || qrand() % 2)) {
             int i = qrand() % size;
             Action* choice = goodAttacks.at(i);
             std::cout << m_me->name().toStdString()
                       << ": I choose to " << choice->toString().toStdString()
                       << ' ' << goodAttacks_target.at(i)->toString().toStdString() << '\n';
             ir->setResponse(choice);
-            //m_preselectedAttackTarget = goodAttacks_target.at(i);
+            m_preselectedAttackTarget = goodAttacks_target.at(i);
         }
         else {
             Action* choice = goodPlays.at(qrand() % goodPlays.size());
             std::cout << m_me->name().toStdString()
                       << ": I choose to " << choice->toString().toStdString() << '\n';
             ir->setResponse(choice);
-        }
+        }*/
     }
 
     fflush(stdout);

@@ -363,8 +363,7 @@ public:
     int id() const;
 
     /**
-     * @brief environment Gets a list of numbers describing the current state of
-     * this game.
+     * @brief Gets a list of numbers describing the current state of this game.
      *
      * Let N be the number of possible cards in the game.
      *
@@ -392,47 +391,320 @@ public:
      * is_silenced, is_enchanted) tuples might contain missing data in the case
      * where a player does not have 7 minions.
      *
-     * @return
+     * @return The list defined hereabove
      */
     QVector<float> environment() const;
+
+    /**
+     * @brief Gets the list of attackable targets given an attacking character.
+     *
+     * According to the game rules, only enemies of \a atker are eligible to be
+     * the target of the attack. Moreover, if the enemy owns minions having
+     * TAUNT, only these will be attackable. If there are no TAUNT minions, the
+     * enemy hero is included in this list.
+     *
+     * @param atker The attacking character
+     *
+     * @return The list of attackable characters.
+     */
     QVector<Character*>* attackableTargets(const Character* atker) const;
+
+    /**
+     * @brief Gets the opponent of a given player.
+     *
+     * In Hearthstone, there are only 2 players at a given time. This method
+     * returns the opponent of \a p.
+     *
+     * @param p The player whose opponent will be returned
+     *
+     * @return The opponent of \a p
+     */
     Player* opponentOf(const Player* p) const;
+
+    /**
+     * @brief Gets the list of cards currently on the board, sorted by play
+     * time.
+     *
+     * Heroes are never present in this list.
+     *
+     * In Hearthstone, when an event occurs and multiple cards should react to
+     * it, the reactions are triggered sequentially, <b>in the order in which
+     * the listening cards were put into play</b>. This function can be useful
+     * in such cases.
+     *
+     * Even if for now the only cards possibly on the board are characters, it
+     * can also be weapons and secrets, hence the use of this function later
+     * once these card types will be implemented.
+     *
+     * @param p If not \c NULL, the list will only contain cards owned by the
+     * \o of this player. Else, all cards are returned.
+     *
+     * @param o The owner qualifier on \a p. If equal to ANY_OWNER, all cards
+     * are returned.
+     *
+     * @return A list of cards currently on the board, sorted by play time and
+     * belonging to \a o of \a p.
+     */
     QVector<Card*>* playedCardsByPlayTime(Player* p = NULL,
                                           Owner o = Owners::ANY_OWNER) const;
+
+    /**
+     * @brief charactersByPlayTime Gets the list of characters currently on the
+     * board, sorted by play time.
+     *
+     * Heroes are always the two first characters in this list.
+     *
+     * In Hearthstone, when an event occurs and multiple cards should react to
+     * it, the reactions are triggered sequentially, <b>in the order in which
+     * the listening cards were put into play</b>. This function can be useful
+     * in such cases.
+     *
+     * @param p If not \c NULL, the list will only contain characters owned by
+     * the \o of this player. Else, all characters are returned.
+     *
+     * @param o The owner qualifier on \a p. If equal to ANY_OWNER, all
+     * characters are returned.
+     *
+     * @param ct Only characters of this type will be returned.
+     *
+     * @return A list of characters of type \a ct currently on the board,
+     * sorted by play time, belonging to \a o of \a p.
+     */
     QVector<Character*>* charactersByPlayTime(Player* p = NULL,
                                               Owner o = Owners::ANY_OWNER,
                                               CharacterType ct = CharacterTypes::CHARACTER) const;
 
+    /**
+     * @brief The BoardControlScore struct represents the detailed score of the
+     * board control value function.
+     */
     struct BoardControlScore {
-        static const float TOUGH_MINIONS_MULT = 2;
-        static const float HAND_MULT = 1;
-        static const float MINIONS_MULT = 0;
-        static const float SITUATION_MULT = 3;
+        static const float TOUGH_MINIONS_MULT = 2; //!< Multiplier for the "tough minions" factor
+        static const float HAND_MULT = 1;          //!< Multiplier for the "hand" factor
+        static const float MINIONS_MULT = 0;       //!< Multiplier for the "minions number" factor
+        static const float SITUATION_MULT = 3;     //!< Multiplier for the "situation" factor
 
+        /**
+         * @brief The score of the "tough minions" factor, in [-1; 1].
+         *
+         * Detailed calculation:
+         *      = 0    if #AlliedToughMinions == #EnemyToughMinions
+         *      = 1/3  if #AlliedToughMinions == #EnemyToughMinions + 1
+         *      = 2/3  if #AlliedToughMinions == #EnemyToughMinions + 2
+         *      = 3/3  if #AlliedToughMinions >= #EnemyToughMinions + 3
+         *      = -1/3 if #AlliedToughMinions == #EnemyToughMinions - 1
+         *      = -2/3 if #AlliedToughMinions == #EnemyToughMinions - 2
+         *      = -3/3 if #AlliedToughMinions >= #EnemyToughMinions - 3
+         */
         float toughMinionsScore;
+
+        /**
+         * @brief The score of the "hand" factor, in [-1; 1]
+         *
+         * Detailed calculation:
+         *      = 0    if #allyHand == #enemyHand
+         *      = 0.5  if #allyHand == #enemyHand + 1
+         *      = 1    if #allyHand >= #enemyHand + 2
+         *      = -0.5 if #allyHand == #enemyHand - 1
+         *      = -1   if #allyHand <= #enemyHand - 2
+         */
         float handScore;
+
+        /**
+         * @brief The score of the "minions number" factor, in [-1; 1]
+         *
+         * Detailed calculation:
+         *      = (#allyMinions - #enemyMinions) / (#allyMinions + #enemyMinions)
+         */
         float minionsScore;
+
+        /**
+         * @brief The score of the "situation" factor, in [-1; 1]
+         *
+         * Detailed calculation:
+         *      - If the best trade the ally can do has a lower value than the
+         *        best trade the enemy could do, = -EnemyBestTrade
+         *      - Else, = +AllyBestTrade
+         */
         float situationScore;
+
+        /**
+         * @brief The weighted sum of all factors, in [-1; 1].
+         *
+         * Detailed calculation:
+         *      = SUM of each factor, multiplied by their respective
+         *        multiplier, DIVIDED by the sum of all multipliers.
+         */
         float score;
     };
 
+    /**
+     * @brief Compute the value function of the Board Control meta for the
+     * current state of the game.
+     *
+     * The "ally" player is the current player.
+     *
+     * @return A BoardControlScore structure detailing the value function
+     * value.
+     */
     BoardControlScore* meta_BoardControlScore();
 
 private:
+    /**
+     * @brief The next game identifier available.
+     *
+     * Useful in a context where multiple Game objects are instantiated.
+     */
     static int mNextGameID;
+
+    /**
+     * @brief Whether the game is in database generation mode or not.
+     *
+     * @sa IsDBGenerationModeOn()
+     */
     static bool m_dbGenerationMode;
 
+    /**
+     * @brief The unique identifier of this game in the whole program.
+     *
+     * @sa id()
+     */
     int mId;
+
+    /**
+     * @brief The player considered as "Player 1".
+     *
+     * This does not mean "Player 1" is the first player to play.
+     */
     Player* m_player1;
+
+    /**
+     * @brief The player considered as "Player 2".
+     *
+     * This does not mean "Player 2" is the second player to play.
+     */
     Player* m_player2;
+
+    /**
+     * @brief The player who is playing right now.
+     */
     Player* m_curPlayer;
+
+    /**
+     * @brief The player who will be playing after m_curPlayer ends its turn.
+     */
     Player* m_nextPlayer;
+
+    /**
+     * @brief A list of all cards placed on the board, ordered by play time.
+     */
     QVector<Card*> m_boardCardsByPlayTime;
+
+    /**
+     * @brief A queue of minions scheduled to die.
+     */
     QVector<Minion*> m_deathsQueue;
 
+    /**
+     * @brief Updates the state by resolving an action \a move (maybe in
+     * response to an event \a e).
+     *
+     * Core function of the game. Whenever a minion dies, or when an event is
+     * triggered, or when a player chooses to do something, this function is
+     * called with the action to execute. This ensures that the stack principle
+     * is applied.
+     *
+     * The stack principle is simple: each action (playing a spell for
+     * instance) is considered "resolved" once (and only once) all its
+     * consequences are themseves resolved. A very important exception is
+     * deaths: they do \b not apply the stack principle. If a minion A dies and
+     * has <i>\b Deathrattle: Kill a minion</i>, the death of A is resolved
+     * once the killing is done but \b before the killed minion death is
+     * resolved. This means that the deathrattles do not chain in a stacked
+     * manner: the killed minion deathrattle is \b queued to be executed after
+     * all currently registered deathrattles are resolved.
+     *
+     * Let's now see in details what this method does.
+     *
+     * First, this method resolves \a move. Once \a move's Action::resolve()
+     * method is finished, this checks whether any hero died. This then looks
+     * for dying minions in the m_boardCardsByPlayTime list; when it finds one,
+     * it appends it to the m_deathsQueue queue and removes it from the
+     * m_boardCardsByPlayTime list. The minions removed this way are not able
+     * to return to the battlefield anymore (this prevents deathrattles which
+     * would heal a minion to heal one of the dying minions). Then,
+     * deathrattles are resolved one by one: each action of each deathrattle is
+     * resolved using mUpdateState() recursively. As a deathrattle resolution
+     * could kill another minion, this function makes sure that only the
+     * top-level mUpdateState() call is resolving deathrattles, while
+     * lower-levels calls only appends dying minions in the m_deathsQueue.
+     * Indeed, the stack principle does \b not apply to death resolutions.
+     * Finally, AFTER_XXX-like events are triggered if applicable.
+     *
+     * The Action::resolve() methods are usually called only from this
+     * function. The exception to this rule is for actions based on other
+     * actions (like DamageAndFreezeAction). In the course of their resolution,
+     * these can call the Action::resolve() method of other actions without
+     * going through mUpdateState().
+     *
+     * @param move The action to resolve.
+     *
+     * @param e The event triggering action \a move, if any.
+     */
     void mUpdateState(Action* move, const Event* e = NULL);
+
+    /**
+     * @brief Gets a list of possible attack actions for the current player.
+     *
+     * In Hearthstone, having a minion on the board does not mean you have
+     * always one attack action associated with it. If the minion is exhausted
+     * (ie., if it has been put into play this turn), or if the minion is
+     * FROZEN, it cannot attack this turn.
+     *
+     * @return The list of possible attack actions for the current player.
+     */
     QVector<Action*>* mAttackActions();
+
+    /**
+     * @brief Utility function to add the current player's hand to an
+     * environment object as a vector of 10 identifiers.
+     *
+     * If 2 cards in hand for instance, these are the possible positions:
+     * 1 2 / / / / / / / /
+     * 1 / 2 / / / / / / /
+     * 1 / / 2 / / / / / /
+     * 1 / / / 2 / / / / /
+     * ...
+     * 2 1 / / / / / / / /
+     * 2 / 1 / / / / / / /
+     * ...
+     * / 1 2 / / / / / / /
+     * / 1 / 2 / / / / / /
+     * ...
+     * / 2 1 / / / / / / /
+     * / 2 / 1 / / / / / /
+     * ...
+     *
+     * In short: all permutations of 1 2 / / / / / / / /
+     * Choose one randomly amongst them -> this way, classificator
+     * does not always find the first cards the most important!
+     *
+     * @param[out] environment The list representing the current environment;
+     * this will add 10 identifiers to the list.
+     */
     void mAddShuffledHandTo(QVector<float>& environment) const;
+
+    /**
+     * @brief Utility function to add the current player's hand to an
+     * environment object as a vector of \i N quantities (with \i N the
+     * possible cards in the game).
+     *
+     * Quantity at position \i i the amount of cards of ID \i i the current
+     * player has in his hand.
+     *
+     * @param[out] environment The list representing the current environment;
+     * this will add \i N integers to the list.
+     */
     void mAddHandAsVectorTo(QVector<float>& environment) const;
 };
 

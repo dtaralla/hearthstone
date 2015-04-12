@@ -1,0 +1,24 @@
+{
+	"id": "MIRROR_IMAGE_MINION",
+	"type": $CARD_MINION,
+	"name": "Mirror Image",
+	"text": "<b>Taunt</b>",
+	"cost": 0,
+	"attack": 0,
+	"health": 2,
+    "abilities": $ABILITY_TAUNT,
+    "collectible": false
+},
+{
+	"id": "MIRROR_IMAGE_SPELL",
+	"type": $CARD_SPELL,
+	"name": "Mirror Image",
+	"text": "Summon two 0/2 minions with <b>Taunt</b>.",
+	"cost": 1,
+	"actions": {
+		"id": $SUMMON_MINIONS,
+		"minion": "MIRROR_IMAGE_MINION",
+		"quantity": 2,
+		"targetOwner": $OWNER_ALLY
+	}
+}

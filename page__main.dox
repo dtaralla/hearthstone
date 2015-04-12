@@ -1,0 +1,12 @@
+/**
+\mainpage
+\tableofcontents
+
+The <i>Hearthstone Simulator</i> is the result of the work achieved in the
+context of my Master thesis.
+
+\section toc Appendices
+The available appendices are listed hereunder:
+\li \subpage card_database_format
+
+*/

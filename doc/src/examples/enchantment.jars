@@ -1,0 +1,7 @@
+{
+    "name": "Mark of the Wild",
+    "text": "This minion gains Taunt and +2/+2",
+    "atkModifier": 2,
+    "maxHPModifier": 2,
+    "abilities": $ABILITY_TAUNT
+}

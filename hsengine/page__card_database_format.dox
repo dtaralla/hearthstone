@@ -1,0 +1,1168 @@
+/**
+\page card_database_format %Card Database Format
+\tableofcontents
+
+<b>NB:</b>In this whole document, it is considered that the reader is already familiar
+with regular JSON syntax.
+
+\section intro Introduction
+A card database file is written in JARS (standing for Just Another
+Representation Syntax), a JSON-like language. The root object has to be a JSON
+array, and each element of this array has to be a card description.
+
+I said that JARS is a JSON-\e like language because even if it shares with JSON
+its way of representing objects and arrays, I allow you to use human-readable
+constants wherever you want, as long as they are constants recognized by JARS.
+These constants are \e always prefixed with the \c $ sign. Examples of such
+constants are
+- Card types, such as
+    - \ref CARD_HERO (corresponding to CardTypes::CARD_HERO)
+    - \ref CARD_MINION (corresponding to CardTypes::CARD_MINION)
+    - ...
+- Action identifiers, such as
+    - \ref ADD_ARMOR (corresponding to an AddArmorAction)
+    - \ref SET_FROZEN (corresponding to a FreezeAction)
+    - ...
+- ...
+
+Using an external file with well-defined syntax and semantics allows any third-
+party developer to create new cards for the game using the available types and
+actions and without touching a single line of code. In the future, a GUI should
+even be provided that will take care of generating the card database for you
+even more simply.
+
+As in regular JSON, the order in which you put the fields and their values is
+not taken into account. What is important however, is the \e presence of
+mandatory fields. Finally, JARS ignores fields that are not documented for the
+objects it recognizes.
+
+\subsection docStruct Document structure
+This document is structured as follows.
+
+It first describe the syntax of \ref card objects, \ref action objects and
+\ref targetExpressions objects. Then, it also describes the syntax of various
+sub-objects that can be encountered when writing the former ones. The document
+goes on with a comprehensive reference of all the possible constants JARS
+recognizes (when they are prfixed with \c $), and finally gives some examples
+of famous Hearthstone cards described using JARS.
+
+\section card Card
+As in the hsengine library, you might describe different types of cards in the
+database. For now, the supported card types are heroes, minions and spells.
+Weapons and secrets support should be added in the near future.
+
+As you might already deduce, all cards objects have some fields in common, like
+the name of the card, its text, its human-readable identifier, its mana
+cost,...
+
+The table below documents the various fields accepted in all \ref card objects:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{card_id,id}</td>
+        <td>String</td>
+        <td>Yes</td>
+        <td></td>
+        <td>A human-readable identifier, unique in the whole file.</td>
+    </tr>
+    <tr>
+        <td>\field{card_type,type}</td>
+        <td>\ref cardTypes "CardType"</td>
+        <td>Yes</td>
+        <td></td>
+        <td>The type of card this object is representing. According to this
+            field, new fields will be made mandatory.</td>
+    </tr>
+    <tr>
+        <td>\field{card_cost,cost}</td>
+        <td>Integer</td>
+        <td>Yes</td>
+        <td></td>
+        <td>The mana cost for playing this card.</td>
+    </tr>
+    <tr>
+        <td>\field{card_name,name}</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>The card name. This is not an ID or anything alike, but just data
+            for a possible user interface.</td>
+    </tr>
+    <tr>
+        <td>\field{card_text,text}</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>
+            The card text description. This is just data for a possible user
+            interface.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{card_triggerPowers,triggerPowers}</td>
+        <td>Array of \ref triggerPower objects, or a single \ref triggerPower object</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The trigger powers of the card.
+
+            @sa Card::addTriggerPowers()
+        </td>
+    </tr>
+    <tr>
+        <td>\field{card_collectible,collectible}</td>
+        <td>Boolean</td>
+        <td>No</td>
+        <td>\c true</td>
+        <td>
+            Whether this card can be found in a deck or not.
+
+            @note \ref Hero objects are never collectible, thus JARS ignores
+            this field for these objects.
+        </td>
+    </tr>
+</table>
+
+The following code features a card expressed in JARS:
+\include card.jars
+
+\subsection spell Spell
+The table below documents the fields accepted by all \ref card objects
+featuring \ref CARD_SPELL as value of their \ref card_type "type" field:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{spell_actions,actions}</td>
+        <td>Array of \ref action objects, or a single \ref action object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The actions to execute as a result of playing this spell. If an
+            array of \ref action objects is given, these will be executed in
+            the order they are given in the array.
+        </td>
+    </tr>
+</table>
+
+The following code features a spell expressed in JARS:
+\include spell.jars
+
+\subsection minion Minion
+The table below documents the fields accepted by all \ref card objects
+featuring \ref CARD_MINION as value of their \ref card_type "type" field:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{minion_health,health}</td>
+        <td>Integer</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The health points reserve all minions sharing this identity are
+            going to have by default.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{minion_attack,attack}</td>
+        <td>Integer</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The attack all minions sharing this identity are going to have by
+            default.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{minion_subtype,subtype}</td>
+        <td>\ref characterTypes "CharacterType"</td>
+        <td>No</td>
+        <td>\ref TYPE_GENERAL</td>
+        <td>
+            The sub-type of this minion.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{minion_abilities,abilities}</td>
+        <td>Array of \ref abilities "Ability" constants, or a single \ref abilities "Ability" constant</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The abilities all minions sharing this identity are going to have
+            by default.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{minion_battlecry,battlecry}</td>
+        <td>Array of \ref action objects, or a single \ref action object</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The actions to execute as the battlecry of this minion. If an array
+            of \ref action objects is given, these will be executed in the
+            order they are given in the array.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{minion_deathrattle,deathrattles}</td>
+        <td>Array of \ref action objects, or a single \ref action object</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The actions to execute as the deathrattle of this minion. If an
+            array of \ref action objects is given, these will be executed in
+            the order they are given in the array.
+        </td>
+    </tr>
+</table>
+
+The following code features a minion expressed in JARS:
+\include minion.jars
+
+\subsection hero Hero
+The table below documents the fields accepted by all \ref card objects
+featuring \ref CARD_HERO as value of their \ref card_type "type" field:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{hero_power,power}</td>
+        <td>A \ref specialPower "SpecialPower" object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The special power of this hero.
+        </td>
+    </tr>
+</table>
+
+The following code features a hero expressed in JARS:
+\include hero.jars
+
+\section action Action
+
+The table below documents the fields common to all \ref action objects,
+regardless of their \ref action_id "id" field:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{action_id,id}</td>
+        <td>\ref actionType "ActionType"</td>
+        <td>Yes</td>
+        <td></td>
+        <td>The action identifier. According to this field, new fields will be made mandatory</td>
+    </tr>
+</table>
+
+The following code features an action expressed in JARS:
+\include action.jars
+
+\action{ADD_ARMOR,Add armor}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of armor to add. Must be > 0.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ALLY</td>
+        <td>
+            The armor addition will be done on:
+            \li \ref OWNER_ALLY : the ally hero
+            \li \ref OWNER_ENEMY : the enemy hero
+            \li \ref OWNER_ANY : both heroes
+        </td>
+    </tr>
+</table>
+
+\action{ADD_MANA,Add mana}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of mana to add. Can be negative.
+        </td>
+    </tr>
+    <tr>
+        <td>\c owner</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ALLY</td>
+        <td>
+            The mana addition will be done for:
+            \li \ref OWNER_ALLY : the ally player
+            \li \ref OWNER_ENEMY : the enemy player
+            \li \ref OWNER_ANY : both players
+        </td>
+    </tr>
+    <tr>
+        <td>\c permanent</td>
+        <td>Boolean</td>
+        <td>No</td>
+        <td>\c false</td>
+        <td>
+            Whether the mana modification is applied to the mana reserve or to
+            the mana available on the current turn.
+        </td>
+    </tr>
+</table>
+
+\action{DEAL_DMG,Deal damage}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of damage to deal.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
+
+\action{DRAW_CARD,Draw some cards}
+
+\action{ENCHANT_CHARACTER,Enchant a (set of) character(s)}
+
+\action{FREEZE_AFTER_DMG,Deal damage then freeze the target(s)}
+
+\action{FREEZE_AFTER_HEAL,Heal then freeze the target(s)}
+
+\action{HEAL,Heal a (set of) character(s)}
+
+\action{SET_FROZEN,Freeze a (set of) character(s)}
+
+\action{SILENCE_TARGET,Silence a (set of) character(s)}
+
+\action{SUMMON_MINIONS,Summon some minions}
+
+\section targetExpressions Target expression
+
+The table below documents the fields accepted by all \ref targetExpressions
+objects:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{target_id,id}</td>
+        <td>\ref targetTypes "TargetType"</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The actions to execute as a result of playing this special power.
+            If an array of \ref action objects is given, these will be executed
+            in the order they are given in the array.
+        </td>
+    </tr>
+</table>
+
+\target{ALLY_HERO,Target the ally hero}
+
+No additional fields are required.
+
+\target{BOTH_HEROES,Target both heroes}
+
+No additional fields are required.
+
+\target{ENEMY_HERO,Target the enemy hero}
+
+No additional fields are required.
+
+\target{SELECT_N_IN_GROUP,Select one or more targets in a group}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c group</td>
+        <td>A \ref groupExpressions "GroupExpression" object</td>
+        <td>No</td>
+        <td>\include default_group.jars</td>
+        <td>
+            The group from which the targets should be selected.
+        </td>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of targets to select from \c group. Must be > 0. If
+            \c withReplacement is \c false and if at the moment of the
+            selection there are not enough distinct targets in \c group, the
+            selection will end when all targets of \c group have been used.
+
+            \warning <b>Deprecated</b> In the near future, it won't be possible
+            anymore to ask the user to select more than 1 target.
+        </td>
+    </tr>
+    <tr>
+        <td>\c withReplacement</td>
+        <td>Boolean</td>
+        <td>No</td>
+        <td>\c false</td>
+        <td>
+            If \c true, the same target may be selected several times.
+            Otherwise it cannot.
+
+            \warning <b>Deprecated</b> In the near future, it won't be possible
+            anymore to ask the user to select more than 1 target.
+        </td>
+    </tr>
+</table>
+
+\target{PICK_N_FROM_GROUP,Pick one or more targets randomly from a group}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c group</td>
+        <td>A \ref groupExpressions "GroupExpression" object</td>
+        <td>No</td>
+        <td>\include default_group.jars</td>
+        <td>
+            The group from which the targets should be selected.
+        </td>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of targets to pick randomly from \c group. Must be
+            > 0. If \c withReplacement is \c false and if there are not enough
+            distinct targets in \c group, the whole group will be the target.
+        </td>
+    </tr>
+    <tr>
+        <td>\c withReplacement</td>
+        <td>Boolean</td>
+        <td>No</td>
+        <td>\c false</td>
+        <td>
+            If \c true, the same target might be picked randomly several times.
+            Otherwise it cannot.
+        </td>
+    </tr>
+</table>
+
+\target{TARGET_GROUP,All targets in a group}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c group</td>
+        <td>\ref groupExpressions "GroupExpression"</td>
+        <td>No</td>
+        <td>\include default_group.jars</td>
+        <td>
+            The targeted group.
+        </td>
+    </tr>
+</table>
+
+\target{TARGET_THIS,Target "this"}
+
+No additional fields are required.
+
+\target{EVENT_CHARACTER_PARAMS,Target an event response}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c params</td>
+        <td>An array of \ref eventResponse "EventResponse" constants, or a single \ref eventResponse "EventResponse" constant.</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The event response(s) you want to target. This event responses \e
+            have to be some characters.
+        </td>
+    </tr>
+</table>
+
+\section miscObjects Miscellaneous
+
+\subsection specialPower Special power
+
+The table below documents the fields accepted by the \ref specialPower objects:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{sp_actions,actions}</td>
+        <td>Array of \ref action objects, or a single \ref action object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The actions to execute as a result of playing this special power.
+            If an array of \ref action objects is given, these will be executed
+            in the order they are given in the array.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{sp_cost,cost}</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>2</td>
+        <td>The mana cost for playing this special power.</td>
+    </tr>
+    <tr>
+        <td>\field{sp_name,name}</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>
+            The special power name. This is not an ID or anything alike, but
+            just data for a possible user interface.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{sp_text,text}</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>
+            The special power text description. This is just data for a
+            possible user interface.
+        </td>
+    </tr>
+</table>
+
+
+\subsection triggerPower Trigger Power
+
+The table below documents the various fields accepted in a \ref triggerPower
+object:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{tp_event,event}</td>
+        <td>An \ref event object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>The event this trigger power responds to.</td>
+    </tr>
+    <tr>
+        <td>\field{tp_actions,actions}</td>
+        <td>Array of \ref action objects, or a single \ref action object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The action(s) to execute when the power is triggered.
+        </td>
+    </tr>
+</table>
+
+\subsection groupExpressions Group Expression
+
+The table below documents the various fields accepted in a \ref
+groupExpressions object:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{gexp_owner,owner}</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ANY</td>
+        <td>All targets from the group are owned by this relative player.</td>
+    </tr>
+    <tr>
+        <td>\field{gexp_subtype,subtype}</td>
+        <td>\ref characterTypes "CharacterType"</td>
+        <td>No</td>
+        <td>\ref TYPE_CHARACTER</td>
+        <td>
+            All targets from the group return \c true for the following test:
+            <code>subtype & target->subtype()</code>.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{gexp_excluded,excluded}</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>No target</td>
+        <td>
+            If set, all targets satisfying this field are guaranteed not to
+            show up in the group, even if they verify the \c subtype and the
+            ownership dictated by \c owner.
+        </td>
+    </tr>
+</table>
+
+\subsection event Event
+
+\subsection enchantment Enchantment
+
+The following code features an enchantment expressed in JARS:
+\include enchantment.jars
+
+\section constants JARS Constants
+JARS allows you to use human-readable constants. The comprehensive list of
+available constants are described in this section.
+
+@attention When using one of these constants in a JARS file, always prefix it
+with the dollar sign \c $, else it won't be recognized as a JARS
+constant.
+
+\subsection cardTypes Card types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{CARD_CHARACTER}</td>
+        <td>CardTypes::CARD_CHARACTER</td>
+        <td>
+            The Character card type.
+
+            @warning This value should never appear in the \ref card_type
+            "type" field of a \ref card object.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{CARD_HERO}</td>
+        <td>CardTypes::CARD_HERO</td>
+        <td>
+            The Hero card type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{CARD_MINION}</td>
+        <td>CardTypes::CARD_MINION</td>
+        <td>
+            The Minion card type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{CARD_SECRET}</td>
+        <td>CardTypes::CARD_SECRET</td>
+        <td>
+            The Secret card type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{CARD_SPELL}</td>
+        <td>CardTypes::CARD_SPELL</td>
+        <td>
+            The Spell card type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{CARD_WEAPON}</td>
+        <td>CardTypes::CARD_WEAPON</td>
+        <td>
+            The Weapon card type.
+        </td>
+    </tr>
+</table>
+@sa CardType, CardTypes
+
+\subsection characterTypes Character types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{TYPE_UNDEAD}</td>
+        <td>CharacterTypes::UNDEAD</td>
+        <td>
+            The undead character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_BEAST}</td>
+        <td>CharacterTypes::BEAST</td>
+        <td>
+            The beast character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_DEMON}</td>
+        <td>CharacterTypes::DEMON</td>
+        <td>
+            The demon character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_DRAGON}</td>
+        <td>CharacterTypes::DRAGON</td>
+        <td>
+            The dragon character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_GENERAL}</td>
+        <td>CharacterTypes::GENERAL</td>
+        <td>
+            The general character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_MECH}</td>
+        <td>CharacterTypes::MECH</td>
+        <td>
+            The mech character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_MURLOC}</td>
+        <td>CharacterTypes::MURLOC</td>
+        <td>
+            The murloc character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_PIRATE}</td>
+        <td>CharacterTypes::PIRATE</td>
+        <td>
+            The pirate character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_TOTEM}</td>
+        <td>CharacterTypes::TOTEM</td>
+        <td>
+            The totem character type.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_MINION}</td>
+        <td>CharacterTypes::MINION</td>
+        <td>
+            The "any minion type" character type.
+
+            @warning This value should never appear in the \ref minion_subtype
+            "subtype" field of a \ref minion object.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_HERO}</td>
+        <td>CharacterTypes::HERO</td>
+        <td>
+            The hero character type.
+
+            @warning This value should never appear in the \ref minion_subtype
+            "subtype" field of a \ref minion object.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{TYPE_CHARACTER}</td>
+        <td>CharacterTypes::CHARACTER</td>
+        <td>
+            The "any" character type.
+
+            @warning This value should never appear in the \ref minion_subtype
+            "subtype" field of a \ref minion object.
+        </td>
+    </tr>
+</table>
+@sa CharacterType, CharacterTypes
+
+\subsection abilities Abilities
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{ABILITY_CHARGE}</td>
+        <td>Abilities::CHARGE</td>
+        <td>
+            The Charge ability.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{ABILITY_TAUNT}</td>
+        <td>Abilities::TAUNT</td>
+        <td>
+            The Taunt ability.
+        </td>
+    </tr>
+</table>
+@sa Ability, Abilities
+
+\subsection owners Owner qualifiers
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{OWNER_ALLY}</td>
+        <td>Owners::ALLY</td>
+        <td>
+            Denotes the ally concept (ally player, ally owner, ally
+            character,...).
+        </td>
+    </tr>
+    <tr>
+        <td>\field{OWNER_ENEMY}</td>
+        <td>Owners::ENEMY</td>
+        <td>
+            Denotes the enemy concept (enemy player, enemy owner, enemy
+            character,...).
+        </td>
+    </tr>
+    <tr>
+        <td>\field{OWNER_ANY}</td>
+        <td>Owners::ANY_OWNER</td>
+        <td>
+            Denotes both the ally and enemy concepts.
+        </td>
+    </tr>
+</table>
+@sa Owner, Owners
+
+\subsection eventResponse Event responses
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{ATTACKED_CHARACTER}</td>
+        <td>EventParams::ATTACKED_CHARACTER</td>
+        <td>
+            The attacked character. This parameter is available only in
+            response to a Event::CHARACTER_ATTACKS event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{ATTACKING_CHARACTER}</td>
+        <td>EventParams::ATTACKING_CHARACTER</td>
+        <td>
+            The attacking character. This parameter is available only in
+            response to a Event::CHARACTER_ATTACKS event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DAMAGED_CHARACTER}</td>
+        <td>EventParams::DAMAGED_CHARACTER</td>
+        <td>
+            The damaged character. This parameter is available only in response
+            to a Event::CHARACTER_DAMAGED event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DAMAGER}</td>
+        <td>EventParams::DAMAGER</td>
+        <td>
+            The character being the damage source. This parameter is available
+            only in  response to a Event::CHARACTER_DAMAGED event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DYING_MINION}</td>
+        <td>EventParams::DYING_MINION</td>
+        <td>
+            The dying minion. This parameter is available only in response to a
+            Event::MINION_DIES event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEALED_CHARACTER}</td>
+        <td>EventParams::HEALED_CHARACTER</td>
+        <td>
+            The healed character. This parameter is available only in response
+            to a Event::CHARACTER_HEALED event.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEALER}</td>
+        <td>EventParams::HEALER</td>
+        <td>
+            The character being the healing source. This parameter is available
+            only in response to a Event::CHARACTER_HEALED event.
+        </td>
+    </tr>
+</table>
+@sa EventParams, Event::Type
+
+\subsection targetTypes Target types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{ALLY_HERO}</td>
+        <td>CardDB::ALLY_HERO</td>
+        <td>See \ref tar_ALLY_HERO.</td>
+    </tr>
+    <tr>
+        <td>\field{ENEMY_HERO}</td>
+        <td>CardDB::ENEMY_HERO</td>
+        <td>See \ref tar_ENEMY_HERO.</td>
+    </tr>
+    <tr>
+        <td>\field{BOTH_HEROES}</td>
+        <td>CardDB::BOTH_HEROES</td>
+        <td>See \ref tar_BOTH_HEROES.</td>
+    </tr>
+    <tr>
+        <td>\field{SELECT_N_IN_GROUP}</td>
+        <td>CardDB::SELECT_N_IN_GROUP</td>
+        <td>See \ref tar_SELECT_N_IN_GROUP.</td>
+    </tr>
+    <tr>
+        <td>\field{PICK_N_FROM_GROUP}</td>
+        <td>CardDB::PICK_N_FROM_GROUP</td>
+        <td>See \ref tar_PICK_N_FROM_GROUP.</td>
+    </tr>
+    <tr>
+        <td>\field{TARGET_GROUP}</td>
+        <td>CardDB::TARGET_GROUP</td>
+        <td>See \ref tar_TARGET_GROUP.</td>
+    </tr>
+    <tr>
+        <td>\field{TARGET_THIS}</td>
+        <td>CardDB::TARGET_THIS</td>
+        <td>See \ref tar_TARGET_THIS.</td>
+    </tr>
+    <tr>
+        <td>\field{EVENT_CHARACTER_PARAMS}</td>
+        <td>CardDB::EVENT_CHARACTER_PARAMS</td>
+        <td>See \ref tar_EVENT_CHARACTER_PARAMS.</td>
+    </tr>
+</table>
+@sa TargetExpression
+
+\subsection actionType Action types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{ADD_ARMOR}</td>
+        <td>ActionTypes::ADD_ARMOR</td>
+        <td>See \ref ac_ADD_ARMOR.</td>
+    </tr>
+    <tr>
+        <td>\field{ADD_MANA}</td>
+        <td>ActionTypes::ADD_MANA</td>
+        <td>See \ref ac_ADD_MANA.</td>
+    </tr>
+    <tr>
+        <td>\field{DEAL_DMG}</td>
+        <td>ActionTypes::DEAL_DMG</td>
+        <td>See \ref ac_DEAL_DMG.</td>
+    </tr>
+    <tr>
+        <td>\field{DRAW_CARD}</td>
+        <td>ActionTypes::DRAW_CARD</td>
+        <td>See \ref ac_DRAW_CARD.</td>
+    </tr>
+    <tr>
+        <td>\field{ENCHANT_CHARACTER}</td>
+        <td>ActionTypes::ENCHANT_CHARACTER</td>
+        <td>See \ref ac_ENCHANT_CHARACTER.</td>
+    </tr>
+    <tr>
+        <td>\field{FREEZE_AFTER_DMG}</td>
+        <td>ActionTypes::FREEZE_AFTER_DMG</td>
+        <td>See \ref ac_FREEZE_AFTER_DMG.</td>
+    </tr>
+    <tr>
+        <td>\field{FREEZE_AFTER_HEAL}</td>
+        <td>ActionTypes::FREEZE_AFTER_HEAL</td>
+        <td>See \ref ac_FREEZE_AFTER_HEAL.</td>
+    </tr>
+    <tr>
+        <td>\field{HEAL}</td>
+        <td>ActionTypes::HEAL</td>
+        <td>See \ref ac_HEAL.</td>
+    </tr>
+    <tr>
+        <td>\field{SET_FROZEN}</td>
+        <td>ActionTypes::SET_FROZEN</td>
+        <td>See \ref ac_SET_FROZEN.</td>
+    </tr>
+    <tr>
+        <td>\field{SILENCE_TARGET}</td>
+        <td>ActionTypes::SILENCE_TARGET</td>
+        <td>See \ref ac_SILENCE_TARGET.</td>
+    </tr>
+    <tr>
+        <td>\field{SUMMON_MINIONS}</td>
+        <td>ActionTypes::SUMMON_MINIONS</td>
+        <td>See \ref ac_SUMMON_MINIONS.</td>
+    </tr>
+</table>
+@sa ActionType, ActionTypes
+
+\section examples Examples
+
+\subsection druid Malfurion, the Druid hero
+\include malfurion.jars
+
+This hero is interesting because it exhibits how you can use the \ref
+TARGET_THIS target expression and the capability of the JARS language to
+express a sequence of actions. Actions can be whatever one likes, here one of
+them is an \ref ENCHANT_CHARACTER, way more complex than the \ref ADD_ARMOR
+one.
+
+\subsection water The Water Elemental minion
+\include waterelemental.jars
+
+This one is tricky because of its trigger power. The difficult part is to
+understand that this minion kind of register evil trigger powers for other
+characters without adding any to them. Indeed, it listens to CHARACTER_DAMAGED
+events, but only when it is itself the source of the damages.
+
+Then, aother difficulty: expressing that it is the damaged character that
+should be the target of the freeze action. This is done by using the event
+response mechanism with the right parametrization.
+
+\subsection mirror The Mirror Image spell
+\include mirrorimage.jars
+
+Here, we have an object depending on another, defined previously. This exhibits
+one of the restrictions of JARS: you cannot refere to an object which is
+defined later in the file. Here, the Mirror Image spell summons two Mirror
+Images for the player playing it. This works because the Mirror Images are
+minions defined \e before the Mirror Image spell.
+
+This example also shows the ability to tell that a \ref card is not meant to be
+put in a deck. Indeed, as the \c collectible flag of the Mirror Image minion is
+set to \c false, the library won't accept to load a deck someone has put a \c
+MIRROR_IMAGE into.
+
+*/

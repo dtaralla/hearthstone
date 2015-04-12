@@ -1,0 +1,27 @@
+{
+	"id": "DRUID",
+	"type": $CARD_HERO,
+	"name": "Malfurion",
+	"power": {
+		"name": "Bear form",
+		"text": "Your hero gets +1 ATK for this turn and 1 armor.",
+		"cost": 2,
+		"actions": [{
+			"id": $ENCHANT_CHARACTER,
+			"target": {
+                "id": $TARGET_THIS
+            },
+			"enchantment": {
+				"name": "Bear form",
+				"text": "This hero gets +1 ATK until the end of the turn.",
+				"atkModifier": 1,
+				"temporary": true
+			}
+		},
+		{
+			"id": $ADD_ARMOR,
+			"quantity": 1,
+			"target": $OWNER_ALLY
+		}]
+	}
+}

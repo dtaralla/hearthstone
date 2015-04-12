@@ -125,3 +125,6 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+DISTFILES += \
+    page__card_database_format.dox

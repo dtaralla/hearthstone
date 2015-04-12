@@ -1,3 +1,6 @@
+/**
+
+
 #ifndef CARDDB_H
 #define CARDDB_H
 
@@ -15,6 +18,29 @@ class TargetExpression;
 class GroupExpression;
 class Action;
 
+/**
+ * @brief The CardDB class is a singleton that manages the database of cards
+ * available.
+ *
+ * Hearthstone is a game mostly defined by the cards it makes possible to play
+ * with. In this simulator, cards are defined in an external file as JSON-like
+ * objects. This class is able to load and parse these files, along with
+ * loading decks. Decks are JSON files too.
+ *
+ * This class is able to serve cards information when given a card identifier.
+ * A card identifier is either a human-readable string or an integer. The
+ * information served by this database is read-only and cannot be altered in
+ * any way.
+ *
+ * The database is built by loading a database file whose format is described
+ * in the \ref card_database_format appendix.
+ *
+ * Integer identifiers for cards are related to the order in which the cards
+ * are described in the database file. If the database file is modified, the
+ * integer identifier of the same card can therefore be altered. The
+ * maxCardId() method allows one to get an indication of the number of cards
+ * available (attention: this also takes into account heroes' special powers).
+ */
 class CardDB
 {
 public:

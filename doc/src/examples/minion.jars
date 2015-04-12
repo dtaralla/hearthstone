@@ -1,0 +1,26 @@
+{
+	"id": "SHATTERED_SUN_CLERIC",
+	"type": $CARD_MINION,
+	"name": "Shattered Sun Cleric",
+	"text": "<b>Battlecry:</b> Give a friendly minion +1/+1",
+	"cost": 3,
+	"attack": 3,
+	"health": 2,
+	"battlecry": {
+		"id": $ENCHANT_CHARACTER,
+		"target": {
+            "id": $SELECT_N_IN_GROUP,
+            "quantity": 1,
+            "group": {
+                "owner": $OWNER_ALLY,
+                "subtype": $TYPE_MINION
+            }
+        },
+		"enchantment": {
+			"name": "Sunwell energy drink",
+			"text": "+1/+1",
+			"atkModifier": 1,
+			"maxHPModifier": 1
+		}
+	}
+}

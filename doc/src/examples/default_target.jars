@@ -1,0 +1,8 @@
+{
+    "id": $SELECT_N_IN_GROUP,
+    "quantity": 1,
+    "group": {
+        "owner": $OWNER_ANY,
+        "subtype": $TYPE_CHARACTER
+    }
+}

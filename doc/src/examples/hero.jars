@@ -1,0 +1,14 @@
+{
+	"id": "WARRIOR",
+	"type": $CARD_HERO,
+	"name": "Garrosh",
+	"power": {
+		"name": "Armor Up!",
+		"text": "Gain 2 Armor.",
+		"actions": {
+            "id": $ADD_ARMOR,
+            "quantity": 2,
+            "target": $OWNER_ALLY
+		}
+	}
+}

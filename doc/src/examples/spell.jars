@@ -1,0 +1,20 @@
+{
+	"id": "ARCANE_MISSILES",
+	"type": $CARD_SPELL,
+	"name": "Arcane Missiles",
+	"text": "Deal 3 damage randomly split among enemy characters.",
+	"cost": 1,
+	"actions": {
+        "id": $DEAL_DMG,
+        "quantity": 1,
+        "target": {
+            "id": $PICK_N_FROM_GROUP,
+            "quantity": 3,
+            "withReplacement": true,
+            "group": {
+                "owner": $OWNER_ENEMY,
+                "subtype": $TYPE_CHARACTER
+            }
+        }
+    }
+}

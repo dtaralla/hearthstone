@@ -1,0 +1,23 @@
+{
+	"id": "WATER_ELEMENTAL",
+	"type": $CARD_MINION,
+	"name": "Water Elemental",
+	"text": "<b>Freeze</b> any character damaged by this minion.",
+	"cost": 4,
+	"attack": 3,
+	"health": 6,
+    "triggerPowers": {
+        "event": {
+            "id": $CHARACTER_DAMAGED,
+            "damagers": { "id": $TARGET_THIS },
+            "acceptedSources": $DMG_SOURCE_CHARACTER
+        },
+        "actions": {
+            "id": $SET_FROZEN,
+            "target": {
+                "id": $EVENT_CHARACTER_PARAMS,
+                "params": $DAMAGED_CHARACTER
+            }
+        }
+    }
+}

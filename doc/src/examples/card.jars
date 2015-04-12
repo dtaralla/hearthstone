@@ -1,0 +1,15 @@
+{
+    "id": "ABOMINATION",
+    "type": $CARD_MINION,
+    "name": "Abomination",
+    "text": "<b>Taunt</b>. <b>Deathrattle:</b> Deal 2 damage to ALL characters.",
+    "cost": 5,
+    "attack": 4,
+    "health": 4,
+    "abilities": $ABILITY_TAUNT,
+    "deathrattles": {
+        "id": $DEAL_DMG,
+        "quantity": 2,
+        "target": { "id": $TARGET_GROUP }
+    }
+}

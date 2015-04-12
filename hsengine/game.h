@@ -696,14 +696,14 @@ private:
 
     /**
      * @brief Utility function to add the current player's hand to an
-     * environment object as a vector of \i N quantities (with \i N the
+     * environment object as a vector of \e N quantities (with \e N the
      * possible cards in the game).
      *
-     * Quantity at position \i i the amount of cards of ID \i i the current
+     * Quantity at position \e i the amount of cards of ID \e i the current
      * player has in his hand.
      *
      * @param[out] environment The list representing the current environment;
-     * this will add \i N integers to the list.
+     * this will add \e N integers to the list.
      */
     void mAddHandAsVectorTo(QVector<float>& environment) const;
 };

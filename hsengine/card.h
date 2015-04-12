@@ -19,10 +19,10 @@ class Enchantment;
  * There are multiple card types in Hearthstone: minions, spells, secrets,
  * weapons, but also heroes. A Card is what a player plays with. Instead of
  * duplicating the base information of all cards sharing the same identity,
- * each card has a \i base CardInfo common to all cards having the same
+ * each card has a \e base CardInfo common to all cards having the same
  * identity. The information about the card itself (its description,
  * independent of the current game) is contained in another object, a CardInfo
- * object, wich can be used to compare this very \i instance characteristics to
+ * object, wich can be used to compare this very \e instance characteristics to
  * the original ones. This base information can be accessed using the base()
  * method of the Card.
  *
@@ -41,7 +41,7 @@ class Enchantment;
  * the parent of all other card type classes and provides a base implementation
  * for all those common things amongst cards.
  *
- * @note A Card has \i always to be initialized using its initCard() method
+ * @note A Card has \e always to be initialized using its initCard() method
  * before being usable.
  *
  * @sa CardTypes, CardType, Character, Minion, Hero, Spell
@@ -56,7 +56,7 @@ public:
      * @param owner The player owning this card. Might be \c NULL, as long as a
      * non-\c NULL owner is given when calling initCard().
      *
-     * @note A Card has \i always to be initialized using its initCard() method
+     * @note A Card has \e always to be initialized using its initCard() method
      * before being usable.
      */
     Card(Player* owner = NULL);
@@ -73,7 +73,7 @@ public:
      * Refer to the documentation of the implementations of this abstract
      * method for more information.
      *
-     * @warning Hero cards are the only cards which do \i not have any play
+     * @warning Hero cards are the only cards which do \e not have any play
      * actions. All others card types are guaranteed to return a valid
      * PlayAction object.
      *
@@ -90,7 +90,7 @@ public:
      * describing its effects; for a Minion, it would be a list of one element
      * containing a SummonMinionAction;...
      *
-     * @warning As Hero cards do \i not have any play actions, they also have
+     * @warning As Hero cards do \e not have any play actions, they also have
      * no play action consequences. All others card types are guaranteed to
      * return a valid list of Action objects.
      *
@@ -115,10 +115,10 @@ public:
      * and whose value is completely defined by the loaded database file.
      *
      * Instead of duplicating the base information of all cards sharing the
-     * same identity, each card has a \i base CardInfo common to all cards
+     * same identity, each card has a \e base CardInfo common to all cards
      * having the same identity. The information about the card itself (its
      * description, independent of the current game) is contained in another
-     * object, a CardInfo object, wich can be used to compare this very \i
+     * object, a CardInfo object, wich can be used to compare this very \e
      * instance characteristics to the original ones.
      *
      * @return A CardInfo object representing the information shared by all
@@ -152,7 +152,7 @@ public:
      * lifecycle. If no owner Player was given when constructing this Card,
      * \a cardOwner has to be non-\c NULL.
      *
-     * @warning A Card has \i always to be initialized using this method before
+     * @warning A Card has \e always to be initialized using this method before
      * being usable.
      *
      * @param cardOwner The Player owner of this card. If no owner Player was
@@ -251,7 +251,7 @@ public:
      * put into the graveyard or is silenced. If this card is an already
      * silenced character, the trigger powers will still be given as the
      * silence only applies to the enchantments and abilities that were active
-     * \i before it was applied.
+     * \e before it was applied.
      *
      * A card has a <i>trigger power</i> if it reacts to some kind of event.
      * A card can have several trigger powers, if it reacts to different kinds

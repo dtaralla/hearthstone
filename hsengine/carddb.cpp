@@ -568,7 +568,7 @@ Action* CardDB::mParseAction(const QJsonObject& action, Event::Type eType)
         case DRAW_CARD:
             return new DrawCardAction(
                         action.value("quantity").toInt(1),
-                        action.value("targetOwner").toInt(Owners::ALLY));
+                        action.value("target").toInt(Owners::ALLY));
 
         case ENCHANT_CHARACTER:
             return new EnchantAction(

@@ -1,5 +1,5 @@
 /**
- * @file main.cpp
+ * @file hsdatabasegenerator/main.cpp
  *
  * Contains the main program executed by the Hearthstone Simulator Database
  * Generator.

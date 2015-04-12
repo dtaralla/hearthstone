@@ -297,23 +297,23 @@ namespace ActionTypes {
      * @sa Actions, GameActions, CardActions, ActionType, availableTypes()
      */
     enum ActionType {
-        ADD_ARMOR = 0,
-        ADD_MANA,
-        ATTACK,
-        DEAL_DMG,
-        DESTROY_ENCHANTMENT,
-        DRAW_CARD,
-        ENCHANT_CHARACTER,
-        END_TURN,
-        FREEZE_AFTER_DMG,
-        FREEZE_AFTER_HEAL,
-        HEAL,
-        PLAY_CARD,
-        SET_FROZEN,
-        SILENCE_TARGET,
-        SPECIAL_POWER,
-        SUMMON,
-        SUMMON_MINIONS
+        ADD_ARMOR = 0,       //!< Adds some armor to one or both players.
+        ADD_MANA,            //!< Adds some mana to one or both players.
+        ATTACK,              //!< The common attack action.
+        DEAL_DMG,            //!< Deals damage to a (set of) (random) targets.
+        DESTROY_ENCHANTMENT, //!< Destroys an enchantment.
+        DRAW_CARD,           //!< Make one or both players draw some cards.
+        ENCHANT_CHARACTER,   //!< Enchants a character.
+        END_TURN,            //!< Ends the turn of a player.
+        FREEZE_AFTER_DMG,    //!< Deals damage then freezes a (set of) (random) targets.
+        FREEZE_AFTER_HEAL,   //!< Heals then freezes a (set of) (random) targets.
+        HEAL,                //!< Heals a (set of) (random) targets.
+        PLAY_CARD,           //!< Plays a given card.
+        SET_FROZEN,          //!< Freezes a (set of) (random) targets.
+        SILENCE_TARGET,      //!< Silence a (set of) (random) targets.
+        SPECIAL_POWER,       //!< Makes the hero use its special power.
+        SUMMON,              //!< Summon a minion (here, consequence of playing the minion)
+        SUMMON_MINIONS       //!< Summon some minions of a given type (here, a spell consequence for instance).
     };
 
     /**

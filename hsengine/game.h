@@ -437,7 +437,7 @@ public:
      * once these card types will be implemented.
      *
      * @param p If not \c NULL, the list will only contain cards owned by the
-     * \o of this player. Else, all cards are returned.
+     * \a o of this player. Else, all cards are returned.
      *
      * @param o The owner qualifier on \a p. If equal to ANY_OWNER, all cards
      * are returned.
@@ -460,7 +460,7 @@ public:
      * in such cases.
      *
      * @param p If not \c NULL, the list will only contain characters owned by
-     * the \o of this player. Else, all characters are returned.
+     * the \a o of this player. Else, all characters are returned.
      *
      * @param o The owner qualifier on \a p. If equal to ANY_OWNER, all
      * characters are returned.

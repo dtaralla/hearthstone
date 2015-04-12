@@ -350,7 +350,7 @@
 		"id": $SUMMON_MINIONS,
 		"minion": "MECHANICAL_DRAGONLING",
 		"quantity": 1,
-		"targetOwner": $OWNER_ALLY
+		"target": $OWNER_ALLY
 	}
 },
 {
@@ -481,7 +481,7 @@
 		"id": $SUMMON_MINIONS,
 		"minion": "MURLOC_SCOUT",
 		"quantity": 1,
-		"targetOwner": $OWNER_ALLY
+		"target": $OWNER_ALLY
 	}
 },
 {
@@ -507,7 +507,7 @@
 		"id": $SUMMON_MINIONS,
 		"minion": "BOAR",
 		"quantity": 1,
-		"targetOwner": $OWNER_ALLY
+		"target": $OWNER_ALLY
 	}
 },
 {
@@ -854,7 +854,7 @@
 		"id": $SUMMON_MINIONS,
 		"minion": "MIRROR_IMAGE_MINION",
 		"quantity": 2,
-		"targetOwner": $OWNER_ALLY
+		"target": $OWNER_ALLY
 	}
 }, {
 	"id": "WATER_ELEMENTAL",

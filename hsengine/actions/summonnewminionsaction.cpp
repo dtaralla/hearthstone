@@ -60,7 +60,7 @@ void SummonNewMinionsAction::resolve(const Event* e)
             if (owner->minions()->size() >= 7)
                 break;
 
-            Minion* m = new Minion(m_base); // FIXME: Never deleted...!
+            Minion* m = new Minion(m_base);
             m->initCard(owner);
             game->summonMinion(m, -1);
         }
@@ -72,7 +72,7 @@ void SummonNewMinionsAction::resolve(const Event* e)
             if (owner->minions()->size() >= 7)
                 break;
 
-            Minion* m = new Minion(m_base); // FIXME: Never deleted...!
+            Minion* m = new Minion(m_base);
             m->initCard(owner);
             game->summonMinion(m, -1);
         }

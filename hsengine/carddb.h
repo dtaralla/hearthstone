@@ -96,6 +96,7 @@ private:
 
     Action* mParseAction(const QJsonObject& action, Event::Type eType = Event::NO_EVENT);
     QVector<Action*>* mParseActionList(const QJsonValue& actions, Event::Type eType = Event::NO_EVENT);
+    Ability mParseAbilities(const QJsonValue& abs);
     Trigger* mParseTrigger(const QJsonObject& trigger);
     CharacterType mParseMinionType(const QJsonValue& ct);
     CharacterType mParseTargetType(const QJsonValue& ct);

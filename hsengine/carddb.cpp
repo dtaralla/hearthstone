@@ -180,20 +180,6 @@ void CardDB::buildCardDB(const QString& fromFile)
                     deathRattles.append(mParseAction(drs.toObject()));
             }
 
-
-            // Parse abilities
-            Ability abilities = Abilities::NO_ABILITY;
-            QJsonValue abs = o.value("abilities");
-            if (abs.isArray()) {
-                foreach (QJsonValue v2, abs.toArray()) {
-                    if (!v2.isDouble())
-                        qCritical() << "Value" << v2 << "is not an identifier (int).";
-                    abilities |= v2.toInt(Abilities::NO_ABILITY);
-                }
-            }
-            else
-                abilities = o.value("abilities").toInt(Abilities::NO_ABILITY);
-
             // Parse battlecry
             QVector<Action*> battlecry;
             QJsonValue bcs = o.value("battlecry");
@@ -224,7 +210,7 @@ void CardDB::buildCardDB(const QString& fromFile)
                 o.value("attack").toInt(-1),
                 battlecry,
                 deathRattles,
-                abilities,
+                mParseAbilities(o.value("abilities")),
                 triggerPowers,
                 subtype,
                 o.value("collectible").toBool(true));
@@ -638,7 +624,7 @@ Enchantment* CardDB::mParseEnchantment(const QJsonObject& e)
             e.value("temporary").toBool(false),
             e.value("name").toString("invalid_string"),
             e.value("text").toString("invalid_string"),
-            e.value("abilities").toInt(Abilities::NO_ABILITY),
+            mParseAbilities(e.value("abilities")),
             triggerPowers,
             e.value("maxHPModifier").toInt(0),
             e.value("atkModifier").toInt(0),
@@ -696,6 +682,22 @@ QVector<Action*>* CardDB::mParseActionList(const QJsonValue& actions, Event::Typ
     }
 
     return as;
+}
+
+Ability CardDB::mParseAbilities(const QJsonValue& abs)
+{
+    Ability abilities = Abilities::NO_ABILITY;
+    if (abs.isArray()) {
+        foreach (QJsonValue v2, abs.toArray()) {
+            if (!v2.isDouble())
+                qCritical() << "Value" << v2 << "is not an identifier (int).";
+            abilities |= v2.toInt(Abilities::NO_ABILITY);
+        }
+    }
+    else
+        abilities = abs.toInt(Abilities::NO_ABILITY);
+
+    return abilities;
 }
 
 void CardDB::mParseTriggerPower(const QJsonObject& trgPower,

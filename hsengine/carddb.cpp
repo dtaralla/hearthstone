@@ -439,6 +439,12 @@ void CardDB::mInitTextIDsTranslationTable()
     mTextIDsTranslationTable.insert("DMG_SOURCE_HERO", CharacterDamagedTrigger::HERO);
     mTextIDsTranslationTable.insert("DMG_SOURCE_MINION", CharacterDamagedTrigger::MINION);
     mTextIDsTranslationTable.insert("DMG_SOURCE_SPELL", CharacterDamagedTrigger::SPELL);
+
+    mTextIDsTranslationTable.insert("HEAL_SOURCE_ANY", CharacterHealedTrigger::ANY);
+    mTextIDsTranslationTable.insert("HEAL_SOURCE_CHARACTER", CharacterHealedTrigger::CHARACTER);
+    mTextIDsTranslationTable.insert("HEAL_SOURCE_HERO", CharacterHealedTrigger::HERO);
+    mTextIDsTranslationTable.insert("HEAL_SOURCE_MINION", CharacterHealedTrigger::MINION);
+    mTextIDsTranslationTable.insert("HEAL_SOURCE_SPELL", CharacterHealedTrigger::SPELL);
 }
 
 

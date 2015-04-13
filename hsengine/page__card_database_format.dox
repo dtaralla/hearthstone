@@ -283,7 +283,7 @@ regardless of their \ref action_id "id" field:
         <td>\ref actionType "ActionType"</td>
         <td>Yes</td>
         <td></td>
-        <td>The action identifier. According to this field, new fields will be made mandatory</td>
+        <td>The action identifier. According to this field, new fields will be made mandatory.</td>
     </tr>
 </table>
 
@@ -656,9 +656,8 @@ objects:
         <td>Yes</td>
         <td></td>
         <td>
-            The actions to execute as a result of playing this special power.
-            If an array of \ref action objects is given, these will be executed
-            in the order they are given in the array.
+            The type of target expression you want to use. According to this
+            field, new fields might be made mandatory.
         </td>
     </tr>
 </table>
@@ -813,9 +812,9 @@ No additional fields are required.
     </tr>
 </table>
 
-\section event Event
+\section trigger Trigger
 
-The table below documents the fields accepted by all \ref event objects:
+The table below documents the fields accepted by all \ref trigger objects:
 
 <table>
     <tr>
@@ -831,23 +830,271 @@ The table below documents the fields accepted by all \ref event objects:
         <td>Yes</td>
         <td></td>
         <td>
-            The event identifier.
+            The event this triggers listens to. According to this field, new
+            fields will be made mandatory.
         </td>
     </tr>
 </table>
 
 \event{AT_TURN_END,At turn end}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c triggeringPlayer</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ANY</td>
+        <td>
+            This trigger will be activated only when it is \c triggeringPlayer
+            who ends the turn. If \ref OWNER_ANY is given, this will be
+            activated at each turn end.
+        </td>
+    </tr>
+</table>
 
+\event{AFTER_CARD_PLAYED,After a card is played}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c owningPlayer</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ANY</td>
+        <td>
+            This trigger can be activated only if the card is played by \c
+            owningPlayer.
+        </td>
+    </tr>
+    <tr>
+        <td>\c cardType</td>
+        <td>\ref cardTypes "CardType"</td>
+        <td>No</td>
+        <td>\ref CARD_MINION</td>
+        <td>
+            This trigger can be activated only if the played card has the
+            \c cardType type.
+        </td>
+    </tr>
+    <tr>
+        <td>\c characterType</td>
+        <td>\ref characterTypes "CharacterType"</td>
+        <td>No</td>
+        <td>\ref TYPE_MINION</td>
+        <td>
+            This trigger can be activated only if the played character has the
+            \c characterType subtype.
 
-\event{AFTER_BEFORE_CARD_PLAYED,After/Before a card is played}
+            @note If \c cardType is not a character card type, this field has
+            no effect.
+        </td>
+    </tr>
+</table>
+
+\event{BEFORE_CARD_PLAYED,Before a card is played}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c owningPlayer</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ANY</td>
+        <td>
+            This trigger can be activated only if the card is played by \c
+            owningPlayer.
+        </td>
+    </tr>
+    <tr>
+        <td>\c cardType</td>
+        <td>\ref cardTypes "CardType"</td>
+        <td>No</td>
+        <td>\ref CARD_MINION</td>
+        <td>
+            This trigger can be activated only if the played card has the
+            \c cardType type.
+        </td>
+    </tr>
+    <tr>
+        <td>\c characterType</td>
+        <td>\ref characterTypes "CharacterType"</td>
+        <td>No</td>
+        <td>\ref TYPE_MINION</td>
+        <td>
+            This trigger can be activated only if the played character has the
+            \c characterType subtype.
+
+            @note If \c cardType is not a character card type, this field has
+            no effect.
+        </td>
+    </tr>
+</table>
 
 \event{CHARACTER_DAMAGED,A character is damaged}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c acceptedSources</td>
+        <td>\ref dmgSource "DmgSourceType"</td>
+        <td>No</td>
+        <td>\ref DMG_SOURCE_ANY</td>
+        <td>
+            This trigger can be activated only if the damage source type is
+            included in \c acceptedSources.
+        </td>
+    </tr>
+    <tr>
+        <td>\c damagers</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>damaging character</b>
+            is a correct evaluation of this expression.
+
+            @note If \c acceptedSources is not a character source, this field
+            has no effect.
+        </td>
+    </tr>
+    <tr>
+        <td>\c damagedCharacters</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>damaged character</b>
+            is a correct evaluation of this expression.
+        </td>
+    </tr>
+</table>
 
 \event{MINION_DIES,A minion dies}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c owningPlayer</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ANY</td>
+        <td>
+            This trigger can be activated only if the dying minion is owned by
+            \c owningPlayer.
+        </td>
+    </tr>
+    <tr>
+        <td>\c minionType</td>
+        <td>\ref characterTypes "CharacterType"</td>
+        <td>No</td>
+        <td>\ref TYPE_MINION</td>
+        <td>
+            This trigger can be activated only if the dying minion has the
+            \c minionType subtype.
+        </td>
+    </tr>
+</table>
 
 \event{CHARACTER_ATTACKS,A character attacks}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c attackingCharacters</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>attacker</b> is a
+            correct evaluation of this expression.
+        </td>
+    </tr>
+    <tr>
+        <td>\c attackedCharacters</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>attacked character</b>
+            is a correct evaluation of this expression.
+        </td>
+    </tr>
+</table>
 
 \event{CHARACTER_HEALED,A character is healed}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c acceptedSources</td>
+        <td>\ref dmgSource "HealSourceType"</td>
+        <td>No</td>
+        <td>\ref HEAL_SOURCE_ANY</td>
+        <td>
+            This trigger can be activated only if the healing source type is
+            included in \c acceptedSources.
+        </td>
+    </tr>
+    <tr>
+        <td>\c healers</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>healing character</b>
+            is a correct evaluation of this expression.
+
+            @note If \c acceptedSources is not a character source, this field
+            has no effect.
+        </td>
+    </tr>
+    <tr>
+        <td>\c healedCharacters</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>Any character</td>
+        <td>
+            This trigger can be activated only if the <b>healed character</b>
+            is a valid evaluation of this expression.
+        </td>
+    </tr>
+</table>
 
 \section miscObjects Miscellaneous
 
@@ -918,11 +1165,11 @@ object:
         <th>Description</th>
     </tr>
     <tr>
-        <td>\field{tp_event,event}</td>
-        <td>An \ref event object</td>
+        <td>\field{tp_trigger,trigger}</td>
+        <td>A \ref trigger object</td>
         <td>Yes</td>
         <td></td>
-        <td>The event this trigger power responds to.</td>
+        <td>What the power reponds to.</td>
     </tr>
     <tr>
         <td>\field{tp_actions,actions}</td>
@@ -1303,6 +1550,143 @@ constant.
 </table>
 @sa Owner, Owners
 
+\subsection dmgSource Damage source types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{DMG_SOURCE_ANY}</td>
+        <td>CharacterDamagedTrigger::ANY</td>
+        <td>
+            Specifies that the damages can come from any source: minions,
+            heroes, spells, fatigue cards,...
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DMG_SOURCE_CHARACTER}</td>
+        <td>CharacterDamagedTrigger::DMG_SOURCE_CHARACTER</td>
+        <td>
+            Specifies that the damages can only come from characters.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DMG_SOURCE_HERO}</td>
+        <td>CharacterDamagedTrigger::DMG_SOURCE_HERO</td>
+        <td>
+            Specifies that the damages can only come from heroes.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DMG_SOURCE_MINION}</td>
+        <td>CharacterDamagedTrigger::DMG_SOURCE_MINION</td>
+        <td>
+            Specifies that the damages can only come from minions.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{DMG_SOURCE_SPELL}</td>
+        <td>CharacterDamagedTrigger::DMG_SOURCE_SPELL</td>
+        <td>
+            Specifies that the damages can only come from spells.
+        </td>
+    </tr>
+</table>
+@sa CharacterDamagedTrigger, CharacterDamagedTrigger::SourceType
+
+\subsection healSource Healing source types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{HEAL_SOURCE_ANY}</td>
+        <td>CharacterHealedTrigger::ANY</td>
+        <td>
+            Specifies that the healings can come from any source: minions,
+            heroes, spells,...
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEAL_SOURCE_CHARACTER}</td>
+        <td>CharacterHealedTrigger::HEAL_SOURCE_CHARACTER</td>
+        <td>
+            Specifies that the healings can only come from characters.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEAL_SOURCE_HERO}</td>
+        <td>CharacterHealedTrigger::HEAL_SOURCE_HERO</td>
+        <td>
+            Specifies that the healings can only come from heroes.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEAL_SOURCE_MINION}</td>
+        <td>CharacterHealedTrigger::HEAL_SOURCE_MINION</td>
+        <td>
+            Specifies that the healings can only come from minions.
+        </td>
+    </tr>
+    <tr>
+        <td>\field{HEAL_SOURCE_SPELL}</td>
+        <td>CharacterHealedTrigger::HEAL_SOURCE_SPELL</td>
+        <td>
+            Specifies that the healings can only come from spells.
+        </td>
+    </tr>
+</table>
+@sa CharacterHealedTrigger, CharacterHealedTrigger::SourceType
+
+\subsection eventTypes Event types
+<table>
+    <tr>
+        <th>Identifier</th>
+        <th>Related C++ resource</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{AT_TURN_END}</td>
+        <td>Event::AT_TURN_END</td>
+        <td>See \ref evt_AT_TURN_END.</td>
+    </tr>
+    <tr>
+        <td>\field{AFTER_CARD_PLAYED}</td>
+        <td>Event::AFTER_CARD_PLAYED</td>
+        <td>See \ref evt_AFTER_CARD_PLAYED.</td>
+    </tr>
+    <tr>
+        <td>\field{BEFORE_CARD_PLAYED}</td>
+        <td>Event::BEFORE_CARD_PLAYED</td>
+        <td>See \ref evt_BEFORE_CARD_PLAYED.</td>
+    </tr>
+    <tr>
+        <td>\field{CHARACTER_ATTACKS}</td>
+        <td>Event::CHARACTER_ATTACKS</td>
+        <td>See \ref evt_CHARACTER_ATTACKS.</td>
+    </tr>
+    <tr>
+        <td>\field{CHARACTER_DAMAGED}</td>
+        <td>Event::CHARACTER_DAMAGED</td>
+        <td>See \ref evt_CHARACTER_DAMAGED.</td>
+    </tr>
+    <tr>
+        <td>\field{CHARACTER_HEALED}</td>
+        <td>Event::CHARACTER_HEALED</td>
+        <td>See \ref evt_CHARACTER_HEALED.</td>
+    </tr>
+    <tr>
+        <td>\field{MINION_DIES}</td>
+        <td>Event::MINION_DIES</td>
+        <td>See \ref evt_MINION_DIES.</td>
+    </tr>
+</table>
+@sa Event, Event::Type
+
 \subsection eventResponse Event responses
 <table>
     <tr>
@@ -1377,17 +1761,17 @@ constant.
         <th>Description</th>
     </tr>
     <tr>
-        <td>\field{ALLY_HERO}</td>
+        <td>\field{ALLY_HERO,TARGET_ALLY_HERO}</td>
         <td>CardDB::ALLY_HERO</td>
         <td>See \ref tar_ALLY_HERO.</td>
     </tr>
     <tr>
-        <td>\field{ENEMY_HERO}</td>
+        <td>\field{ENEMY_HERO,TARGET_ENEMY_HERO}</td>
         <td>CardDB::ENEMY_HERO</td>
         <td>See \ref tar_ENEMY_HERO.</td>
     </tr>
     <tr>
-        <td>\field{BOTH_HEROES}</td>
+        <td>\field{BOTH_HEROES,TARGET_BOTH_HEROES}</td>
         <td>CardDB::BOTH_HEROES</td>
         <td>See \ref tar_BOTH_HEROES.</td>
     </tr>
@@ -1412,7 +1796,7 @@ constant.
         <td>See \ref tar_TARGET_THIS.</td>
     </tr>
     <tr>
-        <td>\field{EVENT_CHARACTER_PARAMS}</td>
+        <td>\field{EVENT_CHARACTER_PARAMS,}</td>
         <td>CardDB::EVENT_CHARACTER_PARAMS</td>
         <td>See \ref tar_EVENT_CHARACTER_PARAMS.</td>
     </tr>

@@ -707,16 +707,8 @@ void CardDB::mParseTriggerPower(const QJsonObject& trgPower,
     if (actions.isUndefined())
         qCritical() << "No actions for power" << trgPower;
 
-    // TODO: Normalize event syntax
-    Event::Type event;
     QJsonObject eventObj = trgPower.value("event").toObject();
-    if (eventObj.isEmpty() || eventObj.value("id").toInt(-1) == -1) {
-        event = (Event::Type) trgPower.value("event").toInt(-1);
-        if (event == -1)
-            qCritical() << "Trigger power" << trgPower << "has no valid 'event' field.";
-    }
-    else
-        event = (Event::Type) eventObj.value("id").toInt();
+    Event::Type event = eventObj.value("id").toInt(-1);
 
     QVector<Action*>* as = mParseActionList(actions, event);
     Trigger* t = NULL;

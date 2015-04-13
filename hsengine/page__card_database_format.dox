@@ -343,7 +343,7 @@ The following code features an action expressed in JARS:
         </td>
     </tr>
     <tr>
-        <td>\c owner</td>
+        <td>\c target</td>
         <td>\ref owners "OwnerQualifier"</td>
         <td>No</td>
         <td>\ref OWNER_ALLY</td>
@@ -398,19 +398,244 @@ The following code features an action expressed in JARS:
 
 \action{DRAW_CARD,Draw some cards}
 
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The number of cards to draw. If there are not enough cards in the
+            deck, the missing cards will be Fatigue cards.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ALLY</td>
+        <td>
+            The cards will be drawn for:
+            \li \ref OWNER_ALLY : the ally player
+            \li \ref OWNER_ENEMY : the enemy player
+            \li \ref OWNER_ANY : both players
+        </td>
+    </tr>
+</table>
+
 \action{ENCHANT_CHARACTER,Enchant a (set of) character(s)}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c enchantment</td>
+        <td>An \ref enchantment object</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The enchantment to apply on \c target.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
 
 \action{FREEZE_AFTER_DMG,Deal damage then freeze the target(s)}
 
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of damage to deal.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
+
 \action{FREEZE_AFTER_HEAL,Heal then freeze the target(s)}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of damage to heal.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
 
 \action{HEAL,Heal a (set of) character(s)}
 
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of damage to heal.
+        </td>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
+
 \action{SET_FROZEN,Freeze a (set of) character(s)}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+        </td>
+    </tr>
+</table>
 
 \action{SILENCE_TARGET,Silence a (set of) character(s)}
 
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c target</td>
+        <td>A \ref targetExpressions "TargetExpression" object</td>
+        <td>No</td>
+        <td>\include default_target.jars</td>
+        <td>
+            An expression representing the target.
+
+            @warning This cannot evaluate to nor contain a hero!
+        </td>
+    </tr>
+</table>
+
 \action{SUMMON_MINIONS,Summon some minions}
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c minion</td>
+        <td>String</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The human-readable identifier of the minion to summon. This minion
+            must have been defined earlier in the file, else JARS won't
+            recognize this string as a valid minion identifier.
+        </td>
+    </tr>
+    <tr>
+        <td>\c quantity</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>1</td>
+        <td>
+            The quantity of \c minion to summon.
+        </td>
+    </tr>
+    <tr>
+        <td>\c targetOwner</td>
+        <td>\ref owners "OwnerQualifier"</td>
+        <td>No</td>
+        <td>\ref OWNER_ALLY</td>
+        <td>
+            The minion(s) will be summoned for:
+            \li \ref OWNER_ALLY : the ally player
+            \li \ref OWNER_ENEMY : the enemy player
+            \li \ref OWNER_ANY : both players
+        </td>
+</table>
 
 \section targetExpressions Target expression
 
@@ -588,6 +813,42 @@ No additional fields are required.
     </tr>
 </table>
 
+\section event Event
+
+The table below documents the fields accepted by all \ref event objects:
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\field{event_id,id}</td>
+        <td>\ref eventTypes "EventType"</td>
+        <td>Yes</td>
+        <td></td>
+        <td>
+            The event identifier.
+        </td>
+    </tr>
+</table>
+
+\event{AT_TURN_END,At turn end}
+
+
+\event{AFTER_BEFORE_CARD_PLAYED,After/Before a card is played}
+
+\event{CHARACTER_DAMAGED,A character is damaged}
+
+\event{MINION_DIES,A minion dies}
+
+\event{CHARACTER_ATTACKS,A character attacks}
+
+\event{CHARACTER_HEALED,A character is healed}
+
 \section miscObjects Miscellaneous
 
 \subsection specialPower Special power
@@ -717,9 +978,104 @@ groupExpressions object:
     </tr>
 </table>
 
-\subsection event Event
-
 \subsection enchantment Enchantment
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Mandatory</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>\c name</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>
+            The enchantment name. This is not an ID or anything alike, but just
+            data for a possible user interface.
+        </td>
+    </tr>
+    <tr>
+        <td>\c text</td>
+        <td>String</td>
+        <td>No</td>
+        <td>"invalid_string"</td>
+        <td>
+            The enchantment text description. This is just data for a possible
+            user interface.
+        </td>
+    </tr>
+    <tr>
+        <td>\c costModifier</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>0</td>
+        <td>
+            The modifier on the target's mana cost. Mana cost can never go
+            below 0.
+        </td>
+    </tr>
+    <tr>
+        <td>\c maxHPModifier</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>0</td>
+        <td>
+            The modifier on the target's maximum health points. If maximum
+            health would go below 1, this kills the enchanted minion.
+
+            When maximum health is increased by an enchantment, the character's
+            current health increases by the same amount.
+
+            When maximum health is decreased by an enchantment or the removal
+            of enchantments, the actual health of the character will only
+            decrease as far as the new maximum.
+        </td>
+    </tr>
+    <tr>
+        <td>\c atkModifier</td>
+        <td>Integer</td>
+        <td>No</td>
+        <td>0</td>
+        <td>
+            The modifier on the target's attack points. Attack can never go
+            below 0. Characters with 0 attack point cannot attack.
+        </td>
+    </tr>
+    <tr>
+        <td>\c abilities</td>
+        <td>Array of \ref abilities "Ability" constants, or a single \ref abilities "Ability" constant</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The additional abilities the target will benefit (or suffer) from
+            as long as it has this enchantment.
+        </td>
+    </tr>
+    <tr>
+        <td>\c triggerPowers</td>
+        <td>Array of \ref triggerPower objects, or a single \ref triggerPower object</td>
+        <td>No</td>
+        <td>Empty list</td>
+        <td>
+            The additional trigger powers the target will benefit (or suffer)
+            from as long as it has this enchantment.
+        </td>
+    </tr>
+    <tr>
+        <td>\c temporary</td>
+        <td>Boolean</td>
+        <td>No</td>
+        <td>\c false</td>
+        <td>
+            Whether this enchantment lasts only until the end of the turn it
+            was cast.
+        </td>
+    </tr>
+</table>
 
 The following code features an enchantment expressed in JARS:
 \include enchantment.jars

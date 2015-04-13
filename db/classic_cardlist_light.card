@@ -68,10 +68,10 @@
 	"attack": 1,
 	"health": 3,
 	"triggerPowers": {
-		"event": {
-      "id": $CHARACTER_DAMAGED,
-		  "damagedCharacters": { "id": $TARGET_THIS }
-    },
+		"trigger": {
+            "event": $CHARACTER_DAMAGED,
+            "damagedCharacters": { "id": $TARGET_THIS }
+        },
 		"actions": {
 			"id": $DRAW_CARD
 		}
@@ -86,14 +86,14 @@
 	"attack": 1,
 	"health": 3,
 	"triggerPowers": {
-		"event": $BEFORE_CARD_PLAYED,
-		"owningPlayer": $OWNER_ALLY,
-		"cardType": $CARD_SPELL,
+		"trigger": {
+            "event": $BEFORE_CARD_PLAYED,
+            "owningPlayer": $OWNER_ALLY,
+            "cardType": $CARD_SPELL
+        },
 		"actions": {
 			"id": $ENCHANT_CHARACTER,
-			"target": {
-        "id": $TARGET_THIS
-      },
+			"target": { "id": $TARGET_THIS },
 			"enchantment": {
 				"name": "Mana drink",
 				"text": "+1 ATK",
@@ -407,15 +407,13 @@
 	"attack": 2,
 	"health": 7,
 	"triggerPowers": {
-		"event": {
-      "id": $CHARACTER_DAMAGED,
-		  "damagedCharacters": { "id": $TARGET_THIS }
-    },
+		"trigger": {
+            "event": $CHARACTER_DAMAGED,
+		    "damagedCharacters": { "id": $TARGET_THIS }
+        },
 		"actions": {
 			"id": $ENCHANT_CHARACTER,
-      "target": {
-        "id": $TARGET_THIS
-      },
+            "target": { "id": $TARGET_THIS },
 			"enchantment": {
 				"name": "Enraged!",
 				"text": "+3 ATK",
@@ -864,20 +862,20 @@
 	"cost": 4,
 	"attack": 3,
 	"health": 6,
-  "triggerPowers": {
-    "event": {
-      "id": $CHARACTER_DAMAGED,
-      "damagers": { "id": $TARGET_THIS },
-      "acceptedSources": $DMG_SOURCE_CHARACTER
-    },
-    "actions": {
-      "id": $SET_FROZEN,
-      "target": {
-        "id": $EVENT_CHARACTER_PARAMS,
-        "params": $DAMAGED_CHARACTER
-      }
+    "triggerPowers": {
+        "trigger": {
+            "event": $CHARACTER_DAMAGED,
+            "damagers": { "id": $TARGET_THIS },
+            "acceptedSources": $DMG_SOURCE_CHARACTER
+        },
+        "actions": {
+            "id": $SET_FROZEN,
+            "target": {
+                "id": $EVENT_CHARACTER_PARAMS,
+                "params": $DAMAGED_CHARACTER
+            }
+        }
     }
-  }
 }, {
 	"id": "IRONBEAK_OWL",
 	"type": $CARD_MINION,

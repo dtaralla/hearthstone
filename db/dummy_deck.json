@@ -1,13 +1,13 @@
 [{
   "id": "FROSTBOLT",
-  "quantity": 2
+  "quantity": 0
 },{
   "id": "ACOLYTE_OF_PAIN",
-  "quantity": 28
+  "quantity": 10
 },{
   "id": "MANA_WYRM",
-  "quantity": 0
+  "quantity": 10
 },{
   "id": "WATER_ELEMENTAL",
-  "quantity": 0
+  "quantity": 10
 }]

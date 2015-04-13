@@ -65,7 +65,9 @@ SOURCES += game.cpp \
     dbouput.cpp \
     gamecontroller.cpp \
     gamethread.cpp \
-    actions/targetedaction.cpp
+    actions/targetedaction.cpp \
+    triggers/characterhealedtrigger.cpp \
+    triggers/characterattackstrigger.cpp
 
 HEADERS += game.h \
     cardinfo.h \
@@ -119,7 +121,9 @@ HEADERS += game.h \
     dbouput.h \
     gamecontroller.h \
     gamethread.h \
-    actions/targetedaction.h
+    actions/targetedaction.h \
+    triggers/characterhealedtrigger.h \
+    triggers/characterattackstrigger.h
 
 unix {
     target.path = /usr/lib

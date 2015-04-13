@@ -14,8 +14,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-    qsrand(time(NULL));
-    //qsrand(0);
+    //qsrand(time(NULL));
+    qsrand(0);
     qInstallMessageHandler(myMessageOutput);
     if (argc < 7)
         qCritical() << "Required params: cardDB hero1_id hero2_id deck1.json deck2.json player2Type[in 0 1 2 3]";

@@ -1,6 +1,3 @@
-/**
-
-
 #ifndef CARDDB_H
 #define CARDDB_H
 

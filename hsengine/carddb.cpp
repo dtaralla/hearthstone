@@ -23,6 +23,8 @@
 #include "triggers/minionkilledtrigger.h"
 #include "triggers/turnendtrigger.h"
 #include "triggers/characterdamagedtrigger.h"
+#include "triggers/characterhealedtrigger.h"
+#include "triggers/characterattackstrigger.h"
 #include "triggers/cardplayedtrigger.h"
 #include "expressions/target/targetsfromgroupexpression.h"
 #include "expressions/target/targetthisexpression.h"
@@ -707,51 +709,81 @@ void CardDB::mParseTriggerPower(const QJsonObject& trgPower,
     if (actions.isUndefined())
         qCritical() << "No actions for power" << trgPower;
 
-    QJsonObject eventObj = trgPower.value("event").toObject();
-    Event::Type event = eventObj.value("id").toInt(-1);
+    QJsonObject trigger = trgPower.value("trigger").toObject();
+    const int raw_eventType = trigger.value("event").toInt(-1);
+    if (raw_eventType == -1)
+        qCritical() << "Event type missing or invalid" << trgPower;
 
+    Event::Type event = (Event::Type) raw_eventType;
     QVector<Action*>* as = mParseActionList(actions, event);
     Trigger* t = NULL;
     switch (event) {
         case Event::AT_TURN_END:
             t = new TurnEndTrigger(
                      as,
-                     trgPower.value("triggeringPlayer").toInt(Owners::ANY_OWNER));
+                     trigger.value("triggeringPlayer").toInt(Owners::ANY_OWNER));
             break;
 
         case Event::AFTER_CARD_PLAYED:
         case Event::BEFORE_CARD_PLAYED:
             t = new CardPlayedTrigger(
                      as,
-                     trgPower.value("cardType").toInt(CardTypes::CARD_MINION),
-                     trgPower.value("characterType").toInt(CharacterTypes::MINION),
-                     trgPower.value("owningPlayer").toInt(Owners::ANY_OWNER));
+                     trigger.value("cardType").toInt(CardTypes::CARD_MINION),
+                     trigger.value("characterType").toInt(CharacterTypes::MINION),
+                     trigger.value("owningPlayer").toInt(Owners::ANY_OWNER));
             break;
 
         case Event::CHARACTER_DAMAGED: {
             TargetExpression* damagers = NULL;
-            if (eventObj.value("damagers").isObject())
-                damagers = mParseTarget(eventObj.value("damagers").toObject(), Event::CHARACTER_DAMAGED);
+            if (trigger.value("damagers").isObject())
+                damagers = mParseTarget(trigger.value("damagers").toObject(), Event::CHARACTER_DAMAGED);
 
             TargetExpression* damagedCharacters = NULL;
-            if (eventObj.value("damagedCharacters").isObject())
-                damagedCharacters = mParseTarget(eventObj.value("damagedCharacters").toObject(), Event::CHARACTER_DAMAGED);
+            if (trigger.value("damagedCharacters").isObject())
+                damagedCharacters = mParseTarget(trigger.value("damagedCharacters").toObject(), Event::CHARACTER_DAMAGED);
 
             t = new CharacterDamagedTrigger(as, QSharedPointer<TargetExpression>(damagers),
                                             QSharedPointer<TargetExpression>(damagedCharacters),
-                                            (CharacterDamagedTrigger::SourceType) eventObj.value("acceptedSources").toInt(CharacterDamagedTrigger::ANY));
+                                            (CharacterDamagedTrigger::SourceType) trigger.value("acceptedSources").toInt(CharacterDamagedTrigger::ANY));
             break;
         }
 
         case Event::MINION_DIES:
             t = new MinionKilledTrigger(
                      as,
-                     trgPower.value("owningPlayer").toInt(Owners::ANY_OWNER),
-                     trgPower.value("minionType").toInt(CharacterTypes::MINION));
+                     trigger.value("owningPlayer").toInt(Owners::ANY_OWNER),
+                     trigger.value("minionType").toInt(CharacterTypes::MINION));
             break;
 
-        case Event::CHARACTER_ATTACKS:
-        case Event::CHARACTER_HEALED:
+        case Event::CHARACTER_HEALED: {
+            TargetExpression* healers = NULL;
+            if (trigger.value("healers").isObject())
+                healers = mParseTarget(trigger.value("healers").toObject(), Event::CHARACTER_HEALED);
+
+            TargetExpression* healedCharacters = NULL;
+            if (trigger.value("healedCharacters").isObject())
+                healedCharacters = mParseTarget(trigger.value("healedCharacters").toObject(), Event::CHARACTER_HEALED);
+
+            t = new CharacterHealedTrigger(as, QSharedPointer<TargetExpression>(healers),
+                                           QSharedPointer<TargetExpression>(healedCharacters),
+                                           (CharacterHealedTrigger::SourceType) trigger.value("acceptedSources").toInt(CharacterHealedTrigger::ANY));
+            break;
+        }
+
+        case Event::CHARACTER_ATTACKS: {
+            TargetExpression* atkers = NULL;
+            if (trigger.value("attackingCharacters").isObject())
+                atkers = mParseTarget(trigger.value("attackingCharacters").toObject(), Event::CHARACTER_ATTACKS);
+
+            TargetExpression* atkedCharacters = NULL;
+            if (trigger.value("attackedCharacters").isObject())
+                atkedCharacters = mParseTarget(trigger.value("attackedCharacters").toObject(), Event::CHARACTER_ATTACKS);
+
+            t = new CharacterAttacksTrigger(as, QSharedPointer<TargetExpression>(atkers),
+                                            QSharedPointer<TargetExpression>(atkedCharacters));
+            break;
+        }
+
         default:
             qCritical() << "Event type" << event << "is not supported";
     }

@@ -68,10 +68,10 @@
 	"attack": 1,
 	"health": 3,
 	"triggerPowers": {
-		"event": {
-      "id": 5,
-		  "damagedCharacters": { "id": 7 }
-    },
+		"trigger": {
+            "event": 5,
+            "damagedCharacters": { "id": 7 }
+        },
 		"actions": {
 			"id": 5
 		}
@@ -86,20 +86,20 @@
 	"attack": 1,
 	"health": 3,
 	"triggerPowers": {
-		"event": 3,
-		"owningPlayer": 1,
-		"cardType": 4,
-		"actions": {
-			"id": 6,
-			"target": {
-        "id": 7
+      "trigger": {
+          "event": 3,
+          "owningPlayer": 1,
+          "cardType": 4
       },
-			"enchantment": {
-				"name": "Mana drink",
-				"text": "+1 ATK",
-				"atkModifier": 1
-			}
-		}
+      "actions": {
+          "id": 6,
+          "target": { "id": 7 },
+          "enchantment": {
+              "name": "Mana drink",
+              "text": "+1 ATK",
+              "atkModifier": 1
+          }
+      }
 	}
 },
 {
@@ -350,7 +350,7 @@
 		"id": 16,
 		"minion": "MECHANICAL_DRAGONLING",
 		"quantity": 1,
-		"targetOwner": 1
+		"target": 1
 	}
 },
 {
@@ -407,15 +407,13 @@
 	"attack": 2,
 	"health": 7,
 	"triggerPowers": {
-		"event": {
-      "id": 5,
-		  "damagedCharacters": { "id": 7 }
-    },
+		"trigger": {
+            "event": 5,
+		    "damagedCharacters": { "id": 7 }
+        },
 		"actions": {
 			"id": 6,
-      "target": {
-        "id": 7
-      },
+            "target": { "id": 7 },
 			"enchantment": {
 				"name": "Enraged!",
 				"text": "+3 ATK",
@@ -481,7 +479,7 @@
 		"id": 16,
 		"minion": "MURLOC_SCOUT",
 		"quantity": 1,
-		"targetOwner": 1
+		"target": 1
 	}
 },
 {
@@ -507,7 +505,7 @@
 		"id": 16,
 		"minion": "BOAR",
 		"quantity": 1,
-		"targetOwner": 1
+		"target": 1
 	}
 },
 {
@@ -854,7 +852,7 @@
 		"id": 16,
 		"minion": "MIRROR_IMAGE_MINION",
 		"quantity": 2,
-		"targetOwner": 1
+		"target": 1
 	}
 }, {
 	"id": "WATER_ELEMENTAL",
@@ -864,20 +862,20 @@
 	"cost": 4,
 	"attack": 3,
 	"health": 6,
-  "triggerPowers": {
-    "event": {
-      "id": 5,
-      "damagers": { "id": 7 },
-      "acceptedSources": 1
-    },
-    "actions": {
-      "id": 12,
-      "target": {
-        "id": 3,
-        "params": 3
-      }
+    "triggerPowers": {
+        "trigger": {
+            "event": 5,
+            "damagers": { "id": 7 },
+            "acceptedSources": 1
+        },
+        "actions": {
+            "id": 12,
+            "target": {
+                "id": 3,
+                "params": 3
+            }
+        }
     }
-  }
 }, {
 	"id": "IRONBEAK_OWL",
 	"type": 1,

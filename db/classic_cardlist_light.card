@@ -86,20 +86,20 @@
 	"attack": 1,
 	"health": 3,
 	"triggerPowers": {
-		"trigger": {
-            "event": $BEFORE_CARD_PLAYED,
-            "owningPlayer": $OWNER_ALLY,
-            "cardType": $CARD_SPELL
-        },
-		"actions": {
-			"id": $ENCHANT_CHARACTER,
-			"target": { "id": $TARGET_THIS },
-			"enchantment": {
-				"name": "Mana drink",
-				"text": "+1 ATK",
-				"atkModifier": 1
-			}
-		}
+      "trigger": {
+          "event": $BEFORE_CARD_PLAYED,
+          "owningPlayer": $OWNER_ALLY,
+          "cardType": $CARD_SPELL
+      },
+      "actions": {
+          "id": $ENCHANT_CHARACTER,
+          "target": { "id": $TARGET_THIS },
+          "enchantment": {
+              "name": "Mana drink",
+              "text": "+1 ATK",
+              "atkModifier": 1
+          }
+      }
 	}
 },
 {

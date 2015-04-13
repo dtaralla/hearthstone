@@ -1,12 +1,12 @@
-#ifndef CHARACTERDAMAGEDTRIGGER_H
-#define CHARACTERDAMAGEDTRIGGER_H
+#ifndef CHARACTERHEALEDTRIGGER_H
+#define CHARACTERHEALEDTRIGGER_H
 
 #include "trigger.h"
 #include <QSharedPointer>
 
 class TargetExpression;
 
-class CharacterDamagedTrigger : public Trigger
+class CharacterHealedTrigger : public Trigger
 {
 public:
     enum SourceType {
@@ -17,13 +17,13 @@ public:
         SPELL
     };
 
-    CharacterDamagedTrigger(QVector<Action*>* actions, const QSharedPointer<TargetExpression>& damagers,
-                            const QSharedPointer<TargetExpression>& damagedCharacters,
+    CharacterHealedTrigger(QVector<Action*>* actions, const QSharedPointer<TargetExpression>& healers,
+                            const QSharedPointer<TargetExpression>& healedCharacters,
                             SourceType accepedSources = ANY);
-    CharacterDamagedTrigger(Action* action, const QSharedPointer<TargetExpression>& damagers,
-                            const QSharedPointer<TargetExpression>& damagedCharacters,
+    CharacterHealedTrigger(Action* action, const QSharedPointer<TargetExpression>& healers,
+                            const QSharedPointer<TargetExpression>& healedCharacters,
                             SourceType accepedSources = ANY);
-    ~CharacterDamagedTrigger();
+    ~CharacterHealedTrigger();
 
 private:
     QSharedPointer<TargetExpression> mSources;
@@ -37,4 +37,4 @@ public:
     Trigger* clone() const;
 };
 
-#endif // CHARACTERDAMAGEDTRIGGER_H
+#endif // CHARACTERHEALEDTRIGGER_H

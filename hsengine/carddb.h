@@ -187,32 +187,137 @@ public:
     void buildRandomDeck(Player* forPlayer);
 
     /**
-     * @brief Builds a
-     * @param id
-     * @return
+     * @brief Builds a Hero object based on a human-readable character
+     * identifier.
+     *
+     * The identifier provided should identifiy a HeroInfo object from the
+     * database. Practically, this identifier should be present in the JARS
+     * file loaded, and the card described with this id should have its
+     * \c type field set to \c CARD_HERO.
+     *
+     * @param id The identifier of the hero to build.
+     *
+     * @return The built hero.
      */
     Hero* buildHero(const QString& id);
+
+    /**
+     * @brief Gets the maximum value amongst all card IDs available.
+     *
+     * @return The maximum value amongst all card IDs available.
+     */
     int maxCardId() const;
 
 private:
+    /**
+     * @brief The unique database object.
+     */
     static CardDB* mInstance;
+
+    /**
+     * @brief An associative list mapping numerical identifiers to card
+     * identities.
+     */
     QMap<int, CardInfo const*> mCardFlyweights;
+
+    /**
+     * @brief An associative list mapping human-readable card identifiers to
+     * the corresponding numerical identifier.
+     */
     QHash<QString, int> mCardIDsTranslationTable;
+
+    /**
+     * @brief An associative list mapping JARS textual constants to
+     * recognized corresponding integers.
+     */
     QHash<QString, int> mTextIDsTranslationTable;
+
+    /**
+     * @brief The next available action ID.
+     */
     int mNextActionID;
+
+    /**
+     * @brief The next available numerical card ID.
+     */
     int mNextCardID;
 
 
+    /**
+     * @brief Constructor.
+     */
     CardDB();
+
+    /**
+     * @brief Initializes the mTextIDsTranslationTable.
+     */
     void mInitTextIDsTranslationTable();
+
+    /**
+     * @brief Translates an event parameter JARS constant into the regular
+     * event param type.
+     *
+     * @param ep The JARS constant to translate.
+     *
+     * @return The corresponding event param type.
+     */
     EventParam mIdToEventParam(EventParamType ep);
 
+    /**
+     * @brief Parses a JARS \c action object.
+     *
+     * The \a eType allows semantic checks to be performed while parsing.
+     *
+     * @param action The JARS \c action object to parse.
+     *
+     * @param eType In the case where the \c action object is enclosed (at some
+     * JARS level) into a \c trigger object, this argument should have the same
+     * value than the \c event field of the closest enclosing \c trigger. If
+     * this \c action object is not enclosed in any \c trigger, this field is
+     * ignored.
+     *
+     * @return The Action object corresponding to \a action.
+     */
     Action* mParseAction(const QJsonObject& action, Event::Type eType = Event::NO_EVENT);
+
+    /**
+     * @brief Parses an array of JARS \c action objects.
+     *
+     * The \a eType allows semantic checks to be performed while parsing.
+     *
+     * @param actions An array of JARS \c action objects to parse.
+     *
+     * @param eType In the case where this \c action object list is enclosed
+     * (at some JARS level) into a \c trigger object, this argument should have
+     * the same value than the \c event field of the closest enclosing \c
+     * trigger. If this \c action object is not enclosed in any \c trigger,
+     * this field is ignored.
+     *
+     * @return A list of Action objects corresponding to the ones contained in
+     * \a actions, in the same order.
+     */
     QVector<Action*>* mParseActionList(const QJsonValue& actions, Event::Type eType = Event::NO_EVENT);
+
+    /**
+     * @brief Parses an array of JARS \c ability constants.
+     *
+     * @param abs The array to parse.
+     *
+     * @return An ORed Ability value, which is the combination of all abilities
+     * given in \a abs.
+     */
     Ability mParseAbilities(const QJsonValue& abs);
+
+    /**
+     * @brief Parses a JARS \c trigger object.
+     *
+     * @param trigger The JARS \c trigger to parse.
+     *
+     * @return The Trigger object corresponding to \a trigger.
+     */
     Trigger* mParseTrigger(const QJsonObject& trigger);
-    CharacterType mParseMinionType(const QJsonValue& ct);
-    CharacterType mParseTargetType(const QJsonValue& ct);
+
+    CharacterType mParseCharacterType(const QJsonValue& ct, CharacterType defaultType);
     Enchantment* mParseEnchantment(const QJsonObject& e);
     void mParseTriggerPower(const QJsonObject& trgPower, QHash<Event::Type, QVector<Trigger*>*>* powerTable);
     SpecialPowerAction* mParseSpecialPower(const QJsonObject& sp);

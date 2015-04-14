@@ -199,7 +199,7 @@ void CardDB::buildCardDB(const QString& fromFile)
 
 
             // Parse subtype
-            CharacterType subtype = mParseMinionType(o.value("subtype"));
+            CharacterType subtype = mParseCharacterType(o.value("subtype"), CharacterTypes::GENERAL);
 
 
             // Create DB entry
@@ -450,7 +450,7 @@ void CardDB::mInitTextIDsTranslationTable()
 
 CardDB::CardDB():
     mNextActionID(1), // 1 because 0 is reserved for all AttackActions
-    mNextCardID(2) // 0 reserved for THE_COIN and 1 for EXCESS_MANA
+    mNextCardID(2)    // 0 reserved for THE_COIN and 1 for EXCESS_MANA
 { }
 
 TargetExpression* CardDB::mParseTarget(const QJsonObject& target, Event::Type eType)
@@ -534,7 +534,7 @@ GroupExpression CardDB::mParseGroup(const QJsonObject& group, Event::Type eType)
 
     return GroupExpression(
                 group.value("owner").toInt(Owners::ANY_OWNER),
-                group.value("subtype").toInt(CharacterTypes::CHARACTER),
+                mParseCharacterType(o.value("subtype"), CharacterTypes::CHARACTER),
                 QSharedPointer<TargetExpression>(excludedTargets));
 }
 
@@ -640,28 +640,17 @@ Enchantment* CardDB::mParseEnchantment(const QJsonObject& e)
             0);
 }
 
-CharacterType CardDB::mParseMinionType(const QJsonValue& ct)
+CharacterType CardDB::mParseCharacterType(const QJsonValue& ct, CharacterType defaultType)
 {
     CharacterType type = 0;
     if (ct.isArray()) {
         foreach (QJsonValue v, ct.toArray())
             type |= v.toInt(0);
     }
-    else
-        type = ct.toInt(CharacterTypes::GENERAL);
-
-    return type;
-}
-
-CharacterType CardDB::mParseTargetType(const QJsonValue& ct)
-{
-    CharacterType type = 0;
-    if (ct.isArray()) {
-        foreach (QJsonValue v, ct.toArray())
-            type |= v.toInt(0);
-    }
-    else
+    else if (ct.isDouble())
         type = ct.toInt(CharacterTypes::CHARACTER);
+    else
+        type = defaultType;
 
     return type;
 }
@@ -735,7 +724,7 @@ void CardDB::mParseTriggerPower(const QJsonObject& trgPower,
             t = new CardPlayedTrigger(
                      as,
                      trigger.value("cardType").toInt(CardTypes::CARD_MINION),
-                     trigger.value("characterType").toInt(CharacterTypes::MINION),
+                     mParseCharacterType(trigger.value("characterType"), CharacterTypes::MINION),
                      trigger.value("owningPlayer").toInt(Owners::ANY_OWNER));
             break;
 
@@ -758,7 +747,7 @@ void CardDB::mParseTriggerPower(const QJsonObject& trgPower,
             t = new MinionKilledTrigger(
                      as,
                      trigger.value("owningPlayer").toInt(Owners::ANY_OWNER),
-                     trigger.value("minionType").toInt(CharacterTypes::MINION));
+                     mParseCharacterType(trigger.value("minionType"), CharacterTypes::MINION));
             break;
 
         case Event::CHARACTER_HEALED: {

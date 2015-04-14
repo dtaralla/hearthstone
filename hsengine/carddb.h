@@ -37,6 +37,9 @@ class Action;
  * integer identifier of the same card can therefore be altered. The
  * maxCardId() method allows one to get an indication of the number of cards
  * available (attention: this also takes into account heroes' special powers).
+ *
+ * @ingroup hsengine
+ * @sa CardInfo, Card, card_database_format
  */
 class CardDB
 {
@@ -299,9 +302,10 @@ private:
     QVector<Action*>* mParseActionList(const QJsonValue& actions, Event::Type eType = Event::NO_EVENT);
 
     /**
-     * @brief Parses an array of JARS \c ability constants.
+     * @brief Parses JARS \c ability constants.
      *
-     * @param abs The array to parse.
+     * @param abs The \c ability constant to parse; may be an array of \c
+     * ability constants.
      *
      * @return An ORed Ability value, which is the combination of all abilities
      * given in \a abs.
@@ -317,11 +321,83 @@ private:
      */
     Trigger* mParseTrigger(const QJsonObject& trigger);
 
+    /**
+     * @brief Parses JARS \c characterType constants.
+     *
+     * @param ct The \c characterType to parse; may be an array of \c
+     * characterType constants.
+     *
+     * @param defaultType The type to return if \a ct is not parsable as a JARS
+     * \c characterType constant.
+     *
+     * @return An ORed CharacterType value, which is the combination of all
+     * character types given in \a ct. If \c ct cannot be parsed as a JARS
+     * \c characterType constant, it returns \c defaultType.
+     */
     CharacterType mParseCharacterType(const QJsonValue& ct, CharacterType defaultType);
+
+    /**
+     * @brief Parses a JARS \c enchantment object.
+     *
+     * @param e The JARS \c enchantment to parse.
+     *
+     * @return The Enchantment object corresponding to \a e.
+     */
     Enchantment* mParseEnchantment(const QJsonObject& e);
+
+    /**
+     * @brief Parses a JARS \c triggerPower object and put it in a trigger
+     * power table.
+     *
+     * If the Event::Type corresponding to the value of the \c event field of
+     * \a trgPower is already a key of \a powerTable, the trigger power will be
+     * added to the list which is mapped by this key. In the other case, the
+     * pair <\c event field value, \a trgPower> is inserted in \a powerTable.
+     *
+     * @param trgPower The JARS \c triggerPower object to parse.
+     *
+     * @param powerTable The trigger power table in which to insert the parsed
+     * object.
+     */
     void mParseTriggerPower(const QJsonObject& trgPower, QHash<Event::Type, QVector<Trigger*>*>* powerTable);
+
+    /**
+     * @brief Parses a JARS \c specialPower object.
+     *
+     * @param sp The JARS \c specialPower to parse.
+     *
+     * @return The SpecialPower object corresponding to \a sp.
+     */
     SpecialPowerAction* mParseSpecialPower(const QJsonObject& sp);
+
+    /**
+     * @brief Parses a JARS \c targetExpression object.
+     *
+     * @param target The JARS \c targetExpression object to parse.
+     *
+     * @param eType In the case where this \c targetExpression object is
+     * enclosed (at some JARS level) into a \c trigger object, this argument
+     * should have the same value than the \c event field of the closest
+     * enclosing \c trigger. If this \c targetExpression object is not enclosed
+     * in any \c trigger, this field is ignored.
+     *
+     * @return The TargetExpression object corresponding to \a target.
+     */
     TargetExpression* mParseTarget(const QJsonObject& target, Event::Type eType = Event::NO_EVENT);
+
+    /**
+     * @brief Parses a JARS \c groupExpression object.
+     *
+     * @param group The JARS \c groupExpression object to parse.
+     *
+     * @param eType In the case where this \c groupExpression object is
+     * enclosed (at some JARS level) into a \c trigger object, this argument
+     * should have the same value than the \c event field of the closest
+     * enclosing \c trigger. If this \c groupExpression object is not enclosed
+     * in any \c trigger, this field is ignored.
+     *
+     * @return The GroupExpression object corresponding to \a group.
+     */
     GroupExpression mParseGroup(const QJsonObject& group, Event::Type eType = Event::NO_EVENT);
 };
 

@@ -195,7 +195,7 @@ featuring \ref CARD_MINION as value of their \ref card_type "type" field:
     </tr>
     <tr>
         <td>\field{minion_subtype,subtype}</td>
-        <td>\ref characterTypes "CharacterType"</td>
+        <td>An array of \ref characterTypes "CharacterType" constants or a single \ref characterTypes "CharacterType" constant</td>
         <td>No</td>
         <td>\ref TYPE_GENERAL</td>
         <td>
@@ -889,7 +889,7 @@ The table below documents the fields accepted by all \ref trigger objects:
     </tr>
     <tr>
         <td>\c characterType</td>
-        <td>\ref characterTypes "CharacterType"</td>
+        <td>An array of \ref characterTypes "CharacterType" constants or a single \ref characterTypes "CharacterType" constant</td>
         <td>No</td>
         <td>\ref TYPE_MINION</td>
         <td>
@@ -933,7 +933,7 @@ The table below documents the fields accepted by all \ref trigger objects:
     </tr>
     <tr>
         <td>\c characterType</td>
-        <td>\ref characterTypes "CharacterType"</td>
+        <td>An array of \ref characterTypes "CharacterType" constants or a single \ref characterTypes "CharacterType" constant</td>
         <td>No</td>
         <td>\ref TYPE_MINION</td>
         <td>
@@ -1011,7 +1011,7 @@ The table below documents the fields accepted by all \ref trigger objects:
     </tr>
     <tr>
         <td>\c minionType</td>
-        <td>\ref characterTypes "CharacterType"</td>
+        <td>An array of \ref characterTypes "CharacterType" constants or a single \ref characterTypes "CharacterType" constant</td>
         <td>No</td>
         <td>\ref TYPE_MINION</td>
         <td>
@@ -1204,7 +1204,7 @@ groupExpressions object:
     </tr>
     <tr>
         <td>\field{gexp_subtype,subtype}</td>
-        <td>\ref characterTypes "CharacterType"</td>
+        <td>An array of \ref characterTypes "CharacterType" constants or a single \ref characterTypes "CharacterType" constant</td>
         <td>No</td>
         <td>\ref TYPE_CHARACTER</td>
         <td>

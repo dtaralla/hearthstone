@@ -17,14 +17,23 @@ class Enchantment;
  * @brief The Card class represents a card a player interacts with.
  *
  * There are multiple card types in Hearthstone: minions, spells, secrets,
- * weapons, but also heroes. A Card is what a player plays with. Instead of
- * duplicating the base information of all cards sharing the same identity,
- * each card has a \e base CardInfo common to all cards having the same
- * identity. The information about the card itself (its description,
- * independent of the current game) is contained in another object, a CardInfo
- * object, wich can be used to compare this very \e instance characteristics to
- * the original ones. This base information can be accessed using the base()
- * method of the Card.
+ * weapons, but also heroes. A Card is what a player plays with.
+ *
+ * Contrarily to Card objects, CardInfo objects (or <i>card identities</i>) are
+ * abstract description of cards. They describe what cards \e are but also what
+ * cards \e do. However, they usually do so by using \e relative qualifiers:
+ *
+ * \li Deal X damage to an <b>enemy</b> target
+ * \li Each time <b>you</b> cast a spell, do something
+ * \li Each time <b>this</b> minion takes damage, <b>it</b> gains +1 ATK
+ * \li ...
+ *
+ * It means that what a card's identity describes usually refers to things that
+ * can be evaluated only by the very instance which is personifiying this
+ * identity. It is the reason why all Card objects need to be initialized
+ * before being used: they copy the relative information given by their
+ * identity and bind it to themselves. Once this is done, they can evaluate the
+ * meaning of qualificatives like \e enemy, \e ally or \e this.
  *
  * To allow one to know which kind of Card it is actually dealing with, the
  * type() factory method is provided. This method is implemented in child
@@ -37,14 +46,15 @@ class Enchantment;
  * characteristics. However, all card types share a set of characteristics:
  * they present a type(), a base(), can provide their owner(), their
  * effectiveManaCost(), which kind of events they listen to,... All cards can
- * also benefit from some enchantments. Because of all that, this superclass is
- * the parent of all other card type classes and provides a base implementation
- * for all those common things amongst cards.
+ * also benefit from some enchantments. Because of all these shared
+ * characteristics amongst cards, this superclass is the parent of all other
+ * card type classes and provides a base implementation for all those common
+ * things.
  *
  * @note A Card has \e always to be initialized using its initCard() method
  * before being usable.
  *
- * @sa CardTypes, CardType, Character, Minion, Hero, Spell
+ * @sa CardInfo, CardTypes, CardType, Character, Minion, Hero, Spell
  * @ingroup hsengine
  */
 class Card : public Stringable

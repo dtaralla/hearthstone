@@ -10,6 +10,7 @@
 #include <QDir>
 
 QHash<int, DBOutput*> DBOutput::mInstances;
+QString DBOutput::mFilenamesPrefix = "db";
 
 
 DBOutput::DBOutput() :
@@ -26,8 +27,8 @@ DBOutput::~DBOutput()
 {
     QStringList ls;
 
-    ls << "generated/db.play.csv"
-       << "generated/db.target.csv";
+    ls << "generated/" + mFilenamesPrefix + ".play.csv"
+       << "generated/" + mFilenamesPrefix + ".target.csv";
 
     QStringList contents;
     contents << mPlayActionFile << mTargetedActionFile;
@@ -60,6 +61,11 @@ DBOutput* DBOutput::Instance(Game* g)
 void DBOutput::DestroyInstance(Game* g)
 {
     delete mInstances.take(g->id());
+}
+
+void DBOutput::SetFilenamesPrefix(const QString& prefix)
+{
+    mFilenamesPrefix = prefix;
 }
 
 void DBOutput::buffer(const QVector<float>& environment, Action* a)

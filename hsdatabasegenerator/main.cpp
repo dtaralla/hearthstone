@@ -21,6 +21,7 @@
 #include "inputs/databasebuilder.h"
 #include "gamethreadpool.h"
 #include "consoleprogressbar.h"
+#include "dbouput.h"
 #include <iostream>
 
 #ifdef QT_NO_DEBUG
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
 
     qInstallMessageHandler(myMessageOutput);
     if (argc < 6) {
-        std::cout << "Usage: cardDB hero1_id hero2_id howManyGames maxThreads [seed=0]";
+        std::cout << "Usage: cardDB hero1_id hero2_id howManyGames maxThreads [seed=0] [filenamePrefix=db]";
         return -2;
     }
     QCoreApplication a(argc, argv);
@@ -52,6 +53,9 @@ int main(int argc, char *argv[])
     }
     else
         qsrand(0);
+
+    if (argc > 7)
+        DBOutput::SetFilenamesPrefix(ARGS.at(7));
 
 
     CardDB* const CARD_DB = CardDB::Instance();

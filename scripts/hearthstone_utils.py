@@ -22,10 +22,11 @@ from sklearn.metrics import precision_recall_curve
 from matplotlib import pyplot as plt
 import scipy.io as sio
 
-DB_PATH  = "../../build-hearthstone-Desktop_Qt_5_4_0_MinGW_32bit-Release/hsengine/release/generated/"
+DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
 MAT_PATH = "roc/"
 
 dbs = ["db.play", "db.target"]
+dbsCustom = ["play", "target"]
 n_features = { dbs[0]: 159, dbs[1]: 163 }
 
 def loadDB(db, usecols=None, skipheader=0, skipfooter=0):

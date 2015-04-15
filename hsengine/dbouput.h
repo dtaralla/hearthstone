@@ -14,6 +14,7 @@ class DBOutput
 public:
     static DBOutput* Instance(Game* g);
     static void DestroyInstance(Game* g);
+    static void SetFilenamesPrefix(const QString& prefix);
 
     void buffer(const QVector<float>& environment, Action* a);
     void buffer(Character* target, Action* a);
@@ -26,6 +27,7 @@ private:
         TARGET
     };
 
+    static QString mFilenamesPrefix;
     static QHash<int, DBOutput*> mInstances;
     QString mPlayActionFile;
     QString mTargetedActionFile;

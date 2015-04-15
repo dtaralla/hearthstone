@@ -80,9 +80,9 @@ class Event;
  * intrinsic state (a flyweight: the description of the card) coupled with an
  * extrinsic state (the current HP of the card, the enchantments it benefits
  * from,...), an Action can be one of two things: either a description, or a
- * description AND its implementation. An Action linked to a CardInfo flyweight
- * is itself a flyweight. When a Card is instanciated from a CardInfo
- * flyweight, the actions linked to the CardInfo are also instanciated for this
+ * description AND its implementation. An Action linked to a CardIdentity flyweight
+ * is itself a flyweight. When a Card is instanciated from a CardIdentity
+ * flyweight, the actions linked to the CardIdentity are also instanciated for this
  * very Card, giving it the context it needs to execute itself. We call this
  * card the <em>source card</em> of the Action.
  *

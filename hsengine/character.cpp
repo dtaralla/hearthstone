@@ -27,7 +27,7 @@ Character::~Character()
 }
 
 
-const CardInfo* Character::base() const
+const CardIdentity* Character::base() const
 {
     return m_base;
 }

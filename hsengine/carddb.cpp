@@ -47,18 +47,18 @@ CardDB::~CardDB()
     qDeleteAll(mCardFlyweights);
 }
 
-CardInfo const* CardDB::cardInfo(const QString& id) const
+CardIdentity const* CardDB::cardInfo(const QString& id) const
 {
-    CardInfo const* f = mCardFlyweights.value(mCardIDsTranslationTable.value(id), NULL);
+    CardIdentity const* f = mCardFlyweights.value(mCardIDsTranslationTable.value(id), NULL);
     if (f == NULL)
         qWarning() << "There were no cards with id '" << id << "' in current DB";
 
     return f;
 }
 
-CardInfo const* CardDB::cardInfo(int id) const
+CardIdentity const* CardDB::cardInfo(int id) const
 {
-    CardInfo const* f = mCardFlyweights.value(id, NULL);
+    CardIdentity const* f = mCardFlyweights.value(id, NULL);
     if (f == NULL)
         qWarning() << "There were no cards with id '" << id << "' in current DB";
 
@@ -165,7 +165,7 @@ void CardDB::buildCardDB(const QString& fromFile)
             }
         }
 
-        CardInfo* toInsert;
+        CardIdentity* toInsert;
         if (type == CardTypes::CARD_MINION) {
             // Parse death rattles
             QVector<Action*> deathRattles;
@@ -247,7 +247,7 @@ void CardDB::buildCardDB(const QString& fromFile)
         Q_ASSERT(opened);
         QTextStream out(&emptyDeck);
         out << "[";
-        foreach (const CardInfo* ci, mCardFlyweights.values()) {
+        foreach (const CardIdentity* ci, mCardFlyweights.values()) {
             if (!ci->collectible())
                 continue;
             out << "{\n  \"id\": \"" << ci->id() << ",\n  \"quantity\": 0\n},";
@@ -292,7 +292,7 @@ void CardDB::buildDeckFromFile(const QString& fromFile, Player* owner,
         if (o.contains("quantity") && !o.value("quantity").isDouble())
             qCritical() << "Object" << o << "has no valid 'quantity' attribute.";
 
-        const CardInfo* info = mCardFlyweights.value(mCardIDsTranslationTable.value(o.value("id").toString()), NULL);
+        const CardIdentity* info = mCardFlyweights.value(mCardIDsTranslationTable.value(o.value("id").toString()), NULL);
         if (info == NULL)
             qCritical() << "ID" << o.value("id").toString() << "was not found in database.";
 
@@ -334,7 +334,7 @@ void CardDB::buildDeckFromFile(const QString& fromFile, Player* owner,
 void CardDB::buildRandomDeck(Player* forPlayer)
 {
     QVector<Card*> deck;
-    QList<const CardInfo*> db = mCardFlyweights.values();
+    QList<const CardIdentity*> db = mCardFlyweights.values();
     int amounts[db.size()];
     for (int i = 0; i < db.size(); i += 1)
         amounts[i] = 0;
@@ -344,7 +344,7 @@ void CardDB::buildRandomDeck(Player* forPlayer)
     while (deck.size() < 30) {
         // Pick a card
         int pickAt = 2 + qrand() % size;
-        const CardInfo* pick = db.at(pickAt);
+        const CardIdentity* pick = db.at(pickAt);
         if (!pick->collectible() || amounts[pickAt] >= 2)
             continue;
 
@@ -372,7 +372,7 @@ void CardDB::buildRandomDeck(Player* forPlayer)
 
 Hero* CardDB::buildHero(const QString& id)
 {
-    const CardInfo* c = mCardFlyweights.value(mCardIDsTranslationTable.value(id), NULL);
+    const CardIdentity* c = mCardFlyweights.value(mCardIDsTranslationTable.value(id), NULL);
     if (c == NULL)
         qCritical() << "Hero with id" << id << "is not found in database.";
 
@@ -534,7 +534,7 @@ GroupExpression CardDB::mParseGroup(const QJsonObject& group, Event::Type eType)
 
     return GroupExpression(
                 group.value("owner").toInt(Owners::ANY_OWNER),
-                mParseCharacterType(o.value("subtype"), CharacterTypes::CHARACTER),
+                mParseCharacterType(group.value("subtype"), CharacterTypes::CHARACTER),
                 QSharedPointer<TargetExpression>(excludedTargets));
 }
 

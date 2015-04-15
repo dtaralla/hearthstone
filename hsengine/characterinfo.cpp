@@ -9,7 +9,7 @@ CharacterInfo::CharacterInfo(int id, const QString& name,
                              const QVector<Action*>& deathRattles, Ability abilities,
                              const QHash<Event::Type, QVector<Trigger*>*>& triggerPowers,
                              CharacterType type, bool collectible) :
-    CardInfo(id, name, desc, manaCost, triggerPowers, collectible),
+    CardIdentity(id, name, desc, manaCost, triggerPowers, collectible),
     m_type(type),
     m_hp(hp),
     m_atk(atk),

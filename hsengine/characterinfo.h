@@ -6,7 +6,7 @@
 class Action;
 class Trigger;
 
-class CharacterInfo : public CardInfo
+class CharacterInfo : public CardIdentity
 {
 public:
     CharacterInfo(int id,

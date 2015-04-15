@@ -3,7 +3,7 @@
 #include "actions/action.h"
 #include "actions/playaction.h"
 
-Spell::Spell(const CardInfo* baseSpell, Player* owner) :
+Spell::Spell(const CardIdentity* baseSpell, Player* owner) :
     Card(owner),
     m_playAction(new PlayAction(this)),
     m_spell(NULL),
@@ -35,7 +35,7 @@ const QVector<Action*>* Spell::playActionConsequences() const
     return m_spell;
 }
 
-const CardInfo* Spell::base() const
+const CardIdentity* Spell::base() const
 {
     return m_base;
 }

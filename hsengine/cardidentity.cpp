@@ -1,4 +1,4 @@
-#include "cardinfo.h"
+#include "cardidentity.h"
 #include "triggers/trigger.h"
 
 CardIdentity::CardIdentity(int id, const QString& name, const QString& desc, int manaCost,

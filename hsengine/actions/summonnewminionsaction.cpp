@@ -10,7 +10,7 @@ SummonNewMinionsAction::SummonNewMinionsAction(int id, int quantity, Owner targe
     m_quantity(quantity),
     m_targetOwner(targetOwner)
 {
-    const CardInfo* ci = CardDB::Instance()->cardInfo(id);
+    const CardIdentity* ci = CardDB::Instance()->cardInfo(id);
     Q_ASSERT(ci->type() == CardTypes::CARD_MINION);
     m_base = (const CharacterInfo*) ci;
 }

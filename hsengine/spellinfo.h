@@ -7,7 +7,7 @@
 
 class Action;
 
-class SpellInfo : public CardInfo
+class SpellInfo : public CardIdentity
 {
 public:
     SpellInfo(int id, const QString& name, const QString& desc,

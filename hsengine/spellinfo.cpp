@@ -5,7 +5,7 @@ SpellInfo::SpellInfo(int id, const QString& name,
                      const QString& desc, int manaCost, QVector<Action*>* spell,
                      const QHash<Event::Type, QVector<Trigger*>* >& triggerPowers,
                      bool collectible = true) :
-    CardInfo(id, name, desc, manaCost, triggerPowers, collectible),
+    CardIdentity(id, name, desc, manaCost, triggerPowers, collectible),
     m_spell(spell)
 {
 

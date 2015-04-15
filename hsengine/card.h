@@ -7,7 +7,7 @@
 #include "stringable.h"
 
 class Player;
-class CardInfo;
+class CardIdentity;
 class Action;
 class Trigger;
 class PlayAction;
@@ -19,7 +19,7 @@ class Enchantment;
  * There are multiple card types in Hearthstone: minions, spells, secrets,
  * weapons, but also heroes. A Card is what a player plays with.
  *
- * Contrarily to Card objects, CardInfo objects (or <i>card identities</i>) are
+ * Contrarily to Card objects, CardIdentity objects (or <i>card identities</i>) are
  * abstract description of cards. They describe what cards \e are but also what
  * cards \e do. However, they usually do so by using \e relative qualifiers:
  *
@@ -54,7 +54,7 @@ class Enchantment;
  * @note A Card has \e always to be initialized using its initCard() method
  * before being usable.
  *
- * @sa CardInfo, CardTypes, CardType, Character, Minion, Hero, Spell
+ * @sa CardIdentity, CardTypes, CardType, Character, Minion, Hero, Spell
  * @ingroup hsengine
  */
 class Card : public Stringable
@@ -115,7 +115,7 @@ public:
      *
      * Shortcut to <code>card->base()->name()</code>.
      *
-     * @sa CardInfo::name()
+     * @sa CardIdentity::name()
      *
      * @return The name of this card, shared by all cards having the same
      * identity.
@@ -127,18 +127,18 @@ public:
      * and whose value is completely defined by the loaded database file.
      *
      * Instead of duplicating the base information of all cards sharing the
-     * same identity, each card has a \e base CardInfo common to all cards
+     * same identity, each card has a \e base CardIdentity common to all cards
      * having the same identity. The information about the card itself (its
      * description, independent of the current game) is contained in another
-     * object, a CardInfo object, wich can be used to compare this very \e
+     * object, a CardIdentity object, wich can be used to compare this very \e
      * instance characteristics to the original ones.
      *
-     * @sa CardInfo
+     * @sa CardIdentity
      *
-     * @return A CardInfo object representing the information shared by all
+     * @return A CardIdentity object representing the information shared by all
      * cards having the same identity than this one.
      */
-    virtual CardInfo const* base() const = 0;
+    virtual CardIdentity const* base() const = 0;
 
     /**
      * @brief Gets the type of this card.
@@ -152,7 +152,7 @@ public:
      * by using a test like <code>card->type() &
      * CardTypes::CARD_CHARACTER</code>.
      *
-     * @sa CardInfo::type(), CardType, CardTypes
+     * @sa CardIdentity::type(), CardType, CardTypes
      *
      * @return The type of this card.
      */

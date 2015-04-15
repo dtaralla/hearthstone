@@ -39,7 +39,7 @@ class Action;
  * available (attention: this also takes into account heroes' special powers).
  *
  * @ingroup hsengine
- * @sa CardInfo, Card, card_database_format
+ * @sa CardIdentity, Card, card_database_format
  */
 class CardDB
 {
@@ -117,7 +117,7 @@ public:
      *
      * @return The identity (or flyweight) associated with \a id
      */
-    CardInfo const* cardInfo(const QString& id) const;
+    CardIdentity const* cardInfo(const QString& id) const;
 
     /**
      * @brief Gets a card identity by its numerical identifier.
@@ -132,7 +132,7 @@ public:
      *
      * @return The identity (or flyweight) associated with \a id
      */
-    CardInfo const* cardInfo(int id) const;
+    CardIdentity const* cardInfo(int id) const;
 
     /**
      * @brief Loads a JARS file containing the cards you want to make available
@@ -221,7 +221,7 @@ private:
      * @brief An associative list mapping numerical identifiers to card
      * identities.
      */
-    QMap<int, CardInfo const*> mCardFlyweights;
+    QMap<int, CardIdentity const*> mCardFlyweights;
 
     /**
      * @brief An associative list mapping human-readable card identifiers to

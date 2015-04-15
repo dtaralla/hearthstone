@@ -8,13 +8,13 @@ class SpellInfo;
 class Spell : public Card
 {
 public:
-    Spell(CardInfo const* baseSpell, Player* owner = NULL);
+    Spell(CardIdentity const* baseSpell, Player* owner = NULL);
     ~Spell();
 
     PlayAction* playAction();
     const QVector<Action*>* playActionConsequences() const;
 
-    const CardInfo* base() const;
+    const CardIdentity* base() const;
     CardType type() const;
     void initCard(Player* owner);
 

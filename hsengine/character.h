@@ -12,7 +12,7 @@ public:
     Character(CharacterInfo const* baseChar, Player* owner = NULL);
     virtual ~Character();
 
-    virtual const CardInfo* base() const;
+    virtual const CardIdentity* base() const;
     virtual CardType type() const;
     virtual CharacterType characterType() const;
     virtual Action* attackAction() const;

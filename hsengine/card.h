@@ -188,7 +188,8 @@ public:
     virtual Player* owner() const;
 
     /**
-     * @brief Gets the effective mana cost of this card.
+     * @brief Gets the effective mana cost of this card, all applied
+     * enchantments included.
      *
      * The effective mana cost of a card is the mana cost given by its
      * identity information, possibly modified by an enchantment, in which case

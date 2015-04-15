@@ -390,6 +390,7 @@ void Player::executeAttack(Character* attacker, Character* target)
     attacker->modifyHp(-target->atk());
     attacker->setHasAttacked(true);
 
+    // Only then trigger events (attacks are simultaneous)
     // TODO: this should be done in the order target/attacker were put in play?
     if (target->atk() > 0) {
         Event e(Event::CHARACTER_DAMAGED);

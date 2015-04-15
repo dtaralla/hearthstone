@@ -6,15 +6,81 @@
 
 class Enchantment;
 
+/**
+ * @brief The Character class represents a character a player interacts with.
+ *
+ * The Character class is abstract because a Character has to be a Minion or a
+ * Hero. Indeed, according to its real type, a Character will have different
+ * behavior when it is played: heroes can't be played while minions can.
+ * Despite some differences, most of the minions and heroes behavior is the
+ * same, hence the presence of this intermediate abstract class in the cards
+ * hierarchy. Finally, the game card themselves often refer to \e characters
+ * even though they sometime specifically talk about minions or heroes.
+ *
+ * For more information about the hierarchy of card types, how cards are
+ * represented and how a Card is different from a CardIdentity, see Card.
+ *
+ * @sa Card, Minion, Hero
+ * @ingroup hsengine
+ */
 class Character : public Card
 {
 public:
+    /**
+     * @brief Constructor.
+     *
+     * @param baseChar The identity of this character
+     * @param owner The player owning this card. Might be \c NULL, as long as a
+     * non-\c NULL owner is given when calling initCard().
+     *
+     * @note A Character has \e always to be initialized using its initCard()
+     * method before being usable.
+     */
     Character(CharacterIdentity const* baseChar, Player* owner = NULL);
+
+    /**
+     * @brief Destructor.
+     */
     virtual ~Character();
 
+    /**
+     * @brief Gets the identity of this character, which is constant accross
+     * games and whose value is completely defined by the loaded database file.
+     *
+     * Instead of duplicating the base information of all cards sharing the
+     * same identity, each card has a \e base CardIdentity common to all cards
+     * having the same identity. The information about the card itself (its
+     * description, independent of the current game) is contained in another
+     * object, a CardIdentity object, wich can be used to compare this very \e
+     * instance characteristics to the original ones.
+     *
+     * @sa CharacterIdentity
+     *
+     * @return A CharacterIdentity object representing the information shared
+     * by all characters having the same identity than this one.
+     */
     virtual const CardIdentity* base() const;
+
+    /**
+     * @return CardTypes::CARD_CHARACTER
+     */
     virtual CardType type() const;
+
+    /**
+     * @brief Gets this character subtype.
+     *
+     * See CharacterIdentity::characterType().
+     *
+     * @sa CharacterTypes, CharacterIdentity::characterType()
+     *
+     * @return This character subtype.
+     */
     virtual CharacterType characterType() const;
+
+    /**
+     * @brief attackAction
+     * @return
+     */
     virtual Action* attackAction() const;
     virtual bool hasAttacked() const;
     virtual void setHasAttacked(bool hasAttacked);

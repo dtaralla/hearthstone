@@ -19,9 +19,10 @@ class Enchantment;
  * There are multiple card types in Hearthstone: minions, spells, secrets,
  * weapons, but also heroes. A Card is what a player plays with.
  *
- * Contrarily to Card objects, CardIdentity objects (or <i>card identities</i>) are
- * abstract description of cards. They describe what cards \e are but also what
- * cards \e do. However, they usually do so by using \e relative qualifiers:
+ * Contrarily to Card objects, CardIdentity objects (or <i>card identities</i>)
+ * are abstract description of cards. They describe what cards \e are but also
+ * what cards \e do. However, they usually do so by using \e relative
+ * qualifiers:
  *
  * \li Deal X damage to an <b>enemy</b> target
  * \li Each time <b>you</b> cast a spell, do something

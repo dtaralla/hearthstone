@@ -17,9 +17,6 @@ CONFIG(release, debug|release) {
 }
 
 SOURCES += game.cpp \
-    cardinfo.cpp \
-    spellinfo.cpp \
-    characterinfo.cpp \
     player.cpp \
     card.cpp \
     spell.cpp \
@@ -29,7 +26,6 @@ SOURCES += game.cpp \
     playerinput.cpp \
     event.cpp \
     iorequest.cpp \
-    heroinfo.cpp \
     actions/action.cpp \
     actions/summonminionaction.cpp \
     actions/attackaction.cpp \
@@ -67,12 +63,13 @@ SOURCES += game.cpp \
     gamethread.cpp \
     actions/targetedaction.cpp \
     triggers/characterhealedtrigger.cpp \
-    triggers/characterattackstrigger.cpp
+    triggers/characterattackstrigger.cpp \
+    cardidentity.cpp \
+    heroidentity.cpp \
+    spellidentity.cpp \
+    characteridentity.cpp
 
 HEADERS += game.h \
-    cardinfo.h \
-    spellinfo.h \
-    characterinfo.h \
     card.h \
     player.h \
     spell.h \
@@ -83,7 +80,6 @@ HEADERS += game.h \
     vptr.h \
     event.h \
     iorequest.h \
-    heroinfo.h \
     actions/action.h \
     actions/summonminionaction.h \
     actions/attackaction.h \
@@ -123,7 +119,11 @@ HEADERS += game.h \
     gamethread.h \
     actions/targetedaction.h \
     triggers/characterhealedtrigger.h \
-    triggers/characterattackstrigger.h
+    triggers/characterattackstrigger.h \
+    cardidentity.h \
+    characteridentity.h \
+    heroidentity.h \
+    spellidentity.h
 
 unix {
     target.path = /usr/lib

@@ -12,7 +12,7 @@ class AttackAction;
 class Minion : public Character
 {
 public:
-    Minion(CharacterInfo const* baseChar, Player* owner = NULL);
+    Minion(CharacterIdentity const* baseChar, Player* owner = NULL);
     ~Minion();
 
     PlayAction* playAction();

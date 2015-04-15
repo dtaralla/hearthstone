@@ -1,19 +1,19 @@
-#ifndef SPELLINFO_H
-#define SPELLINFO_H
+#ifndef SPELLIDENTITY_H
+#define SPELLIDENTITY_H
 
 #include <QHash>
-#include "cardinfo.h"
+#include "cardidentity.h"
 #include "event.h"
 
 class Action;
 
-class SpellInfo : public CardIdentity
+class SpellIdentity : public CardIdentity
 {
 public:
-    SpellInfo(int id, const QString& name, const QString& desc,
+    SpellIdentity(int id, const QString& name, const QString& desc,
               int manaCost, QVector<Action*>* spell,
               const QHash<Event::Type, QVector<Trigger*>*>& triggerPowers, bool collectible);
-    ~SpellInfo();
+    ~SpellIdentity();
 
     CardType type() const;
     QVector<Action*>* spell() const;
@@ -22,4 +22,4 @@ private:
     QVector<Action*>* m_spell;
 };
 
-#endif // SPELLINFO_H
+#endif // SPELLIDENTITY_H

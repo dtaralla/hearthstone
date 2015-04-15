@@ -1,5 +1,5 @@
 #include "card.h"
-#include "cardinfo.h"
+#include "cardidentity.h"
 #include "actions/action.h"
 #include "triggers/trigger.h"
 #include "enchantment.h"

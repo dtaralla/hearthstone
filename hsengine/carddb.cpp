@@ -10,9 +10,9 @@
 #include <QtDebug>
 #include <QRegularExpression>
 #include "game.h"
-#include "characterinfo.h"
-#include "spellinfo.h"
-#include "heroinfo.h"
+#include "characteridentity.h"
+#include "spellidentity.h"
+#include "heroidentity.h"
 #include "card.h"
 #include "minion.h"
 #include "spell.h"
@@ -120,7 +120,7 @@ void CardDB::buildCardDB(const QString& fromFile)
     // Create db...
     // Add "the coin"
     mCardFlyweights.insert(CARD__THE_COIN,
-                        new SpellInfo(CARD__THE_COIN, "The Coin",
+                        new SpellIdentity(CARD__THE_COIN, "The Coin",
                                       "Gives you +1 Mana Crystal until the end of this turn.",
                                       0, new QVector<Action*>(1, new AddManaAction(Owners::ALLY, 1)),
                                       QHash<Event::Type, QVector<Trigger*>*>(), false));
@@ -128,7 +128,7 @@ void CardDB::buildCardDB(const QString& fromFile)
 
     // Add "excess mana"
     mCardFlyweights.insert(CARD__EXCESS_MANA,
-                        new SpellInfo(CARD__EXCESS_MANA, "Excess Mana",
+                        new SpellIdentity(CARD__EXCESS_MANA, "Excess Mana",
                                       "Draw a card. <i>(You can only have 10 mana in your tray.)</i>",
                                       0, new QVector<Action*>(1, new DrawCardAction()),
                                       QHash<Event::Type, QVector<Trigger*>*>(), false));
@@ -203,7 +203,7 @@ void CardDB::buildCardDB(const QString& fromFile)
 
 
             // Create DB entry
-            toInsert = new CharacterInfo(
+            toInsert = new CharacterIdentity(
                 mNextCardID++,
                 o.value("name").toString("invalid_string"),
                 o.value("text").toString("invalid_string"),
@@ -218,7 +218,7 @@ void CardDB::buildCardDB(const QString& fromFile)
                 o.value("collectible").toBool(true));
         }
         else if (type == CardTypes::CARD_SPELL) {
-            toInsert = new SpellInfo(
+            toInsert = new SpellIdentity(
                 mNextCardID++,
                 o.value("name").toString("invalid_string"),
                 o.value("text").toString("invalid_string"),
@@ -228,7 +228,7 @@ void CardDB::buildCardDB(const QString& fromFile)
                 o.value("collectible").toBool(true));
         }
         else if (type == CardTypes::CARD_HERO) {
-            toInsert = new HeroInfo(
+            toInsert = new HeroIdentity(
                 mNextCardID++,
                 o.value("name").toString("invalid_string"),
                 mParseSpecialPower(o.value("power").toObject()));
@@ -302,7 +302,7 @@ void CardDB::buildDeckFromFile(const QString& fromFile, Player* owner,
         switch (info->type()) {
             case CardTypes::CARD_MINION:
                 for (int i = 0; i < q; i += 1) {
-                    Card* c = new Minion((const CharacterInfo*) info);
+                    Card* c = new Minion((const CharacterIdentity*) info);
                     c->initCard(owner);
                     deck << c;
                 }
@@ -310,7 +310,7 @@ void CardDB::buildDeckFromFile(const QString& fromFile, Player* owner,
 
             case CardTypes::CARD_SPELL:
                 for (int i = 0; i < q; i += 1) {
-                    Card* c = new Spell((const SpellInfo*) info);
+                    Card* c = new Spell((const SpellIdentity*) info);
                     c->initCard(owner);
                     deck << c;
                 }
@@ -352,11 +352,11 @@ void CardDB::buildRandomDeck(Player* forPlayer)
         Card* c;
         switch (pick->type()) {
             case CardTypes::CARD_MINION:
-                c = new Minion((const CharacterInfo*) pick);
+                c = new Minion((const CharacterIdentity*) pick);
                 break;
 
             case CardTypes::CARD_SPELL:
-                c = new Spell((const SpellInfo*) pick);
+                c = new Spell((const SpellIdentity*) pick);
                 break;
 
             default:
@@ -379,7 +379,7 @@ Hero* CardDB::buildHero(const QString& id)
     if (c->type() != CardTypes::CARD_HERO)
         qCritical() << "ID" << id << "does not refer to a hero.";
 
-    return new Hero((HeroInfo*) c, NULL);
+    return new Hero((HeroIdentity*) c, NULL);
 }
 
 int CardDB::maxCardId() const

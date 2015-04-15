@@ -1,9 +1,9 @@
-#include "characterinfo.h"
-#include "cardinfo.h"
+#include "characteridentity.h"
+#include "cardidentity.h"
 #include "actions/action.h"
 #include "triggers/trigger.h"
 
-CharacterInfo::CharacterInfo(int id, const QString& name,
+CharacterIdentity::CharacterIdentity(int id, const QString& name,
                              const QString& desc, int manaCost, int hp, int atk,
                              const QVector<Action*>& battlecry,
                              const QVector<Action*>& deathRattles, Ability abilities,
@@ -20,18 +20,18 @@ CharacterInfo::CharacterInfo(int id, const QString& name,
 
 }
 
-CharacterInfo::~CharacterInfo()
+CharacterIdentity::~CharacterIdentity()
 {
     qDeleteAll(m_deathRattles);
     qDeleteAll(m_battlecry);
 }
 
-CharacterType CharacterInfo::characterType() const
+CharacterType CharacterIdentity::characterType() const
 {
     return m_type;
 }
 
-CardType CharacterInfo::type() const
+CardType CharacterIdentity::type() const
 {
     if (m_type & CharacterTypes::HERO)
         return CardTypes::CARD_HERO;
@@ -40,27 +40,27 @@ CardType CharacterInfo::type() const
 }
 
 
-int CharacterInfo::hp() const
+int CharacterIdentity::hp() const
 {
     return m_hp;
 }
 
-int CharacterInfo::atk() const
+int CharacterIdentity::atk() const
 {
     return m_atk;
 }
 
-bool CharacterInfo::hasAbility(Ability a) const
+bool CharacterIdentity::hasAbility(Ability a) const
 {
     return m_abilities & a;
 }
 
-const QVector<Action*>*CharacterInfo::battlecry() const
+const QVector<Action*>*CharacterIdentity::battlecry() const
 {
     return &m_battlecry;
 }
 
-const QVector<Action*>* CharacterInfo::deathRattles() const
+const QVector<Action*>* CharacterIdentity::deathRattles() const
 {
     return &m_deathRattles;
 }

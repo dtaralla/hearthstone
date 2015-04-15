@@ -1,7 +1,7 @@
 #include "playaction.h"
 #include "card.h"
 #include "player.h"
-#include "cardinfo.h"
+#include "cardidentity.h"
 #include "minion.h"
 #include "iorequest.h"
 #include "dbouput.h"

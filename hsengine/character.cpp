@@ -6,7 +6,7 @@
 #include "player.h"
 #include "game.h"
 
-Character::Character(CharacterInfo const* baseChar, Player* owner) :
+Character::Character(CharacterIdentity const* baseChar, Player* owner) :
     Card(owner),
     m_base(baseChar),
     m_additionalAbilities(Abilities::NO_ABILITY),

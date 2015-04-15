@@ -1,6 +1,6 @@
 #include "summonnewminionsaction.h"
 #include "carddb.h"
-#include "characterinfo.h"
+#include "characteridentity.h"
 #include "minion.h"
 #include "player.h"
 #include "game.h"
@@ -12,7 +12,7 @@ SummonNewMinionsAction::SummonNewMinionsAction(int id, int quantity, Owner targe
 {
     const CardIdentity* ci = CardDB::Instance()->cardInfo(id);
     Q_ASSERT(ci->type() == CardTypes::CARD_MINION);
-    m_base = (const CharacterInfo*) ci;
+    m_base = (const CharacterIdentity*) ci;
 }
 
 SummonNewMinionsAction::~SummonNewMinionsAction()
@@ -20,7 +20,7 @@ SummonNewMinionsAction::~SummonNewMinionsAction()
 
 }
 
-const CharacterInfo* SummonNewMinionsAction::base() const
+const CharacterIdentity* SummonNewMinionsAction::base() const
 {
     return m_base;
 }

@@ -3,7 +3,7 @@
 
 #include "action.h"
 
-class CharacterInfo;
+class CharacterIdentity;
 
 class SummonNewMinionsAction : public Action
 {
@@ -11,12 +11,12 @@ public:
     SummonNewMinionsAction(int id, int quantity = 1, Owner targetOwner = Owners::ALLY);
     ~SummonNewMinionsAction();
 
-    const CharacterInfo* base() const;
+    const CharacterIdentity* base() const;
     int quantity() const;
     Owner targetOwner() const;
 
 private:
-    const CharacterInfo* m_base;
+    const CharacterIdentity* m_base;
     int m_quantity;
     Owner m_targetOwner;
 

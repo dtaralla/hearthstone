@@ -4,7 +4,7 @@
 #include <QtDebug>
 #include <QMap>
 #include "game_globals.h"
-#include "cardinfo.h"
+#include "cardidentity.h"
 
 class SpecialPowerAction;
 class SummonMinionAction;

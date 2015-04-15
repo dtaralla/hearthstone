@@ -1,5 +1,5 @@
 #include "spell.h"
-#include "spellinfo.h"
+#include "spellidentity.h"
 #include "actions/action.h"
 #include "actions/playaction.h"
 
@@ -10,7 +10,7 @@ Spell::Spell(const CardIdentity* baseSpell, Player* owner) :
     m_dmgModifier(0)
 {
     Q_ASSERT(baseSpell->type() == CardTypes::CARD_SPELL);
-    m_base = (const SpellInfo*) baseSpell;
+    m_base = (const SpellIdentity*) baseSpell;
 }
 
 Spell::~Spell()

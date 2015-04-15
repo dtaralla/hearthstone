@@ -3,13 +3,13 @@
 
 #include "character.h"
 
-class HeroInfo;
+class HeroIdentity;
 class SpecialPowerAction;
 
 class Hero : public Character
 {
 public:
-    Hero(const HeroInfo* baseChar, Player* owner);
+    Hero(const HeroIdentity* baseChar, Player* owner);
     ~Hero();
 
     PlayAction* playAction();

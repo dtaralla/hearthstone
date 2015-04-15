@@ -2,14 +2,14 @@
 #define CHARACTER_H
 
 #include "card.h"
-#include "characterinfo.h"
+#include "characteridentity.h"
 
 class Enchantment;
 
 class Character : public Card
 {
 public:
-    Character(CharacterInfo const* baseChar, Player* owner = NULL);
+    Character(CharacterIdentity const* baseChar, Player* owner = NULL);
     virtual ~Character();
 
     virtual const CardIdentity* base() const;
@@ -42,7 +42,7 @@ public:
     virtual void unfreeze();
 
 protected:
-    CharacterInfo const* m_base;
+    CharacterIdentity const* m_base;
     Ability m_additionalAbilities;
     Action* m_attackAction;
 

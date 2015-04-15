@@ -3,7 +3,7 @@
 #include "carddb.h"
 #include "actions/playaction.h"
 
-Minion::Minion(const CharacterInfo* baseChar, Player* owner) :
+Minion::Minion(const CharacterIdentity* baseChar, Player* owner) :
     Character(baseChar, owner),
     m_playActionConsequences(new QVector<Action*>()),
     m_playAction(new PlayAction(this)),

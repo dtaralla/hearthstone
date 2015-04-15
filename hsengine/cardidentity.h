@@ -15,10 +15,10 @@ class Trigger;
  *
  * A card identity is all the base information describing a Card object.
  * Although there can be several Card objects sharing the same identity (for
- * instance, in the case of having 2 Arcane Intellect cards in one's deck),
- * the identity of the card is unique in the program (Arcane Intellect
- * information is common to all Arcane Intellect cards, so there is no need to
- * duplicate this information for each instance of this identity).
+ * instance, in the case of having 2 Arcane Intellect cards in one's deck), the
+ * identity of the card is unique in the program (Arcane Intellect information
+ * is common to all Arcane Intellect cards, so there is no need to duplicate
+ * this information for each instance of this identity).
  *
  * Identities describe what cards \e are but also what cards \e do. However,
  * they usually do so by using \e relative qualifiers:
@@ -35,15 +35,15 @@ class Trigger;
  * identity and bind it to themselves. Once this is done, they can evaluate the
  * meaning of qualifiers like \e enemy, \e ally or \e this.
  *
- * Usually, CardIdentity objects are created based on information organized as a
- * JARS file imported by the CardDB singleton.
+ * Usually, CardIdentity objects are created based on information organized as
+ * a JARS file imported by the CardDB singleton.
  *
  * To allow one to know which kind of identity it is actually dealing with, the
  * type() factory method is provided. This method is implemented in child
  * classes of CardIdentity and returns a CardType. You might wander whether a
- * CardIdentity is a CharacterInfo, regardless of it being a HeroInfo or a minion's
- * identity. As the CardType is a bitstring, you can check this by using
- * <code>info->type() & CardTypes::CARD_CHARACTER</code>.
+ * CardIdentity is a CharacterInfo, regardless of it being a HeroInfo or a
+ * minion's identity. As the CardType is a bitstring, you can check this by
+ * using <code>info->type() & CardTypes::CARD_CHARACTER</code>.
  *
  * As we said, there are multiple card identity types and each has its
  * dedicated characteristics. However, all card identity types share a set of
@@ -84,8 +84,9 @@ public:
     /**
      * @brief Gets this card identity's type.
      *
-     * When you only have a <code>CardIdentity*</code> pointer, this factory method
-     * can come in handy to determine the effective type of the pointed object.
+     * When you only have a <code>CardIdentity*</code> pointer, this factory
+     * method can come in handy to determine the effective type of the pointed
+     * object.
      *
      * If your are not interested in the precise type of this card, you might
      * still be wandering whether a CardIdentity is a CharacterInfo, regardless of

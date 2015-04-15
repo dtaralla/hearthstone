@@ -1,11 +1,11 @@
 #include "hero.h"
-#include "heroinfo.h"
+#include "heroidentity.h"
 #include "actions/action.h"
 #include "actions/specialpoweraction.h"
 #include "player.h"
 #include "iorequest.h"
 
-Hero::Hero(const HeroInfo* baseChar, Player* owner) :
+Hero::Hero(const HeroIdentity* baseChar, Player* owner) :
     Character(baseChar, owner),
     m_armor(0),
     m_specialPower(NULL)
@@ -51,7 +51,7 @@ void Hero::initCard(Player* owner)
     Character::initCard(owner);
     Q_ASSERT(m_specialPower == NULL); // init should not be called more than once
 
-    m_specialPower = (SpecialPowerAction*)((HeroInfo*) m_base)->specialPower()->setSourceCard(this);
+    m_specialPower = (SpecialPowerAction*)((HeroIdentity*) m_base)->specialPower()->setSourceCard(this);
 }
 
 int Hero::armor() const

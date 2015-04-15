@@ -3,7 +3,7 @@
 
 #include "card.h"
 
-class SpellInfo;
+class SpellIdentity;
 
 class Spell : public Card
 {
@@ -23,7 +23,7 @@ public:
     void clearEnchantmentEffects();
 
 private:
-    SpellInfo const* m_base;
+    SpellIdentity const* m_base;
     PlayAction* m_playAction;
     QVector<Action*>* m_spell;
     int m_dmgModifier;

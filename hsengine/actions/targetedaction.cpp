@@ -50,7 +50,7 @@ void TargetedAction::m_refreshLastTargets(const QVector<Character*>* lastTargets
     QMutableVectorIterator<Character*> i(m_lastTargets);
     while (i.hasNext()) {
         Character* c = i.next();
-        if (c->dying())
+        if (c->isDying())
             i.remove();
     }
 }

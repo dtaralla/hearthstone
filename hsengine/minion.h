@@ -24,7 +24,7 @@ public:
      *
      * A minion can be many things: an undead creature, a totem, a mech,...
      *
-     * It is guaranteed that <code>characterType() &
+     * It is guaranteed that <code>subtype() &
      * CharacterTypes::MINION</code> returns \c true. It is also guaranteed
      * that this function never returns aggregate subtypes:
      * \li CharacterTypes::MINION
@@ -34,7 +34,7 @@ public:
      *
      * @return The subtype of this minion.
      */
-    CharacterType characterType() const;
+    CharacterType subtype() const;
     void initCard(Player* cardOwner);
     void setBattlecryResolved(bool resolved);
     bool battlecryResolved() const;

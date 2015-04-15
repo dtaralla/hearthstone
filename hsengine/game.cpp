@@ -366,7 +366,7 @@ void Game::enterGameLoop()
     m_curPlayer->newTurn();
 
     // Game loop
-    while (!m_player1->hero()->dying() && !m_player2->hero()->dying()) {
+    while (!m_player1->hero()->isDying() && !m_player2->hero()->isDying()) {
         // Get available actions for him
         QVector<Action*>* availableActions = new QVector<Action*>();
 
@@ -404,12 +404,12 @@ void Game::enterGameLoop()
 
 
     // Determine winner and looser
-    bool tie = m_player1->hero()->dying() && m_player2->hero()->dying();
+    bool tie = m_player1->hero()->isDying() && m_player2->hero()->isDying();
     if (tie) {
         m_player1->tie();
         m_player2->tie();
     }
-    else if (m_player1->hero()->dying()) {
+    else if (m_player1->hero()->isDying()) {
         m_player1->loose();
         m_player2->win();
     }
@@ -762,7 +762,7 @@ QVector<Character*>* Game::charactersByPlayTime(Player* p, Owner o, CharacterTyp
     }
 
     foreach (Card* c, *cards) {
-        if (c->type() == CardTypes::CARD_MINION && ((Character*) c)->characterType() & ct)
+        if (c->type() == CardTypes::CARD_MINION && ((Character*) c)->subtype() & ct)
             chars->append((Character*) c);
     }
     delete cards;

@@ -6,7 +6,7 @@
 CharacterIdentity::CharacterIdentity(int id, const QString& name,
                              const QString& desc, int manaCost, int hp, int atk,
                              const QVector<Action*>& battlecry,
-                             const QVector<Action*>& deathRattles, Ability abilities,
+                             const QVector<Action*>& deathrattle, Ability abilities,
                              const QHash<Event::Type, QVector<Trigger*>*>& triggerPowers,
                              CharacterType type, bool collectible) :
     CardIdentity(id, name, desc, manaCost, triggerPowers, collectible),
@@ -14,7 +14,7 @@ CharacterIdentity::CharacterIdentity(int id, const QString& name,
     m_hp(hp),
     m_atk(atk),
     m_battlecry(battlecry),
-    m_deathRattles(deathRattles),
+    m_deathrattle(deathrattle),
     m_abilities(abilities)
 {
     if (m_type == CharacterTypes::CHARACTER || m_type == CharacterTypes::MINION) {
@@ -27,11 +27,11 @@ CharacterIdentity::CharacterIdentity(int id, const QString& name,
 
 CharacterIdentity::~CharacterIdentity()
 {
-    qDeleteAll(m_deathRattles);
+    qDeleteAll(m_deathrattle);
     qDeleteAll(m_battlecry);
 }
 
-CharacterType CharacterIdentity::characterType() const
+CharacterType CharacterIdentity::subtype() const
 {
     return m_type;
 }
@@ -67,5 +67,5 @@ const QVector<Action*>*CharacterIdentity::battlecry() const
 
 const QVector<Action*>* CharacterIdentity::deathRattles() const
 {
-    return &m_deathRattles;
+    return &m_deathrattle;
 }

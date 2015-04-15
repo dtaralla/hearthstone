@@ -69,13 +69,13 @@ public:
     /**
      * @brief Gets this character subtype.
      *
-     * See CharacterIdentity::characterType().
+     * See CharacterIdentity::subtype().
      *
-     * @sa CharacterTypes, CharacterIdentity::characterType()
+     * @sa CharacterTypes, CharacterIdentity::subtype()
      *
      * @return This character subtype.
      */
-    virtual CharacterType characterType() const;
+    virtual CharacterType subtype() const;
 
     /**
      * @brief Gets the attack action of this character.
@@ -86,31 +86,6 @@ public:
      * @return The attack action of this character.
      */
     virtual Action* attackAction() const;
-
-    /**
-     * @brief Tells whether the "has attacked" flag of this character is set or
-     * not.
-     *
-     * This flag is managed by the Game and the attackAction() resolution code.
-     * This class never sets this flag itself.
-     *
-     * @return Whether the "has attacked" flag of this character is set or not.
-     *
-     * @sa setHasAttacked()
-     */
-    virtual bool hasAttacked() const;
-
-    /**
-     * @brief Sets the "has attacked" flag of this character.
-     *
-     * This flag is managed by the Game and the attackAction() resolution code.
-     * This class never sets this flag itself.
-     *
-     * @param hasAttacked the new value of the flag.
-     *
-     * @sa hasAttacked()
-     */
-    virtual void setHasAttacked(bool hasAttacked);
 
     /**
      * @brief Gets the maximum health of this character, all applied
@@ -139,22 +114,6 @@ public:
      * @return The attack of this character. This can never be negative.
      */
     virtual int atk() const;
-
-    /**
-     * @brief Tells whether this character is dying or not.
-     *
-     * This flag is set with setDying() when the character is scheduled for
-     * death resolution. Once a character has been set \e dying, there is no
-     * coming back for it in the game.
-     *
-     * A dying character does not necessarily have its hp() <= 0 (for instance
-     * if it is simply killed by a spell).
-     *
-     * @return Whether this character is dying or not.
-     *
-     * @sa setDying()
-     */
-    virtual bool dying() const;
 
     /**
      * @brief Gets the quantity of trigger powers this character has, all
@@ -253,13 +212,54 @@ public:
     virtual void addAbilities(Ability a);
 
     /**
+     * @brief Tells whether the "has attacked" flag of this character is set or
+     * not.
+     *
+     * This flag is managed by the Game and the attackAction() resolution code.
+     * This class never sets this flag itself.
+     *
+     * @return Whether the "has attacked" flag of this character is set or not.
+     *
+     * @sa setHasAttacked()
+     */
+    virtual bool hasAttacked() const;
+
+    /**
+     * @brief Sets the "has attacked" flag of this character.
+     *
+     * This flag is managed by the Game and the attackAction() resolution code.
+     * This class never sets this flag itself.
+     *
+     * @param hasAttacked the new value of the flag.
+     *
+     * @sa hasAttacked()
+     */
+    virtual void setHasAttacked(bool hasAttacked);
+
+    /**
+     * @brief Tells whether this character is dying or not.
+     *
+     * This flag is set with setDying() when the character is scheduled for
+     * death resolution. Once a character has been set \e dying, there is no
+     * coming back for it in the game.
+     *
+     * A dying character does not necessarily have its hp() <= 0 (for instance
+     * if it is simply killed by a spell).
+     *
+     * @return Whether this character is dying or not.
+     *
+     * @sa setDying()
+     */
+    virtual bool isDying() const;
+
+    /**
      * @brief Sets the "is dying" flag of this character.
      *
      * @param dying The new value of this flag.
      *
-     * @sa dying()
+     * @sa isDying()
      */
-    virtual void setDying(bool dying);
+    virtual void setDying(bool isDying);
 
     /**
      * @brief Tells whether this character is injured.
@@ -268,7 +268,7 @@ public:
      *
      * @return Whether this character is injured or not.
      */
-    virtual bool injured() const;
+    virtual bool isInjured() const;
 
     /**
      * @brief Tells whether this character has some given abilities.
@@ -283,25 +283,6 @@ public:
     QVector<Enchantment*>* takeEnchantmentsBefore(const Enchantment* s);
     virtual void removeEnchantment(Enchantment* e);
     virtual void clearEnchantmentEffects();
-
-    /**
-     * @brief Sets the "is silenced" flag of this character.
-     *
-     * A character should have this flag set if it was at least once the target
-     * of a SilenceTargetAction.
-     *
-     * The only possible way of reseting this flag is to return this character
-     * in the hand of his owner.
-     *
-     * Silence is an ability which removes all current card text, enchantments,
-     * and abilities from the targeted character. It does not remove damage or
-     * minion type.
-     *
-     * @param silenced The new value of the "is silenced" flag.
-     *
-     * @sa isSilenced()
-     */
-    virtual void setSilenced(bool silenced);
 
     /**
      * @brief Gets the value of the "is silenced" flag of this character.
@@ -321,6 +302,25 @@ public:
      * @sa setSilenced();
      */
     virtual bool isSilenced() const;
+
+    /**
+     * @brief Sets the "is silenced" flag of this character.
+     *
+     * A character should have this flag set if it was at least once the target
+     * of a SilenceTargetAction.
+     *
+     * The only possible way of reseting this flag is to return this character
+     * in the hand of his owner.
+     *
+     * Silence is an ability which removes all current card text, enchantments,
+     * and abilities from the targeted character. It does not remove damage or
+     * minion type.
+     *
+     * @param silenced The new value of the "is silenced" flag.
+     *
+     * @sa isSilenced()
+     */
+    virtual void setSilenced(bool silenced);
 
     virtual bool listensTo(const Event &e) const;
 
@@ -409,7 +409,7 @@ protected:
 
     /**
      * @brief The "is dying" flag.
-     * @sa setDying(), dying()
+     * @sa setDying(), isDying()
      */
     bool m_dying;
 

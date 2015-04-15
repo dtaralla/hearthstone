@@ -36,7 +36,7 @@ bool MinionKilledTrigger::listensTo(const Event& e) const
         killedMinion->owner() != m_card->owner()->opponent())
         return false;
 
-    return m_minionType & killedMinion->characterType();
+    return m_minionType & killedMinion->subtype();
 }
 
 Trigger* MinionKilledTrigger::clone() const

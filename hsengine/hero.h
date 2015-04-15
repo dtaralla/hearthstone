@@ -17,7 +17,7 @@ public:
     SpecialPowerAction* specialPower() const;
 
     virtual CardType type() const;
-    virtual CharacterType characterType() const;
+    virtual CharacterType subtype() const;
     void initCard(Player* owner);
 
     int armor() const;

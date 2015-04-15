@@ -36,9 +36,9 @@ CardType Minion::type() const
     return CardTypes::CARD_MINION;
 }
 
-CharacterType Minion::characterType() const
+CharacterType Minion::subtype() const
 {
-    return m_base->characterType();
+    return m_base->subtype();
 }
 
 QVector<Action*>* Minion::deathRattles() const

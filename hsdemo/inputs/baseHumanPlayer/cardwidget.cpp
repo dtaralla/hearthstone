@@ -16,7 +16,7 @@ CardWidget::CardWidget(Card* c, QWidget *parent) :
     ui->back->setToolTipDuration(30000);
 
     if (c->type() == CardTypes::CARD_MINION)
-        ui->type->setText(CharacterTypes::toString(((Minion*)c)->characterType()));
+        ui->type->setText(CharacterTypes::toString(((Minion*)c)->subtype()));
 
     ui->hasAttacked->setVisible(false);
     ui->isFrozen->setVisible(false);
@@ -39,7 +39,7 @@ void CardWidget::refresh()
         Minion* m = (Minion*) m_card;
         ui->atk->setText(QString("%1").arg(m->atk()));
         ui->hp->setText(QString("%1").arg(m->hp()));
-        if (m->injured())
+        if (m->isInjured())
             ui->hp->setStyleSheet("color: yellow");
         else
             ui->hp->setStyleSheet("color: white");

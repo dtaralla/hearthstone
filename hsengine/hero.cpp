@@ -41,7 +41,7 @@ CardType Hero::type() const
     return CardTypes::CARD_HERO;
 }
 
-CharacterType Hero::characterType() const
+CharacterType Hero::subtype() const
 {
     return CharacterTypes::HERO;
 }

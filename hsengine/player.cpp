@@ -382,7 +382,7 @@ void Player::executeAttack(Character* attacker, Character* target)
     ir->putExtra<Character>("target", target);
     emit attack(ir);
 
-    if (attacker->dying() || target->dying())
+    if (attacker->isDying() || target->isDying())
         return;
 
     // Logically do the attack

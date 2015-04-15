@@ -47,7 +47,7 @@ bool CardPlayedTrigger::listensTo(const Event& e) const
 
     if (m_cardType & CardTypes::CARD_CHARACTER) {
         if (playedCard->type() & CardTypes::CARD_CHARACTER)
-            return ((Character*) m_card)->characterType() & m_characterType;
+            return ((Character*) m_card)->subtype() & m_characterType;
     }
 
     return m_cardType & playedCard->type();

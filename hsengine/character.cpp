@@ -37,7 +37,7 @@ CardType Character::type() const
     return CardTypes::CARD_CHARACTER;
 }
 
-CharacterType Character::characterType() const
+CharacterType Character::subtype() const
 {
     return CharacterTypes::CHARACTER;
 }
@@ -72,7 +72,7 @@ int Character::atk() const
     return m_base->atk() + m_atkModifier;
 }
 
-bool Character::dying() const
+bool Character::isDying() const
 {
     return m_dying;
 }
@@ -153,7 +153,7 @@ void Character::setDying(bool dying)
     m_dying = dying;
 }
 
-bool Character::injured() const
+bool Character::isInjured() const
 {
     return hp() < maxHp();
 }

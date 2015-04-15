@@ -17,7 +17,12 @@ CharacterIdentity::CharacterIdentity(int id, const QString& name,
     m_deathRattles(deathRattles),
     m_abilities(abilities)
 {
-
+    if (m_type == CharacterTypes::CHARACTER || m_type == CharacterTypes::MINION) {
+        qDebug() << "Character type" << CharacterTypes::toString(m_type)
+                 << "is forbidden; defaulting to"
+                 << CharacterTypes::toString(CharacterTypes::GENERAL);
+        m_type = CharacterTypes::GENERAL;
+    }
 }
 
 CharacterIdentity::~CharacterIdentity()

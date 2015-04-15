@@ -33,7 +33,7 @@ class Enchantment;
  * identity. It is the reason why all Card objects need to be initialized
  * before being used: they copy the relative information given by their
  * identity and bind it to themselves. Once this is done, they can evaluate the
- * meaning of qualificatives like \e enemy, \e ally or \e this.
+ * meaning of qualifiers like \e enemy, \e ally or \e this.
  *
  * To allow one to know which kind of Card it is actually dealing with, the
  * type() factory method is provided. This method is implemented in child
@@ -115,6 +115,8 @@ public:
      *
      * Shortcut to <code>card->base()->name()</code>.
      *
+     * @sa CardInfo::name()
+     *
      * @return The name of this card, shared by all cards having the same
      * identity.
      */
@@ -130,6 +132,8 @@ public:
      * description, independent of the current game) is contained in another
      * object, a CardInfo object, wich can be used to compare this very \e
      * instance characteristics to the original ones.
+     *
+     * @sa CardInfo
      *
      * @return A CardInfo object representing the information shared by all
      * cards having the same identity than this one.
@@ -148,7 +152,7 @@ public:
      * by using a test like <code>card->type() &
      * CardTypes::CARD_CHARACTER</code>.
      *
-     * @sa CardType, CardTypes
+     * @sa CardInfo::type(), CardType, CardTypes
      *
      * @return The type of this card.
      */

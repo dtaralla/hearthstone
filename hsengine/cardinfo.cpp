@@ -41,11 +41,6 @@ int CardInfo::manaCost() const
     return m_manaCost;
 }
 
-bool CardInfo::listensTo(const Event& e) const
-{
-    return m_triggerPowers.contains(e.type());
-}
-
 const QHash<Event::Type, QVector<Trigger*>* >& CardInfo::triggerPowers() const
 {
     return m_triggerPowers;

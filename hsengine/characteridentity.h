@@ -6,6 +6,17 @@
 class Action;
 class Trigger;
 
+/**
+ * @brief The CharacterIdentity class represent a character identity.
+ *
+ * It regroups all the information to define a character. Minion objects use
+ * this class directly as their identity, while Hero objects use a subclass of
+ * this one, HeroIdentity, which is a subset of this one. Indeed, heroes
+ * never have deathrattles nor battlecries for instance.
+ *
+ * @ingroup hsengine
+ * @sa Character, Minion, Hero, HeroIdentity
+ */
 class CharacterIdentity : public CardIdentity
 {
 public:
@@ -71,20 +82,90 @@ public:
      * @return The subtype of this character identity.
      */
     CharacterType subtype() const;
+
+    /**
+     * @brief Gets this character identity's type.
+     *
+     * @return If <code>this->subtype() & CharacterTypes::HERO</code> returns
+     * \c true, this returns CardTypes::CARD_HERO. Otherwise, returns
+     * CardTypes::CARD_MINION.
+     */
     CardType type() const;
+
+    /**
+     * @brief Gets the base max health of all characters having this identity
+     * @return The base max health of all characters having this identity. This
+     * is always positive.
+     */
     int hp() const;
+
+    /**
+     * @brief Gets the base attack of all characters having this identity
+     * @return The base attack of all characters having this identity. This
+     * is always positive.
+     */
     int atk() const;
+
+    /**
+     * @brief Tells whether characters having this identity have some given
+     * abilities.
+     *
+     * @param a An Ability bitstring containing the abilities to test.
+     *
+     * @return \c true if all abilities expressed in \a a are possessed by this
+     * character identity, \c false otherwise.
+     */
     bool hasAbility(Ability a) const;
 
+    /**
+     * @brief Gets the battlecry of all characters having this identity.
+     * @return The battlecry of all characters having this identity. This is
+     * never \c NULL but might be empty.
+     */
     const QVector<Action*>* battlecry() const;
-    const QVector<Action*>* deathRattles() const;
+
+    /**
+     * @brief Gets the deathrattle of all characters having this identity.
+     * @return The deathrattle of all characters having this identity. This is
+     * never \c NULL but might be empty.
+     */
+    const QVector<Action*>* deathrattle() const;
 
 protected:
+    /**
+     * @brief The subtype of all characters having this identity.
+     * @sa subtype()
+     */
     CharacterType m_type;
+
+    /**
+     * @brief The maximum health of all characters having this identity.
+     * @sa hp()
+     */
     int m_hp;
+
+    /**
+     * @brief The attack of all characters having this identity.
+     * @sa atk()
+     */
     int m_atk;
+
+    /**
+     * @brief The battlecry of all characters having this identity.
+     * @sa battlecry()
+     */
     QVector<Action*> m_battlecry;
+
+    /**
+     * @brief The deathrattle of all characters having this identity.
+     * @sa deathrattle()
+     */
     QVector<Action*> m_deathrattle;
+
+    /**
+     * @brief The abilities of all characters having this identity.
+     * @sa hasAbility()
+     */
     Ability m_abilities;
 };
 

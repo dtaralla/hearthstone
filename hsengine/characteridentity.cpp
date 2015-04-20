@@ -65,7 +65,7 @@ const QVector<Action*>*CharacterIdentity::battlecry() const
     return &m_battlecry;
 }
 
-const QVector<Action*>* CharacterIdentity::deathRattles() const
+const QVector<Action*>* CharacterIdentity::deathrattle() const
 {
     return &m_deathrattle;
 }

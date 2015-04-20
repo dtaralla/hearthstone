@@ -168,18 +168,18 @@ void CardDB::buildCardDB(const QString& fromFile)
         CardIdentity* toInsert;
         if (type == CardTypes::CARD_MINION) {
             // Parse death rattles
-            QVector<Action*> deathRattles;
+            QVector<Action*> deathrattle;
             QJsonValue drs = o.value("deathrattles");
             if (!drs.isUndefined()) {
                 if (drs.isArray()) {
                     foreach (QJsonValue v2, drs.toArray()) {
                         if (!v2.isObject())
                             qCritical() << "Value" << v2 << "is not a JSON object.";
-                        deathRattles.append(mParseAction(v2.toObject()));
+                        deathrattle.append(mParseAction(v2.toObject()));
                     }
                 }
                 else
-                    deathRattles.append(mParseAction(drs.toObject()));
+                    deathrattle.append(mParseAction(drs.toObject()));
             }
 
             // Parse battlecry
@@ -211,7 +211,7 @@ void CardDB::buildCardDB(const QString& fromFile)
                 o.value("health").toInt(-1),
                 o.value("attack").toInt(-1),
                 battlecry,
-                deathRattles,
+                deathrattle,
                 mParseAbilities(o.value("abilities")),
                 triggerPowers,
                 subtype,

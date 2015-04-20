@@ -39,7 +39,7 @@ public:
     void setBattlecryResolved(bool resolved);
     bool battlecryResolved() const;
 
-    QVector<Action*>* deathRattles() const;
+    QVector<Action*>* deathrattle() const;
     const QVector<Action*>* battlecry() const;
 
 private:
@@ -47,7 +47,7 @@ private:
     PlayAction* m_playAction;
 
     QVector<Action*> m_battlecry;
-    QVector<Action*> m_deathRattles;
+    QVector<Action*> m_deathrattle;
     bool m_battlecryResolved;
 
 };

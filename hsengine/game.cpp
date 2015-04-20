@@ -461,8 +461,8 @@ void Game::mUpdateState(Action* move, const Event* e)
     if (!deathsActingAlreadyBegun) {
         while (!m_deathsQueue.empty()) {
             Minion* m = m_deathsQueue.first();
-            QVector<Action*>* deathRattles = m->deathRattles();
-            foreach (Action* a, *deathRattles) {
+            QVector<Action*>* deathrattle = m->deathrattle();
+            foreach (Action* a, *deathrattle) {
                 IORequest* ir = new IORequest(m->owner(), IORequest::DEATHRATTLE);
                 ir->putExtra<Character>("character", m);
                 ir->putExtra<Action>("action", a);
@@ -470,7 +470,7 @@ void Game::mUpdateState(Action* move, const Event* e)
 
                 mUpdateState(a);
             }
-            delete deathRattles;
+            delete deathrattle;
 
             Event ev(Event::MINION_DIES);
             ev.putExtra<Minion>("dyingMinion", m);

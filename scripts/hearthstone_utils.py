@@ -21,6 +21,7 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import precision_recall_curve
 from matplotlib import pyplot as plt
 import scipy.io as sio
+import csv
 
 DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
 MAT_PATH = "roc/"
@@ -38,16 +39,32 @@ def loadDB(db, usecols=None, skipheader=0, skipfooter=0):
 def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=0):
     random_state = check_random_state(random_state)
     
-    loaded = loadDB(db, usecols, skipheader, skipfooter)
-    
-    # Replace zeroes by random, small uncertain values (else we would have 3 classes)
-    mask = loaded[:, -1] == 0
-    loaded[mask, -1] = random_state.normal(0, 0.01, mask.sum())
-    mask = 0
-    loaded[loaded[:, -1] >= 0, -1] = 1
-    loaded[loaded[:, -1] < 0, -1] = -1
-    
-    return loaded
+    if (os.path.exists(DB_PATH + db)):
+        with open(DB_PATH + db, mode='r') as f:
+            num_lines = sum(1 for line in f)
+        
+        n = n_features[dbs[1]]
+        if "play" in db:
+            n = n_features[dbs[0]]
+        
+        print("{} contains a {}x{} matrix; parsing...".format(db, num_lines, n))
+        loaded = np.zeros((num_lines, n + 1))
+        with open(DB_PATH + db, mode='r') as f:
+            reader = csv.reader(f)
+            for i, row in enumerate(reader):
+                loaded[i, :] = np.array(row[0].split(), dtype=np.float64)
+        
+        # Replace zeroes by random, small uncertain values (else we would have 3 classes)
+        mask = loaded[:, -1] == 0
+        loaded[mask, -1] = random_state.normal(0, 0.01, mask.sum())
+        mask = 0
+        loaded[loaded[:, -1] >= 0, -1] = 1
+        loaded[loaded[:, -1] < 0, -1] = -1
+        
+        return loaded
+    else:
+        raise ValueError("Missing {}, aborting".format(DB_PATH + db))
+
 
 def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=False):
     if (os.path.exists(MAT_PATH) == False):
@@ -105,9 +122,6 @@ def saveTrainedClassifier(db, clf):
     print("Loading data for classifier on " + db)
     loaded = loadClassifiedDB(db + ".train.csv", random_state=0)
 
-    X_train = loaded[:, 0:-1]
-    y_train = loaded[:, -1]
-
     print("X_train size: {}.".format(loaded[:, 0:-1].shape))
     print("y_train size: {}.".format(loaded[:, -1].shape))
 
@@ -142,7 +156,7 @@ def pValue(X_train, y_train, X_test, y_test, clf, N = 1000, seed = None):
 def trainClassifiersAndSave(computeScore=False):
     for db in dbs:
         if (not os.path.exists("clfs/" + db)):
-            clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1)
+            clf = ExtraTreesClassifier(n_estimators=500, random_state=0, n_jobs=-1)
             saveTrainedClassifier(db, clf)
         elif (computeScore):
             clf = joblib.load("clfs/" + db)

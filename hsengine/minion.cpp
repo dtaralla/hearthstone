@@ -15,7 +15,7 @@ Minion::Minion(const CharacterIdentity* baseChar, Player* owner) :
 Minion::~Minion()
 {
     qDeleteAll(m_battlecry);
-    qDeleteAll(m_deathRattles);
+    qDeleteAll(m_deathrattle);
     delete m_playAction;
     qDeleteAll(*m_playActionConsequences);
     delete m_playActionConsequences;
@@ -41,12 +41,12 @@ CharacterType Minion::subtype() const
     return m_base->subtype();
 }
 
-QVector<Action*>* Minion::deathRattles() const
+QVector<Action*>* Minion::deathrattle() const
 {
     if (m_silenced)
         return new QVector<Action*>();
 
-    return new QVector<Action*>(m_deathRattles);
+    return new QVector<Action*>(m_deathrattle);
 }
 
 const QVector<Action*>* Minion::battlecry() const
@@ -60,8 +60,8 @@ void Minion::initCard(Player* cardOwner)
     Character::initCard(cardOwner);
 
     // Clone deathrattles making them linked to this very card
-    foreach (Action* a, *m_base->deathRattles())
-        m_deathRattles << a->setSourceCard(this);
+    foreach (Action* a, *m_base->deathrattle())
+        m_deathrattle << a->setSourceCard(this);
 
     // Clone battlecry making its actions linked to this very card
     foreach (Action* a, *m_base->battlecry())

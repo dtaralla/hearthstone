@@ -1,3 +1,12 @@
+/**
+ * @file event.h
+ *
+ * @brief Defines the various event types supported by the Hearthstone
+ * Simulator.
+ *
+ * @ingroup hsengine
+ */
+
 #ifndef EVENT_H
 #define EVENT_H
 
@@ -7,16 +16,77 @@
 #include "stringable.h"
 #include "vptr.h"
 
+/**
+ * @brief Any variable of this type represents an event response type.
+ *
+ * <i>%Event responses</i> are kind of like event parameters set when the even
+ * is fired. These parameters are information about what caused the event and
+ * the context in which it was fired.
+ *
+ * The EventParams namespace contains all supported event responses (ie., all
+ * values an \c EventParam variable can take).
+ *
+ * @sa EventParams
+ * @ingroup hsengine
+ */
 typedef const char* EventParam;
+
+/**
+ * @brief Aggregates all possible values for variables of type EventParam.
+ */
 namespace EventParams {
+    /**
+     * @brief The card played. This parameter is available only in response to
+     * a Event::AFTER_CARD_PLAYED or Event::BEFORE_CARD_PLAYED event.
+     */
     EventParam const CARD_PLAYED              = "card";
+
+    /**
+     * @brief The damaged character. This parameter is available only in
+     * response to a Event::CHARACTER_DAMAGED event.
+     */
     EventParam const DAMAGED_CHARACTER        = "damagedCharacter";
+
+    /**
+     * @brief The character being the damage source. This parameter is
+     * available only in response to a Event::CHARACTER_DAMAGED event.
+     */
     EventParam const DAMAGER                  = "damager";
+
+    /**
+     * @brief The dying minion. This parameter is available only in response to
+     * a Event::MINION_DIES event.
+     */
     EventParam const DYING_MINION             = "dyingMinion";
+
+    /**
+     * @brief The player ending the turn. This parameter is available only in
+     * response to a Event::AT_TURN_END event.
+     */
     EventParam const PLAYER_ENDING_TURN       = "player";
+
+    /**
+     * @brief The attacked character. This parameter is available only in
+     * response to a Event::CHARACTER_ATTACKS event.
+     */
     EventParam const ATTACKED_CHARACTER       = "attackedCharacter";
+
+    /**
+     * @brief The attacking character. This parameter is available only in
+     * response to a Event::CHARACTER_ATTACKS event.
+     */
     EventParam const ATTACKING_CHARACTER      = "attackingCharacter";
+
+    /**
+     * @brief The healed character. This parameter is available only in
+     * response to a Event::CHARACTER_HEALED event.
+     */
     EventParam const HEALED_CHARACTER         = "healedCharacter";
+
+    /**
+     * @brief The character being the healing source. This parameter is
+     * available only in response to a Event::CHARACTER_HEALED event.
+     */
     EventParam const HEALER                   = "healer";
 }
 

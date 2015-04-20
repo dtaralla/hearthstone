@@ -60,7 +60,7 @@ void Minion::initCard(Player* cardOwner)
     Character::initCard(cardOwner);
 
     // Clone deathrattles making them linked to this very card
-    foreach (Action* a, *m_base->deathRattles())
+    foreach (Action* a, *m_base->deathrattle())
         m_deathRattles << a->setSourceCard(this);
 
     // Clone battlecry making its actions linked to this very card

@@ -114,7 +114,8 @@ public:
      * @brief Buffers the output of the sample which is in the current buffer
      * line.
      *
-     * The output will be appended to the current buffer line.
+     * The output will be appended to the current buffer line. This flushes the
+     * buffer line in the file buffer.
      *
      * @warning This can be called only after a call to
      * buffer(Character* target, Action* a).
@@ -123,6 +124,15 @@ public:
      * @param a The TargetedAction in the current buffer line.
      */
     void buffer(float score, Action *a);
+
+    /**
+     * @brief Buffers a SpecialPowerAction sample or a PlayCardAction sample.
+     *
+     * @param environment
+     *
+     * @param a
+     * @param score
+     */
     void addEntry(const QVector<float>& environment, Action* a, float score);
 
 private:

@@ -427,8 +427,12 @@ void Game::mUpdateState(Action* move, const Event* e)
 
     // TODO: Clear and re-apply temporary/conditional effects
 
-    if (IsDBGenerationModeOn() && move->isTargetedAction())
-        DBOutput::Instance(this)->buffer(environment(), move);
+    AggroScore* aScore1 = NULL;
+    if (IsDBGenerationModeOn() && move->isTargetedAction()) {
+        DBOutput::Instance(this, DBOutput::BOARD_CONTROL)->buffer(environment(), move);
+        DBOutput::Instance(this, DBOutput::AGGRO)->buffer(environment(), move);
+        aScore1 = meta_AggroScore();
+    }
 
     // Resolve action
     bool moveDeleted = move->deletesItselfAfterResolve();
@@ -494,8 +498,15 @@ void Game::mUpdateState(Action* move, const Event* e)
 
     if (IsDBGenerationModeOn() && move->isTargetedAction()) {
         BoardControlScore* score = meta_BoardControlScore();
-        DBOutput::Instance(this)->buffer(score->score, move);
+        DBOutput::Instance(this, DBOutput::BOARD_CONTROL)->buffer(score->score, move);
         delete score;
+
+        AggroScore* aScore2 = meta_AggroScore();
+        float aScore = aScore2->score - aScore1->score;
+        delete aScore1; aScore1 = NULL;
+        delete aScore2; aScore2 = NULL;
+
+        DBOutput::Instance(this, DBOutput::AGGRO)->buffer(aScore, move);
     }
 }
 
@@ -533,6 +544,37 @@ QVector<float> Game::environment() const
 {
     QVector<float> toRet;
 
+    // various simple data
+    int enemMaxMana = m_nextPlayer->maxMana() + 1;
+    if (enemMaxMana > 10)
+        enemMaxMana = 10;
+
+    int allyTauntCount = 0;
+    foreach (Minion* m, *m_curPlayer->minions()) {
+        if (m->hasAbility(Abilities::TAUNT))
+            allyTauntCount += 1;
+    }
+
+    int enemyTauntCount = 0;
+    foreach (Minion* m, *m_nextPlayer->minions()) {
+        if (m->hasAbility(Abilities::TAUNT))
+            enemyTauntCount += 1;
+    }
+
+    toRet << m_curPlayer->minions()->size()
+          << m_nextPlayer->minions()->size()
+          << allyTauntCount
+          << enemyTauntCount
+          << m_curPlayer->hand()->size()
+          << m_nextPlayer->hand()->size()
+          << m_curPlayer->currentMana()
+          << m_curPlayer->maxMana()
+          << enemMaxMana
+          << m_curPlayer->hero()->hp()
+          << m_nextPlayer->hero()->hp();
+          //<< m_curPlayer->deckSize()
+          //<< m_nextPlayer->deckSize();
+
     /***************************************************************
      * If 3 minions, these are the possible positions:             *
      * 1 2 3 / / / /                                               *
@@ -549,18 +591,19 @@ QVector<float> Game::environment() const
     int insertAt = (qrand() % (7 - minionCount + 1));
     int endAt = insertAt + minionCount;
     for (int i = 0; i < 7; i += 1) {
-        // Put placeholders for missing minions: -1 0 -9999 -9999 0 0
+        // Put placeholders for missing minions: -1 0 -9999 -9999 0 0 0
         if (i < insertAt || i >= endAt)
-            toRet << -1 << 0 << -9999 << -9999 << 0 << 0;
-        // Put ally minions info: ID CAN_ATTACK HP ATK SILENCED ENCHANTED
+            toRet << -1 << 0 << -9999 << -9999 << 0 << 0 << 0;
+        // Put ally minions info: ID CAN_ATTACK HP ATK SILENCED ENCHANTED TAUNT
         else {
             Minion* m = minions->at(i - insertAt);
-            toRet << m->base()->id();
-            if (m->hasAttacked() || m->hasAbility(Abilities::FROZEN))
-                toRet << 0;
-            else
-                toRet << 1;
-            toRet << m->hp() << m->atk() << m->isSilenced() << !m->enchantments()->empty();
+            toRet << m->base()->id()
+                  << (!m->hasAttacked() && !m->hasAbility(Abilities::FROZEN))
+                  << m->hp()
+                  << m->atk()
+                  << m->isSilenced()
+                  << !m->enchantments()->empty()
+                  << m->hasAbility(Abilities::TAUNT);
         }
     }
 
@@ -570,18 +613,19 @@ QVector<float> Game::environment() const
     insertAt = (qrand() % (7 - minionCount + 1));
     endAt = insertAt + minionCount;
     for (int i = 0; i < 7; i += 1) {
-        // Put placeholders for missing minions: -1 0 -9999 -9999 0 0
+        // Put placeholders for missing minions: -1 0 -9999 -9999 0 0 0
         if (i < insertAt || i >= endAt)
-            toRet << -1 << 0 << -9999 << -9999 << 0 << 0;
-        // Put enemy minions info: ID CAN_ATTACK HP ATK SILENCED ENCHANTED
+            toRet << -1 << 0 << -9999 << -9999 << 0 << 0 << 0;
+        // Put enemy minions info: ID CAN_ATTACK HP ATK SILENCED ENCHANTED TAUNT
         else {
             Minion* m = minions->at(i - insertAt);
-            toRet << m->base()->id();
-            if (m->hasAttacked() || m->hasAbility(Abilities::FROZEN))
-                toRet << 0;
-            else
-                toRet << 1;
-            toRet << m->hp() << m->atk() << m->isSilenced() << !m->enchantments()->empty();
+            toRet << m->base()->id()
+                  << (!m->hasAttacked() && !m->hasAbility(Abilities::FROZEN))
+                  << m->hp()
+                  << m->atk()
+                  << m->isSilenced()
+                  << !m->enchantments()->empty()
+                  << m->hasAbility(Abilities::TAUNT);
         }
     }
 
@@ -590,22 +634,6 @@ QVector<float> Game::environment() const
         mAddShuffledHandTo(toRet);
     else
         mAddHandAsVectorTo(toRet);
-
-
-    // Append various simple data
-    int enemMaxMana = m_nextPlayer->maxMana() + 1;
-    if (enemMaxMana > 10)
-        enemMaxMana = 10;
-
-    toRet << m_curPlayer->minions()->size()
-          << m_nextPlayer->minions()->size()
-          << m_curPlayer->hand()->size()
-          << m_nextPlayer->hand()->size()
-          << m_curPlayer->currentMana()
-          << m_curPlayer->maxMana()
-          << enemMaxMana;
-          //<< m_curPlayer->deckSize()
-          //<< m_nextPlayer->deckSize();
 
     return toRet;
 }
@@ -880,6 +908,29 @@ Game::BoardControlScore* Game::meta_BoardControlScore()
                     score->HAND_MULT +
                     score->MINIONS_MULT +
                     score->SITUATION_MULT;
+    return score;
+}
+
+Game::AggroScore* Game::meta_AggroScore()
+{
+    AggroScore* score = new AggroScore;
+
+    /* EnemyHpScore = 0              if there is at least 1 enemy taunt,
+     *              = 1 - curHp / 30 if there are none
+     *              = 1              if enemy hero's curHp <= 0 */
+    if (m_nextPlayer->hero()->hp() <= 0)
+        score->enemyHpScore = 1;
+    else {
+        score->enemyHpScore = 1 - m_nextPlayer->hero()->hp() / 30.0;
+        foreach (Minion* m, *m_nextPlayer->minions())
+            if (m->hasAbility(Abilities::TAUNT)) {
+                score->enemyHpScore = 0;
+                break;
+            }
+    }
+
+    score->score = score->enemyHpScore;
+
     return score;
 }
 

@@ -41,10 +41,22 @@ void SpecialPowerAction::resolve(const Event* e)
 
     foreach (Action* a, *m_effects)
         if (Game::IsDBGenerationModeOn() && a->isTargetedAction()) {
-            DBOutput::Instance(game)->buffer(game->environment(), a);
+            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(game->environment(), a);
+            DBOutput::Instance(game, DBOutput::AGGRO)->buffer(game->environment(), a);
+
+            Game::AggroScore* aScore1 = game->meta_AggroScore();
+
             a->resolve();
+
+            Game::AggroScore* aScore2 = game->meta_AggroScore();
+            float aScore = aScore2->score - aScore1->score;
+            delete aScore1; aScore1 = NULL;
+            delete aScore2; aScore2 = NULL;
+
+            DBOutput::Instance(game, DBOutput::AGGRO)->buffer(aScore, a);
+
             Game::BoardControlScore* s = game->meta_BoardControlScore();
-            DBOutput::Instance(game)->buffer(s->score, a);
+            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(s->score, a);
             delete s;
         }
         else

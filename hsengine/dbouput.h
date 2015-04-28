@@ -41,6 +41,11 @@ class Game;
 class DBOutput
 {
 public:
+    enum ScoreType {
+        AGGRO,
+        BOARD_CONTROL
+    };
+
     /**
      * @brief Gets the DBOutput instance bound to a Game.
      *
@@ -50,7 +55,7 @@ public:
      *
      * @return the DBOutput instance bound to Game \a g.
      */
-    static DBOutput* Instance(Game* g);
+    static DBOutput* Instance(Game* g, ScoreType st);
 
     /**
      * @brief Flushes the DBOutput bound to a Game and deletes it.
@@ -68,7 +73,9 @@ public:
      *
      * @param g The Game you want to flush the DBOutput of.
      */
-    static void DestroyInstance(Game* g);
+    static void DestroyInstance(Game *g);
+
+    static void DestroyInstance(Game* g, ScoreType st);
 
     /**
      * @brief Sets the generated filenames prefix.
@@ -142,15 +149,16 @@ private:
     };
 
     static QString mFilenamesPrefix;
-    static QHash<int, DBOutput*> mInstances;
+    static QHash<int, QHash<int, DBOutput*>*> mInstances;
     QString mPlayActionFile;
     QString mTargetedActionFile;
     QTextStream mOs_playAction;
     QTextStream mOs_targetedAction;
     QStringList mBuffer;
     BufferEntryType mLastInsertionInBuffer;
+    QString mScoreTypePrefix;
 
-    DBOutput();
+    DBOutput(ScoreType st);
     ~DBOutput();
     void mInsertEnvironment(const QVector<float>& environment, QTextStream &os);
     void mInsertTarget(const Character* target, QTextStream &os);

@@ -368,28 +368,34 @@ public:
      * Let N be the number of possible cards in the game.
      *
      * An environement is composed of:
-     * - [0 to 83] Description of minions on the battlefield: 14 x
-     * - [84 to 84+N] Description of the current player's hand; each variable
-     * is an integer number representing the amount of cards of ID (i-84) the
-     * current player has in his hand.
-     * - [84+N+1] Integer representing the amount of minions controlled by the
+     * - [0] Integer representing the amount of minions controlled by the
      * current player
-     * - [84+N+2] Integer representing the amount of minions controlled by the
+     * - [1] Integer representing the amount of minions controlled by the
      * next player
-     * - [84+N+3] Integer representing the amount of cards in the current
+     * - [2] Integer representing the amount of taunts controlled by the
+     * current player
+     * - [3] Integer representing the amount of taunts controlled by the
+     * next player
+     * - [4] Integer representing the amount of cards in the current
      * player's hand
-     * - [84+N+4] Integer representing the amount of cards in the next player's
+     * - [5] Integer representing the amount of cards in the next player's
      * hand
-     * - [84+N+5] Integer representing the remaining amount of mana the current
+     * - [6] Integer representing the remaining amount of mana the current
      * player has
-     * - [84+N+6] Integer representing the maximum amount of mana available for
+     * - [7] Integer representing the maximum amount of mana available for
      * the current player
-     * - [84+N+7] Integer representing the maximum amount of mana available for
+     * - [8] Integer representing the maximum amount of mana available for
      * the next player <em>when it will be his turn</em>
+     * - [9] Integer representing the hp of the current player
+     * - [10] Integer representing the hp of the next player
+     * - [11 to 108] Description of minions on the battlefield: 14 x (*)
+     * - [108 to 108+N] Description of the current player's hand; each variable
+     * is an integer number representing the amount of cards of ID (i-108) the
+     * current player has in his hand.
      *
-     * The list of 14 (minion_id, can_attack, current_HP, current_ATK,
-     * is_silenced, is_enchanted) tuples might contain missing data in the case
-     * where a player does not have 7 minions.
+     * (*): The list of 14 (minion_id, can_attack, current_HP, current_ATK,
+     * is_silenced, is_enchanted, is_taunt) tuples might contain missing data
+     * in the case where a player does not have 7 minions.
      *
      * @return The list defined hereabove
      */
@@ -548,6 +554,14 @@ public:
      * value.
      */
     BoardControlScore* meta_BoardControlScore();
+
+    struct AggroScore {
+        float enemyHpScore;
+        float score;
+    };
+
+    AggroScore* meta_AggroScore();
+
 
 private:
     /**

@@ -17,6 +17,8 @@ private:
     Player* mMe;
     Action* mLastAction;
     QVector<float> mLastEnvironment;
+    QVector<float> mLastAggroEnvironment;
+    float mLastAggroScore;
 
     // PlayerInput interface
 public:

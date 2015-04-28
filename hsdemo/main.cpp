@@ -14,16 +14,24 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-    //qsrand(time(NULL));
-    qsrand(0);
     qInstallMessageHandler(myMessageOutput);
     if (argc < 7)
-        qCritical() << "Required params: cardDB hero1_id hero2_id deck1.json deck2.json player2Type[in 0 1 2 3]";
+        qCritical() << "Required params: cardDB hero1_id hero2_id deck1.json deck2.json player2Type[in 0 1 2 3] [seed=0]";
     QApplication a(argc, argv);
 
     const QStringList& ARGS = QApplication::arguments();
     const QString      PATH("../../hearthstone/db/");
     CardDB* const      CARD_DB = CardDB::Instance();
+
+    if (argc > 7) {
+        int seed = ARGS.at(7).toInt();
+        if (seed < 0)
+            qsrand(time(NULL));
+        else
+            qsrand(seed);
+    }
+    else
+        qsrand(0);
 
     Game::InitializeGlobals(false);
     CARD_DB->buildCardDB(PATH + ARGS.at(1));

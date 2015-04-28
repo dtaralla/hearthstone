@@ -18,8 +18,10 @@ public:
 private:
     Character* m_preselectedAttackTarget;
     PyObject* m_pyModule;
-    PyObject* m_pyPredPlayFunc;
-    PyObject* m_pyPredTargetFunc;
+    PyObject* m_pyPredBoardCtrlPlayFunc;
+    PyObject* m_pyPredBoardCtrlTargetFunc;
+    PyObject* m_pyPredAggroPlayFunc;
+    PyObject* m_pyPredAggroTargetFunc;
 
     // ScriptedPlayer inherited members
 public slots:

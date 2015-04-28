@@ -28,7 +28,7 @@ MAT_PATH = "roc/"
 
 dbs = ["db.play", "db.target"]
 dbsCustom = ["play", "target"]
-n_features = { dbs[0]: 159, dbs[1]: 163 }
+n_features = { dbs[0]: 177, dbs[1]: 181 } #159 and 173 for previous environment() version
 
 def loadDB(db, usecols=None, skipheader=0, skipfooter=0):
     if (os.path.exists(DB_PATH + db)):
@@ -156,7 +156,7 @@ def pValue(X_train, y_train, X_test, y_test, clf, N = 1000, seed = None):
 def trainClassifiersAndSave(computeScore=False):
     for db in dbs:
         if (not os.path.exists("clfs/" + db)):
-            clf = ExtraTreesClassifier(n_estimators=500, random_state=0, n_jobs=-1)
+            clf = ExtraTreesClassifier(n_estimators=100, random_state=4, n_jobs=-1, verbose=50)
             saveTrainedClassifier(db, clf)
         elif (computeScore):
             clf = joblib.load("clfs/" + db)

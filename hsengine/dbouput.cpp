@@ -9,11 +9,11 @@
 #include <QLockFile>
 #include <QDir>
 
-QHash<int, DBOutput*> DBOutput::mInstances;
+QHash<int, QHash<int, DBOutput*>*> DBOutput::mInstances;
 QString DBOutput::mFilenamesPrefix = "db";
 
 
-DBOutput::DBOutput() :
+DBOutput::DBOutput(ScoreType st) :
     mPlayActionFile(""),
     mTargetedActionFile(""),
     mOs_playAction(&mPlayActionFile),
@@ -21,14 +21,23 @@ DBOutput::DBOutput() :
 
 {
     QDir().mkdir("generated");
+    switch (st) {
+        case AGGRO:
+            mScoreTypePrefix = "aggro";
+            break;
+
+        case BOARD_CONTROL:
+            mScoreTypePrefix = "boardCtrl";
+            break;
+    }
 }
 
 DBOutput::~DBOutput()
 {
     QStringList ls;
 
-    ls << "generated/" + mFilenamesPrefix + ".play.csv"
-       << "generated/" + mFilenamesPrefix + ".target.csv";
+    ls << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".play.csv"
+       << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".target.csv";
 
     QStringList contents;
     contents << mPlayActionFile << mTargetedActionFile;
@@ -47,12 +56,19 @@ DBOutput::~DBOutput()
     }
 }
 
-DBOutput* DBOutput::Instance(Game* g)
+DBOutput* DBOutput::Instance(Game* g, ScoreType st)
 {
-    DBOutput* instance = mInstances.value(g->id(), NULL);
+    QHash<int, DBOutput*>* map = mInstances.value(g->id(), NULL);
+    if (map == NULL) {
+        map = new QHash<int, DBOutput*>();
+        map->reserve(2);
+        mInstances.insert(g->id(), map);
+    }
+
+    DBOutput* instance = map->value(st, NULL);
     if (instance == NULL) {
-        instance = new DBOutput();
-        mInstances.insert(g->id(), instance);
+        instance = new DBOutput(st);
+        map->insert(st, instance);
     }
 
     return instance;
@@ -60,7 +76,25 @@ DBOutput* DBOutput::Instance(Game* g)
 
 void DBOutput::DestroyInstance(Game* g)
 {
-    delete mInstances.take(g->id());
+    QHash<int, DBOutput*>* map = mInstances.take(g->id());
+    if (map != NULL) {
+        foreach (DBOutput* dbo, *map)
+            delete dbo;
+        delete map;
+    }
+}
+
+void DBOutput::DestroyInstance(Game* g, ScoreType st)
+{
+    QHash<int, DBOutput*>* map = mInstances.value(g->id());
+    if (map != NULL) {
+        delete map->take(st);
+
+        if (map->empty()) {
+            mInstances.remove(g->id());
+            delete map;
+        }
+    }
 }
 
 void DBOutput::SetFilenamesPrefix(const QString& prefix)

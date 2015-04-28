@@ -49,10 +49,22 @@ void PlayAction::resolve(const Event* e)
     // Execute atomically the consequence of playing m_card
     foreach (Action* a, *m_card->playActionConsequences())
         if (Game::IsDBGenerationModeOn() && a->isTargetedAction()) {
-            DBOutput::Instance(game)->buffer(game->environment(), a);
+            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(game->environment(), a);
+            DBOutput::Instance(game, DBOutput::AGGRO)->buffer(game->environment(), a);
+
+            Game::AggroScore* aScore1 = game->meta_AggroScore();
+
             a->resolve();
+
+            Game::AggroScore* aScore2 = game->meta_AggroScore();
+            float aScore = aScore2->score - aScore1->score;
+            delete aScore1; aScore1 = NULL;
+            delete aScore2; aScore2 = NULL;
+
+            DBOutput::Instance(game, DBOutput::AGGRO)->buffer(aScore, a);
+
             Game::BoardControlScore* score = game->meta_BoardControlScore();
-            DBOutput::Instance(game)->buffer(score->score, a);
+            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(score->score, a);
             delete score;
         }
         else
@@ -69,10 +81,22 @@ void PlayAction::resolve(const Event* e)
 
             if (a->resolvable(e)) {
                 if (Game::IsDBGenerationModeOn() && a->isTargetedAction()) {
-                    DBOutput::Instance(game)->buffer(game->environment(), a);
+                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(game->environment(), a);
+                    DBOutput::Instance(game, DBOutput::AGGRO)->buffer(game->environment(), a);
+
+                    Game::AggroScore* aScore1 = game->meta_AggroScore();
+
                     a->resolve();
+
+                    Game::AggroScore* aScore2 = game->meta_AggroScore();
+                    float aScore = aScore2->score - aScore1->score;
+                    delete aScore1; aScore1 = NULL;
+                    delete aScore2; aScore2 = NULL;
+
+                    DBOutput::Instance(game, DBOutput::AGGRO)->buffer(aScore, a);
+
                     Game::BoardControlScore* score = game->meta_BoardControlScore();
-                    DBOutput::Instance(game)->buffer(score->score, a);
+                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(score->score, a);
                     delete score;
                 }
                 else

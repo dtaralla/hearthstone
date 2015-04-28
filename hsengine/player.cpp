@@ -483,8 +483,10 @@ Character* Player::selectTarget(const QVector<Character*>* availableTargets, Act
     Character* choice = (Character*) ir->response();
     delete ir;
 
-    if (Game::IsDBGenerationModeOn())
-        DBOutput::Instance(game())->buffer(choice, a);
+    if (Game::IsDBGenerationModeOn()) {
+        DBOutput::Instance(game(), DBOutput::BOARD_CONTROL)->buffer(choice, a);
+        DBOutput::Instance(game(), DBOutput::AGGRO)->buffer(choice, a);
+    }
 
     ir = new IORequest(this, IORequest::CHOOSE_TARGET);
     ir->putExtra<Character>("target", choice);

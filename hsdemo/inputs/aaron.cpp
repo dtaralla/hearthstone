@@ -23,7 +23,8 @@ Aaron::Aaron(QObject* parent) :
         Py_SetProgramName(const_cast<char*>(QCoreApplication::arguments().at(0).toStdString().data()));
         Py_Initialize();
         //PyRun_SimpleString("import sys\nsys.path.append('D:\\David\\SVN\\ULg\\hearthstone\\scripts')");
-        PyRun_SimpleString("import sys\nsys.path.append('D:\\Dev\\hearthstone\\scripts')");
+        //PyRun_SimpleString("import sys\nsys.path.append('D:\\Dev\\hearthstone\\scripts')");
+        PyRun_SimpleString("import sys\nsys.path.append('C:\\Users\\Administrateur\\Documents\\dtaralla\\hearthstone\\scripts')");
 
 
         // Import init module
@@ -37,14 +38,26 @@ Aaron::Aaron(QObject* parent) :
 
 
         // Get callable functions
-        m_pyPredPlayFunc = PyObject_GetAttrString(m_pyModule, "predPlay");
-        if (m_pyPredPlayFunc == NULL) {
+        m_pyPredBoardCtrlPlayFunc = PyObject_GetAttrString(m_pyModule, "predBCPlay");
+        if (m_pyPredBoardCtrlPlayFunc == NULL) {
             PyErr_Print();
             exit(0);
         }
 
-        m_pyPredTargetFunc = PyObject_GetAttrString(m_pyModule, "predTarget");
-        if (m_pyPredTargetFunc == NULL) {
+        m_pyPredBoardCtrlTargetFunc = PyObject_GetAttrString(m_pyModule, "predBCTarget");
+        if (m_pyPredBoardCtrlTargetFunc == NULL) {
+            PyErr_Print();
+            exit(0);
+        }
+
+        m_pyPredAggroPlayFunc = PyObject_GetAttrString(m_pyModule, "predAggroPlay");
+        if (m_pyPredAggroPlayFunc == NULL) {
+            PyErr_Print();
+            exit(0);
+        }
+
+        m_pyPredAggroTargetFunc = PyObject_GetAttrString(m_pyModule, "predAggroTarget");
+        if (m_pyPredAggroTargetFunc == NULL) {
             PyErr_Print();
             exit(0);
         }
@@ -54,8 +67,8 @@ Aaron::Aaron(QObject* parent) :
 Aaron::~Aaron()
 {
     if (Py_IsInitialized()) {
-        Py_DecRef(m_pyPredPlayFunc);
-        Py_DecRef(m_pyPredTargetFunc);
+        Py_DecRef(m_pyPredBoardCtrlPlayFunc);
+        Py_DecRef(m_pyPredBoardCtrlTargetFunc);
         Py_DecRef(m_pyModule);
         Py_Finalize();
     }
@@ -136,7 +149,7 @@ void Aaron::askForAction(IORequest* ir)
         // Get predictions in python format
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyAtkToPredict);
-        PyObject* pyAtkProbas = PyObject_CallObject(m_pyPredTargetFunc, pyArgs);
+        PyObject* pyAtkProbas = PyObject_CallObject(m_pyPredBoardCtrlTargetFunc, pyArgs);
         PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyAtkToPredict);
@@ -194,7 +207,7 @@ void Aaron::askForAction(IORequest* ir)
         // Get predictions in python format
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyPlayToPredict);
-        PyObject* pyPlayProbas = PyObject_CallObject(m_pyPredPlayFunc, pyArgs);
+        PyObject* pyPlayProbas = PyObject_CallObject(m_pyPredBoardCtrlPlayFunc, pyArgs);
         PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyPlayToPredict);
@@ -340,7 +353,7 @@ void Aaron::askForTarget(IORequest* ir)
         // Hand it to python to get predictions in python format
         PyObject* pyArgs = PyTuple_New(1);
         PyTuple_SetItem(pyArgs, 0, pyTargetToPredict);
-        PyObject* pyTargetProbas = PyObject_CallObject(m_pyPredTargetFunc, pyArgs);
+        PyObject* pyTargetProbas = PyObject_CallObject(m_pyPredBoardCtrlTargetFunc, pyArgs);
         PYCHECK
         Py_DecRef(pyArgs);
         Py_DecRef(pyTargetToPredict);

@@ -26,7 +26,7 @@ import csv
 DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
 MAT_PATH = "roc/"
 
-dbs = ["db.play", "db.target"]
+dbs = ["boardCtrl.db.play", "boardCtrl.db.target"]#, "aggro.db.play", "aggro.db.target"]
 dbsCustom = ["play", "target"]
 n_features = { dbs[0]: 177, dbs[1]: 181 } #159 and 173 for previous environment() version
 
@@ -47,7 +47,7 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         if "play" in db:
             n = n_features[dbs[0]]
         
-        print("{} contains a {}x{} matrix; parsing...".format(db, num_lines, n))
+        print("{} contains a {}x{} matrix; parsing...".format(db, num_lines, n+1))
         loaded = np.zeros((num_lines, n + 1))
         with open(DB_PATH + db, mode='r') as f:
             reader = csv.reader(f)
@@ -55,11 +55,14 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
                 loaded[i, :] = np.array(row[0].split(), dtype=np.float64)
         
         # Replace zeroes by random, small uncertain values (else we would have 3 classes)
-        mask = loaded[:, -1] == 0
-        loaded[mask, -1] = random_state.normal(0, 0.01, mask.sum())
-        mask = 0
+        #mask = loaded[:, -1] == 0
+        #loaded[mask, -1] = random_state.normal(0, 0.01, mask.sum())
+        #mask = 0
+        loaded = loaded[loaded[:, -1] != 0, :]
+        
         loaded[loaded[:, -1] >= 0, -1] = 1
         loaded[loaded[:, -1] < 0, -1] = -1
+        print("Pruned sample space: {}.".format(loaded.shape[0]))
         
         return loaded
     else:
@@ -72,14 +75,19 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
         
     random_state = check_random_state(random_state)
     
-    print("Loading training set...")    
-    loaded = loadClassifiedDB(db + ".train.csv", random_state=random_state, usecols=usecols)#, skipheader=234100)
-    clf = ExtraTreesClassifier(n_estimators=100, random_state=random_state, n_jobs=-1)
-    
-    print("Fitting...")
-    clf.fit(loaded[:, 0:-1], loaded[:, -1])
+    clf = 0
+    if (not os.path.exists("clfs/" + db)):
+        clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1)
+        print("Loading training set...")
+        loaded = loadClassifiedDB(db + ".train.csv", random_state=random_state, usecols=usecols)#, skipheader=234100)
+        print("Fitting...")
+        clf.fit(loaded[:, 0:-1], loaded[:, -1])
+        loaded = 0
+    else:
+        print("Loading {}...".format(db))
+        clf = joblib.load("clfs/" + db)
+        
     classes = clf.classes_
-    loaded = 0
     
     print("Loading test set...")
     loaded = loadClassifiedDB(db + ".csv", random_state=random_state, usecols=usecols)#, skipheader=232800)
@@ -132,6 +140,7 @@ def saveTrainedClassifier(db, clf):
     print("Saving classifier...")
     if (os.path.exists("clfs/") == False):
         os.mkdir("clfs")
+    clf.verbose = 0
     joblib.dump(clf, "clfs/" + db)
 
 # Give insight about whether or not the score is really better than a randomized input/output classifier
@@ -156,7 +165,7 @@ def pValue(X_train, y_train, X_test, y_test, clf, N = 1000, seed = None):
 def trainClassifiersAndSave(computeScore=False):
     for db in dbs:
         if (not os.path.exists("clfs/" + db)):
-            clf = ExtraTreesClassifier(n_estimators=100, random_state=4, n_jobs=-1, verbose=50)
+            clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1, verbose=100)
             saveTrainedClassifier(db, clf)
         elif (computeScore):
             clf = joblib.load("clfs/" + db)

@@ -23,6 +23,9 @@ private:
     PyObject* m_pyPredAggroPlayFunc;
     PyObject* m_pyPredAggroTargetFunc;
 
+    void mSelectBestBCAction(IORequest* ir);
+    void mSelectBestAction(IORequest* ir);
+
     // ScriptedPlayer inherited members
 public slots:
     void askForAction(IORequest* ir);

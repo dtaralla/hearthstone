@@ -53,6 +53,7 @@ void PlayAction::resolve(const Event* e)
             DBOutput::Instance(game, DBOutput::AGGRO)->buffer(game->environment(), a);
 
             Game::AggroScore* aScore1 = game->meta_AggroScore();
+            Game::BoardControlScore* bScore1 = game->meta_BoardControlScore();
 
             a->resolve();
 
@@ -60,12 +61,13 @@ void PlayAction::resolve(const Event* e)
             float aScore = aScore2->score - aScore1->score;
             delete aScore1; aScore1 = NULL;
             delete aScore2; aScore2 = NULL;
-
             DBOutput::Instance(game, DBOutput::AGGRO)->buffer(aScore, a);
 
-            Game::BoardControlScore* score = game->meta_BoardControlScore();
-            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(score->score, a);
-            delete score;
+            Game::BoardControlScore* bScore2 = game->meta_BoardControlScore();
+            float bScore = bScore2->score - bScore1->score;
+            delete bScore1; bScore1 = NULL;
+            delete bScore2; bScore2 = NULL;
+            DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(bScore, a);
         }
         else
             a->resolve();
@@ -81,10 +83,12 @@ void PlayAction::resolve(const Event* e)
 
             if (a->resolvable(e)) {
                 if (Game::IsDBGenerationModeOn() && a->isTargetedAction()) {
-                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(game->environment(), a);
-                    DBOutput::Instance(game, DBOutput::AGGRO)->buffer(game->environment(), a);
+                    QVector<float> env = game->environment();
+                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(env, a);
+                    DBOutput::Instance(game, DBOutput::AGGRO)->buffer(env, a);
 
                     Game::AggroScore* aScore1 = game->meta_AggroScore();
+                    Game::BoardControlScore* bScore1 = game->meta_BoardControlScore();
 
                     a->resolve();
 
@@ -92,12 +96,13 @@ void PlayAction::resolve(const Event* e)
                     float aScore = aScore2->score - aScore1->score;
                     delete aScore1; aScore1 = NULL;
                     delete aScore2; aScore2 = NULL;
-
                     DBOutput::Instance(game, DBOutput::AGGRO)->buffer(aScore, a);
 
-                    Game::BoardControlScore* score = game->meta_BoardControlScore();
-                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(score->score, a);
-                    delete score;
+                    Game::BoardControlScore* bScore2 = game->meta_BoardControlScore();
+                    float bScore = bScore2->score - bScore1->score;
+                    delete bScore1; bScore1 = NULL;
+                    delete bScore2; bScore2 = NULL;
+                    DBOutput::Instance(game, DBOutput::BOARD_CONTROL)->buffer(bScore, a);
                 }
                 else
                     a->resolve();

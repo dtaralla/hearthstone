@@ -69,12 +69,167 @@ Aaron::~Aaron()
     if (Py_IsInitialized()) {
         Py_DecRef(m_pyPredBoardCtrlPlayFunc);
         Py_DecRef(m_pyPredBoardCtrlTargetFunc);
+        Py_DecRef(m_pyPredAggroPlayFunc);
+        Py_DecRef(m_pyPredAggroTargetFunc);
         Py_DecRef(m_pyModule);
         Py_Finalize();
     }
 }
 
-void Aaron::askForAction(IORequest* ir)
+void Aaron::mSelectBestAction(IORequest *ir)
+{
+    // actions only contains PlayActions, AttackActions and 1 EndTurnAction
+    QVector<Action*>* actions = VPtr<QVector<Action*> >::AsPtr(ir->extra("availableActions"));
+    if (actions->size() == 1) {
+        std::cout << m_me->name().toStdString()
+                  << ": Your turn!\n\n";
+        ir->setResponse(actions->first());
+        fflush(stdout);
+        return;
+    }
+
+    const QVector<float> ENV = m_me->game()->environment();
+    const int ENV_SIZE = ENV.size();
+
+    Action* endTurn = NULL;
+    QList<AttackAction*> atkActions;
+    QList<Action*> playActions;
+    foreach (Action* a, *actions) {
+        switch (a->type()) {
+            case ActionTypes::ATTACK:
+                atkActions.append((AttackAction*) a);
+                break;
+
+            case ActionTypes::PLAY_CARD:
+            case ActionTypes::SPECIAL_POWER:
+                playActions.append(a);
+                break;
+
+            case ActionTypes::END_TURN:
+                endTurn = a;
+                break;
+
+            default:
+                qCritical() << "AskForAction only gives Play, Special Power, Atk or EndTurn: " << a->toString();
+                break;
+        }
+    }
+
+    QList<AttackAction*> atkActions_redundant;
+    QList<Character*> attacks_target;
+    QList<double> attacks_probas;
+    std::cout << m_me->name().toStdString() << ": My possible actions:\n";
+    if (!atkActions.empty()) {
+        // Translate attack actions into predictable samples
+        QVector<Character*>* targetsByAtk[atkActions.size()];
+        PyObject* pyAtkToPredict  = PyList_New(0);
+        int j = 0;
+        foreach (AttackAction* a, atkActions) {
+            // To each possible target corresponds a sample
+            QVector<Character*>* atkables = m_me->opponent()->attackableCharacters();
+            targetsByAtk[j++] = atkables;
+            foreach (Character* c, *atkables) {
+                PyObject* pyFeatures = PyList_New(ENV_SIZE + 5);
+
+                // Put environment features in the list
+                for (int i = 0; i < ENV_SIZE; i += 1) {
+                    PyList_SET_ITEM(pyFeatures, i, PyFloat_FromDouble(ENV.at(i)));
+                }
+
+                // Put action-related features in the list
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(a->id()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 1, PyLong_FromLong(c->base()->id()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(c->hp()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(c->atk()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 4, PyLong_FromLong(c->isSilenced()));
+
+                // Put the sample in the list of targetted actions to predict
+                PyList_Append(pyAtkToPredict, pyFeatures);
+            }
+
+        }
+
+        // Get predictions in python format
+        PyObject* pyArgs = PyTuple_New(1);
+        PyTuple_SetItem(pyArgs, 0, pyAtkToPredict);
+        PyObject* pyAtkProbas = PyObject_CallObject(m_pyPredBoardCtrlTargetFunc, pyArgs);
+        PYCHECK
+        Py_DecRef(pyArgs);
+        Py_DecRef(pyAtkToPredict);
+
+        // Find acceptable attack actions
+        int cumulativeTargetsPassed = 0;
+        QMutableListIterator<AttackAction*> curActionIt(atkActions);
+        curActionIt.next();
+        Py_ssize_t size = PyList_Size(pyAtkProbas);
+        int k = 0;
+        for (int i = 0; i < size; i += 1) {
+            if (i >= cumulativeTargetsPassed + targetsByAtk[k]->size()) {
+                Q_ASSERT(curActionIt.hasNext());
+                curActionIt.next();
+                cumulativeTargetsPassed = i;
+                k += 1;
+            }
+
+            double p = PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i));
+            std::cout << '\t' << curActionIt.value()->toString().toStdString() << ' '
+                      << targetsByAtk[k]->at(i - cumulativeTargetsPassed)
+                      << " (Confidence in board control: " << p * 100.0 << "%)\n";
+            atkActions_redundant << curActionIt.value();
+            attacks_target << targetsByAtk[k]->at(i - cumulativeTargetsPassed);
+            attacks_probas << p;
+        }
+
+        // Free memory
+        Py_DecRef(pyAtkProbas);
+        for (int i = 0; i < atkActions.size(); i+= 1) {
+            delete targetsByAtk[i];
+        }
+    }
+
+    QList<double> plays_probas;
+    if (!playActions.empty()) {
+        // Translate play actions into predictable samples
+        PyObject* pyPlayToPredict = PyList_New(playActions.size());
+        int j = 0;
+        foreach (Action* a, playActions) {
+            PyObject* pyFeatures = PyList_New(ENV_SIZE + 1);
+
+            // Put environment features in the list
+            for (int i = 0; i < ENV_SIZE; i += 1) {
+                PyList_SET_ITEM(pyFeatures, i, PyFloat_FromDouble(ENV.at(i)));
+            }
+
+            // Put play-related features in the list
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(a->source()->base()->id()));
+
+            // Put the sample in the list of targetted actions to predict
+            PyList_SET_ITEM(pyPlayToPredict, j++, pyFeatures);
+        }
+
+        // Get predictions in python format
+        PyObject* pyArgs = PyTuple_New(1);
+        PyTuple_SetItem(pyArgs, 0, pyPlayToPredict);
+        PyObject* pyPlayProbas = PyObject_CallObject(m_pyPredBoardCtrlPlayFunc, pyArgs);
+        PYCHECK
+        Py_DecRef(pyArgs);
+        Py_DecRef(pyPlayToPredict);
+
+        // Find acceptable play actions
+        Py_ssize_t size = PyList_Size(pyPlayProbas);
+        for (int i = 0; i < size; i += 1) {
+            double p = PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i));
+            std::cout << '\t' << playActions.at(i)->toString().toStdString()
+                      << " (Confidence in board control: " << p * 100.0 << "%)\n";
+            plays_probas << p;
+        }
+
+        // Free memory
+        Py_DecRef(pyPlayProbas);
+    }
+}
+
+void Aaron::mSelectBestBCAction(IORequest *ir)
 {
     // actions only contains PlayActions, AttackActions and 1 EndTurnAction
     QVector<Action*>* actions = VPtr<QVector<Action*> >::AsPtr(ir->extra("availableActions"));
@@ -116,6 +271,7 @@ void Aaron::askForAction(IORequest* ir)
     QList<AttackAction*> goodAttacks;
     QList<Character*> goodAttacks_target;
     QList<double> goodAttacks_probas;
+    std::cout << m_me->name().toStdString() << ": My possible actions:\n";
     if (!atkActions.empty()) {
         // Translate attack actions into predictable samples
         QVector<Character*>* targetsByAtk[atkActions.size()];
@@ -169,10 +325,14 @@ void Aaron::askForAction(IORequest* ir)
                 k += 1;
             }
 
-            goodAttacks_probas.append(PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i)));
-            if (goodAttacks_probas.last() >= THRESHOLD) {
+            double p = PyFloat_AsDouble(PyList_GetItem(pyAtkProbas, i));
+            std::cout << '\t' << curActionIt.value()->toString().toStdString() << ' '
+                      << targetsByAtk[k]->at(i - cumulativeTargetsPassed)->toString().toStdString()
+                      << " (Confidence in board control: " << p * 100.0 << "%)\n";
+            if (p >= THRESHOLD) {
                 goodAttacks << curActionIt.value();
                 goodAttacks_target << targetsByAtk[k]->at(i - cumulativeTargetsPassed);
+                goodAttacks_probas << p;
             }
         }
 
@@ -216,9 +376,13 @@ void Aaron::askForAction(IORequest* ir)
         Py_ssize_t size = PyList_Size(pyPlayProbas);
         const double THRESHOLD = 0.68;
         for (int i = 0; i < size; i += 1) {
-            goodPlays_probas.append(PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i)));
-            if (goodPlays_probas.last() >= THRESHOLD)
+            double p = PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i));
+            std::cout << '\t' << playActions.at(i)->toString().toStdString()
+                      << " (Confidence in board control: " << p * 100.0 << "%)\n";
+            if (p >= THRESHOLD) {
                 goodPlays << playActions.at(i);
+                goodPlays_probas << p;
+            }
         }
 
         // Free memory
@@ -252,7 +416,7 @@ void Aaron::askForAction(IORequest* ir)
         for (int i = 0; i < size; i += 1) {
             std::cout << '\t' << goodAttacks.at(i)->toString().toStdString() << ' '
                               << goodAttacks_target.at(i)->toString().toStdString()
-                              << " (Confidence: " << goodAttacks_probas.at(i) * 100
+                              << " (Confidence: " << goodAttacks_probas.at(i) * 100.0
                               << "%)\n";
 
             if (bestProba < goodAttacks_probas.at(i)) {
@@ -264,7 +428,7 @@ void Aaron::askForAction(IORequest* ir)
         const int size2 = goodPlays.size();
         for (int i = 0; i < size2; i += 1) {
             std::cout << '\t' << goodPlays.at(i)->toString().toStdString()
-                      << " (Confidence: " << goodPlays_probas.at(i) * 100
+                      << " (Confidence: " << goodPlays_probas.at(i) * 100.0
                       << "%)\n";
 
             if (bestProba < goodPlays_probas.at(i)) {
@@ -305,6 +469,12 @@ void Aaron::askForAction(IORequest* ir)
     }
 
     fflush(stdout);
+}
+
+void Aaron::askForAction(IORequest* ir)
+{
+    mSelectBestBCAction(ir);
+    //mSelectBestAction(ir);
 }
 
 void Aaron::askForTarget(IORequest* ir)
@@ -359,6 +529,8 @@ void Aaron::askForTarget(IORequest* ir)
         Py_DecRef(pyTargetToPredict);
 
         // Find best target
+        std::cout << m_me->name().toStdString()
+                  << ": I can target:\n";
         double bestProba = 0;
         Py_ssize_t size = PyList_Size(pyTargetProbas);
         for (int i = 0; i < size; i += 1) {
@@ -367,6 +539,8 @@ void Aaron::askForTarget(IORequest* ir)
                 ir->setResponse(targets->at(i));
                 bestProba = ithProba;
             }
+            std::cout << '\t' << targets->at(i)->toString().toStdString()
+                              << " (Confidence: " << ithProba * 100.0 << "%)\n";
         }
 
         // Free memory

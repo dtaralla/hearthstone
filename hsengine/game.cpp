@@ -428,10 +428,12 @@ void Game::mUpdateState(Action* move, const Event* e)
     // TODO: Clear and re-apply temporary/conditional effects
 
     AggroScore* aScore1 = NULL;
+    BoardControlScore* bScore1 = NULL;
     if (IsDBGenerationModeOn() && move->isTargetedAction()) {
         DBOutput::Instance(this, DBOutput::BOARD_CONTROL)->buffer(environment(), move);
         DBOutput::Instance(this, DBOutput::AGGRO)->buffer(environment(), move);
         aScore1 = meta_AggroScore();
+        bScore1 = meta_BoardControlScore();
     }
 
     // Resolve action
@@ -497,15 +499,16 @@ void Game::mUpdateState(Action* move, const Event* e)
     }
 
     if (IsDBGenerationModeOn() && move->isTargetedAction()) {
-        BoardControlScore* score = meta_BoardControlScore();
-        DBOutput::Instance(this, DBOutput::BOARD_CONTROL)->buffer(score->score, move);
-        delete score;
+        BoardControlScore* bScore2 = meta_BoardControlScore();
+        float bScore = bScore2->score - bScore1->score;
+        delete bScore1; bScore1 = NULL;
+        delete bScore2; bScore2 = NULL;
+        DBOutput::Instance(this, DBOutput::BOARD_CONTROL)->buffer(bScore, move);
 
         AggroScore* aScore2 = meta_AggroScore();
         float aScore = aScore2->score - aScore1->score;
         delete aScore1; aScore1 = NULL;
         delete aScore2; aScore2 = NULL;
-
         DBOutput::Instance(this, DBOutput::AGGRO)->buffer(aScore, move);
     }
 }

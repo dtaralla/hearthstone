@@ -10,7 +10,8 @@ DatabaseBuilder::DatabaseBuilder() :
     PlayerInput(),
     mMe(NULL),
     mLastAction(NULL),
-    mLastAggroScore(0)
+    mLastAggroScore(0),
+    mLastBCScore(0)
 {
 }
 
@@ -33,25 +34,30 @@ void DatabaseBuilder::onEventTriggered(IORequest *ir)
 
 void DatabaseBuilder::askForAction(IORequest *ir)
 {
-    if (mLastAction != NULL && !mLastAction->isTargetedAction() && mLastAction->type() != ActionTypes::END_TURN) {
-        Game::BoardControlScore* s = mMe->game()->meta_BoardControlScore();
-        DBOutput::Instance(mMe->game(), DBOutput::BOARD_CONTROL)->addEntry(mLastEnvironment, mLastAction, s->score);
-        delete s;
+    Game::AggroScore* aScore2 = mMe->game()->meta_AggroScore();
+    Game::BoardControlScore* bScore2 = mMe->game()->meta_BoardControlScore();
 
-        Game::AggroScore* aScore = mMe->game()->meta_AggroScore();
-        float s2 = aScore->score - mLastAggroScore;
-        delete aScore; aScore = NULL;
-        DBOutput::Instance(mMe->game(), DBOutput::AGGRO)->addEntry(mLastAggroEnvironment, mLastAction, s2);
+    if (mLastAction != NULL && !mLastAction->isTargetedAction() && mLastAction->type() != ActionTypes::END_TURN) {
+        float aScore = aScore2->score - mLastAggroScore;
+        DBOutput::Instance(mMe->game(), DBOutput::AGGRO)->addEntry(mLastEnvironment, mLastAction, aScore);
+
+        float bScore = bScore2->score - mLastBCScore;
+        DBOutput::Instance(mMe->game(), DBOutput::BOARD_CONTROL)->addEntry(mLastEnvironment, mLastAction, bScore);
     }
 
-    Game::AggroScore* aScore = mMe->game()->meta_AggroScore();
-    mLastAggroScore = aScore->score;
-    delete aScore; aScore = NULL;
     mLastEnvironment = mMe->game()->environment();
-    mLastAggroEnvironment = mMe->game()->environment();
+    mLastAggroScore = aScore2->score;
+    mLastBCScore = bScore2->score;
+    delete aScore2;
+    delete bScore2;
 
     QVector<Action*>* actions = VPtr<QVector<Action*> >::AsPtr(ir->extra("availableActions"));
     mLastAction = actions->at(qrand() % actions->size());
+
+    // Only one chance on 5 to indeed play fireball (else too much samples will have this action taken)
+    if (actions->size() > 1 && mLastAction->type() == ActionTypes::SPECIAL_POWER && qrand() % 5)
+        mLastAction = actions->at(qrand() % actions->size());
+
     ir->setResponse(mLastAction);
 }
 

@@ -40,6 +40,11 @@ int main(int argc, char *argv[])
     PlayerInput* p1Input = new LogicHumanPlayer();
     PlayerInput* p2Input;
     switch (ARGS.at(6).toInt()) {
+        case 0:
+        default:
+            p2Input = new Aaron();
+            break;
+
         case 1:
             p2Input = new LogicHumanPlayer();
             break;
@@ -50,11 +55,6 @@ int main(int argc, char *argv[])
 
         case 3:
             p2Input = new ScriptedPlayer();
-            break;
-
-        case 0:
-        default:
-            p2Input = new Aaron();
             break;
     }
 

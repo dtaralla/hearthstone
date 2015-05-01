@@ -25,10 +25,15 @@ import csv
 
 DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
 MAT_PATH = "roc/"
+ENV_SIZE = 176
+CHARACTERDESC_SIZE = 4
+PLAYACTION_SIZE = 1
+TARGETEDACTION_SIZE = 1 + CHARACTERDESC_SIZE
+ATKACTION_SIZE = 2 * CHARACTERDESC_SIZE
 
-dbs = ["boardCtrl.db.play", "boardCtrl.db.target"]#, "aggro.db.play", "aggro.db.target"]
-dbsCustom = ["play", "target"]
-n_features = { dbs[0]: 177, dbs[1]: 181 } #159 and 173 for previous environment() version
+dbs = ["boardCtrl.db.play", "boardCtrl.db.target", "boardCtrl.db.atk"]#, "aggro.db.play", "aggro.db.target"]
+dbsCustom = ["play", "target", "atk"]
+n_features = { dbs[0]: ENV_SIZE + PLAYACTION_SIZE, dbs[1]: ENV_SIZE + TARGETEDACTION_SIZE, dbs[2]: ENV_SIZE + ATKACTION_SIZE } #159 and 173 for previous environment() version
 
 def loadDB(db, usecols=None, skipheader=0, skipfooter=0):
     if (os.path.exists(DB_PATH + db)):
@@ -46,6 +51,8 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         n = n_features[dbs[1]]
         if "play" in db:
             n = n_features[dbs[0]]
+        elif "atk" in db:
+            n = n_features[dbs[2]]
         
         print("{} contains a {}x{} matrix; parsing...".format(db, num_lines, n+1))
         loaded = np.zeros((num_lines, n + 1))
@@ -58,6 +65,8 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         #mask = loaded[:, -1] == 0
         #loaded[mask, -1] = random_state.normal(0, 0.01, mask.sum())
         #mask = 0
+        
+        # Remove actions which did nothing bad nor good
         loaded = loaded[loaded[:, -1] != 0, :]
         
         loaded[loaded[:, -1] >= 0, -1] = 1

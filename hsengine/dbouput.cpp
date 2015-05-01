@@ -142,7 +142,12 @@ void DBOutput::buffer(float score, Action* a)
     if (mLastInsertionInBuffer != TARGET)
         qCritical() << "Buffer environment, then target, then score:" << a->toString();
 
-    mOs_targetedAction << mBuffer.takeLast() << score << '\n';
+    QTextStream* os;
+    if (a->type() == ActionTypes::ATTACK)
+        os = &mOs_attackAction;
+    else
+        os = &mOs_targetedAction;
+    *os << mBuffer.takeLast() << score << '\n';
 }
 
 void DBOutput::addEntry(const QVector<float>& environment, Action* a, float score)

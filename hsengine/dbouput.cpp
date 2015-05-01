@@ -16,8 +16,10 @@ QString DBOutput::mFilenamesPrefix = "db";
 DBOutput::DBOutput(ScoreType st) :
     mPlayActionFile(""),
     mTargetedActionFile(""),
+    mAttackActionFile(""),
     mOs_playAction(&mPlayActionFile),
-    mOs_targetedAction(&mTargetedActionFile)
+    mOs_targetedAction(&mTargetedActionFile),
+    mOs_attackAction(&mAttackActionFile)
 
 {
     QDir().mkdir("generated");
@@ -37,10 +39,11 @@ DBOutput::~DBOutput()
     QStringList ls;
 
     ls << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".play.csv"
-       << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".target.csv";
+       << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".target.csv"
+       << "generated/" + mScoreTypePrefix + "." + mFilenamesPrefix + ".atk.csv";
 
     QStringList contents;
-    contents << mPlayActionFile << mTargetedActionFile;
+    contents << mPlayActionFile << mTargetedActionFile << mAttackActionFile;
 
     const int size = contents.size();
     for (int i = 0; i < size; i += 1) {
@@ -111,7 +114,7 @@ void DBOutput::buffer(const QVector<float>& environment, Action* a)
     QTextStream os(&mBuffer.last());
     mInsertEnvironment(environment, os);
     if (a->type() == ActionTypes::ATTACK)
-        os << ((AttackAction*) a)->id() << " ";
+        mInsertTarget((Character*) a->source(), os);
     else
         os << ((TargetedAction*) a)->id() << " ";
 

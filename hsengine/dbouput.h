@@ -152,8 +152,10 @@ private:
     static QHash<int, QHash<int, DBOutput*>*> mInstances;
     QString mPlayActionFile;
     QString mTargetedActionFile;
+    QString mAttackActionFile;
     QTextStream mOs_playAction;
     QTextStream mOs_targetedAction;
+    QTextStream mOs_attackAction;
     QStringList mBuffer;
     BufferEntryType mLastInsertionInBuffer;
     QString mScoreTypePrefix;

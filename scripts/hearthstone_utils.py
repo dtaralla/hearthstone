@@ -67,10 +67,17 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         #mask = 0
         
         # Remove actions which did nothing bad nor good
-        loaded = loaded[loaded[:, -1] != 0, :]
+        #loaded = loaded[loaded[:, -1] != 0, :]
         
-        loaded[loaded[:, -1] >= 0, -1] = 1
-        loaded[loaded[:, -1] < 0, -1] = -1
+        
+        if "target" in db:
+            loaded[loaded[:, -1] >= 0, -1] = 1
+            loaded[loaded[:, -1] < 0, -1] = -1
+        else:
+            loaded = loaded[loaded[:, -1] != 0, :]
+            loaded[loaded[:, -1] > 0, -1] = 1
+            loaded[loaded[:, -1] < 0, -1] = -1
+            
         print("Pruned sample space: {}.".format(loaded.shape[0]))
         
         return loaded
@@ -92,6 +99,11 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
         print("Fitting...")
         clf.fit(loaded[:, 0:-1], loaded[:, -1])
         loaded = 0
+        print("Saving...")
+        if (os.path.exists("clfs/") == False):
+            os.mkdir("clfs")
+        clf.verbose = 0
+        joblib.dump(clf, "clfs/" + db)
     else:
         print("Loading {}...".format(db))
         clf = joblib.load("clfs/" + db)
@@ -105,7 +117,7 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
     
     print("Predict proba...")
     y_score = clf.predict_proba(loaded[:, 0:-1])
-    loaded = loaded[:, -1]
+    loaded = 0
     clf = 0
     y_score = y_score[:, classes == 1]
     

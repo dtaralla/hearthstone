@@ -54,7 +54,7 @@ if __name__ == "__main__":
     plt.title("ROC")
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1, 0))
     plt.show()
     
     
@@ -92,5 +92,5 @@ if __name__ == "__main__":
     plt.title("Precision/Recall")
     plt.xlabel("Recall (TP / (TP+FN))")
     plt.ylabel("Precision (TP / (TP + FP))")
-    plt.legend()
+    plt.legend(bbox_to_anchor=(0,0))
     plt.show()

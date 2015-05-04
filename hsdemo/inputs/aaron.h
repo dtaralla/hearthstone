@@ -12,22 +12,26 @@ class Aaron : public ScriptedPlayer
     Q_OBJECT
 
 public:
-    Aaron(QObject* parent = NULL);
+    Aaron(bool writeResult = false, QObject* parent = NULL);
     virtual ~Aaron();
 
 private:
+    bool mWriteResult;
     Character* m_preselectedAttackTarget;
-    PyObject* m_pyModule;
-    PyObject* m_pyPredBoardCtrlPlayFunc;
-    PyObject* m_pyPredBoardCtrlTargetFunc;
-    PyObject* m_pyPredAggroPlayFunc;
-    PyObject* m_pyPredAggroTargetFunc;
+    static uint m_nbAarons;
+    static PyObject* m_pyModule;
+    static PyObject* m_pyPredBoardCtrlPlayFunc;
+    static PyObject* m_pyPredBoardCtrlTargetFunc;
+    static PyObject* m_pyPredBoardCtrlAtkFunc;
+    static PyObject* m_pyPredAggroPlayFunc;
+    static PyObject* m_pyPredAggroTargetFunc;
 
     void mSelectBestBCAction(IORequest* ir);
     void mSelectBestAction(IORequest* ir);
 
     // ScriptedPlayer inherited members
 public slots:
+    void onGameEnded(IORequest* ir);
     void askForAction(IORequest* ir);
     void askForTarget(IORequest* ir);
 };

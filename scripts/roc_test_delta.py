@@ -23,4 +23,5 @@ def makeTest(testName, db, n_features, randomState=0):
 if __name__ == "__main__":
     makeTest("all", hu.dbs[0], hu.n_features[hu.dbs[0]])
     makeTest("all", hu.dbs[1], hu.n_features[hu.dbs[1]])
+    makeTest("all", hu.dbs[2], hu.n_features[hu.dbs[2]])
     

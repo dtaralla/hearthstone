@@ -36,7 +36,9 @@ HEADERS += \
     inputs/baseHumanPlayer/logichumanplayer.h \
     inputs/baseHumanPlayer/logwindow.h \
     inputs/baseHumanPlayer/selectactiontargetdialog.h \
-    inputs/baseHumanPlayer/selectpositiondialog.h
+    inputs/baseHumanPlayer/selectpositiondialog.h \
+    consoleprogressbar.h \
+    gamethreadpool.h
 
 SOURCES += \
     inputs/aaron.cpp \
@@ -48,7 +50,9 @@ SOURCES += \
     inputs/baseHumanPlayer/logichumanplayer.cpp \
     inputs/baseHumanPlayer/logwindow.cpp \
     inputs/baseHumanPlayer/selectactiontargetdialog.cpp \
-    inputs/baseHumanPlayer/selectpositiondialog.cpp
+    inputs/baseHumanPlayer/selectpositiondialog.cpp \
+    consoleprogressbar.cpp \
+    gamethreadpool.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../hsengine/release/ -lhsengine
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../hsengine/debug/ -lhsengine

@@ -85,6 +85,7 @@ public:
     const QVector<Card*>* hand() const;
     QVector<Character*>* attackableCharacters() const;
     QVector<Character*>* allTargets() const;
+    bool hasTauntMinion() const;
 
 protected:
     PlayerInput* m_myInput;

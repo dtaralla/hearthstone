@@ -413,6 +413,9 @@ void Aaron::askForTarget(IORequest* ir)
         m_preselectedAttackTarget = NULL;
     }
     else {
+        if (action->type() == ActionTypes::ATTACK)
+            qCritical() << "Attack target should already be preselected!";
+
         if (!mWriteResult)
             std::cout << m_me->name().toStdString()
                       << ": I need to choose a target.\n";

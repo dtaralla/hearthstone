@@ -588,6 +588,15 @@ QVector<Character*>* Player::allTargets() const
     return targets;
 }
 
+bool Player::hasTauntMinion() const
+{
+    foreach (Minion* m, m_minions)
+        if (m->hasAbility(Abilities::TAUNT))
+            return true;
+
+    return false;
+}
+
 void Player::m_shuffleDeck()
 {
     QVector<Card*>::iterator first = m_deck.begin();

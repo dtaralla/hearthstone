@@ -1,7 +1,7 @@
 #include "aaron.h"
 #include "player.h"
 #include "game.h"
-#include "character.h"
+#include "hero.h"
 #include "actions/targetedaction.h"
 #include "actions/attackaction.h"
 #include "actions/playaction.h"
@@ -309,18 +309,26 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
         if (!mWriteResult)
             std::cout << m_me->name().toStdString()
                       << ": Hmmm, I don't have any good actions...\n";
-        if (qrand() % 3) {
+
+        if (!atkActions.empty() && !m_me->opponent()->hasTauntMinion()) {
+            if (!mWriteResult)
+                std::cout << m_me->name().toStdString()
+                          << ": But the enemy hero is vulnerable and I can attack!\n";
+            ir->setResponse(atkActions.first());
+            m_preselectedAttackTarget = m_me->opponent()->hero();
+        }
+        else /*if (qrand() % 3)*/ {
             if (!mWriteResult)
                 std::cout << m_me->name().toStdString()
                           << ": I prefer to do nothing and stop here. Your turn!\n\n";
             ir->setResponse(endTurn);
         }
-        else {
+        /*else {
             if (!mWriteResult)
                 std::cout << m_me->name().toStdString()
                           << ": Let's take a scripted choice!\n";
             ScriptedPlayer::askForAction(ir);
-        }
+        }*/
 
     }
     else {
@@ -412,6 +420,9 @@ void Aaron::askForTarget(IORequest* ir)
         QVector<Character*>* targets = VPtr<QVector<Character*> >::AsPtr(ir->extra("availableTargets"));
         Action* action = VPtr<Action>::AsPtr(ir->extra("action"));
 
+        if (action->type() == ActionTypes::ATTACK)
+            qCritical() << "Attack target should already be preselected!";
+
         const QVector<float> ENV = m_me->game()->environment();
         const int ENV_SIZE = ENV.size();
 
@@ -427,10 +438,7 @@ void Aaron::askForTarget(IORequest* ir)
             }
 
             // Put action-related features in the list
-            if (action->type() == ActionTypes::ATTACK)
-                PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((AttackAction*) action)->id()));
-            else
-                PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((TargetedAction*) action)->id()));
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((TargetedAction*) action)->id()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 1, PyLong_FromLong(c->base()->id()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(c->hp()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(c->atk()));

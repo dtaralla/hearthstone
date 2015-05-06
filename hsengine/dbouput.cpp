@@ -113,8 +113,10 @@ void DBOutput::buffer(const QVector<float>& environment, Action* a)
     mBuffer.append(QString(""));
     QTextStream os(&mBuffer.last());
     mInsertEnvironment(environment, os);
-    if (a->type() == ActionTypes::ATTACK)
-        mInsertTarget((Character*) a->source(), os);
+    if (a->type() == ActionTypes::ATTACK) {
+        Character* source = (Character*) a->source();
+        os << source->base()->id() << " " << source->hp() << " " << source->atk() << " " << source->isSilenced() << " ";
+    }
     else
         os << ((TargetedAction*) a)->id() << " ";
 
@@ -130,7 +132,12 @@ void DBOutput::buffer(Character *target, Action *a)
         qCritical() << "Buffer environment, then target, then score:" << a->toString();
 
     QTextStream os(&mBuffer.last());
-    mInsertTarget(target, os);
+
+    int owner = 0;
+    if (target->owner() == a->source()->owner())
+        owner = 1;
+    os << target->base()->id() << " " << owner << " " << target->hp() << " " << target->atk() << " " << target->isSilenced() << " ";
+
     mLastInsertionInBuffer = TARGET;
 }
 
@@ -173,8 +180,4 @@ void DBOutput::mInsertEnvironment(const QVector<float>& environment, QTextStream
         os << f << " ";
 }
 
-void DBOutput::mInsertTarget(const Character* target, QTextStream& os)
-{
-    os << target->base()->id() << " " << target->hp() << " " << target->atk() << " " << target->isSilenced() << " ";
-}
 

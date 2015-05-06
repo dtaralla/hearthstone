@@ -163,7 +163,6 @@ private:
     DBOutput(ScoreType st);
     ~DBOutput();
     void mInsertEnvironment(const QVector<float>& environment, QTextStream &os);
-    void mInsertTarget(const Character* target, QTextStream &os);
 };
 
 #endif // DBOUTPUT_H

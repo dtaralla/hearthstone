@@ -1,0 +1,33 @@
+Target:
+=======
+TrS: 2 x 200,000
+TeS: 2 x 115,000
+Zeroes were dismissed
+
+Atk & Play:
+===========
+TrS: 2 x 400,000
+TeS: 2 x 400,000
+Zeroes were dismissed
+
+Play:
+--------
+Thresh: 0.6
+FPR:           11%   -> 11%   = fraction d'actions prédites bonnes alors qu'elles sont mauvaises par rapport au nombre de mauvaises actions dans le test set
+TPR == Recall: 75%   -> 25%   = FNR = chances to loose an opportunity 
+Precision:     86.5% -> 13.5% = FDR = fraction d'actions prédites bonnes alors qu'elles sont mauvaises par rapport au nombre d'actions prédites comme bonnes
+FPR and (1-Precision) or the False Discovery Rate: Give insight about the chances to do a mistake (take an action believing it's good while it's not). As the DB and test set are balanced, here these ratios are almost the same.
+
+Target: 
+--------
+Thresh: 0.55 (but no choice, we always take the best even if it is baaaad as in Hearthstone simu you cannot avoid selection once the action is triggered)
+FPR:           11% -> 11%
+TPR == Recall: 70% -> 30% = FNR
+Precision:     87% -> 13% = FDR
+
+Atk:
+--------
+Thresh: 0.51
+FPR:           11% -> 11%
+TPR == Recall: 91% ->  9% = FNR
+Precision:     89% -> 11% = FDR

@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(myMessageOutput);
     if (argc < 7)
         qCritical() << "Required params: cardDB hero1_id hero2_id deck1.json deck2.json player2Type[in 0 1 2 3] [seed=0]\nOR\n"
-                    << "cardDB hero1_id hero2_id deck1.json deck2.json -1 howManyGames maxThreads [seed=0]";
+                    << "cardDB hero1_id hero2_id deck1.json deck2.json opponentType[-1 -2] howManyGames maxThreads [seed=0]";
     QApplication a(argc, argv);
 
     const QStringList& ARGS = QApplication::arguments();
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     Game::InitializeGlobals(false);
     CARD_DB->buildCardDB(PATH + ARGS.at(1));
 
-    if (ARGS.at(6).toInt() == -1) {
+    if (ARGS.at(6).toInt() < 0) {
         if (argc > 9) {
             int seed = ARGS.at(9).toInt();
             if (seed < 0)
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         ConsoleProgressBar::Instance()->moveToThread(&consoleThread);
         consoleThread.start(QThread::HighPriority);
 
-        GameThreadPool pool(ARGS.at(2), ARGS.at(3), PATH + ARGS.at(4), PATH + ARGS.at(5), ARGS.at(7).toInt(), ARGS.at(8).toInt());
+        GameThreadPool pool(ARGS.at(2), ARGS.at(3), PATH + ARGS.at(4), PATH + ARGS.at(5), ARGS.at(7).toInt(), ARGS.at(8).toInt(), ARGS.at(6).toInt() == -2);
         pool.connect(&pool, SIGNAL(progress(int)), ConsoleProgressBar::Instance(), SLOT(update(int)));
         pool.connect(&pool, SIGNAL(finished()), &consoleThread, SLOT(quit()));
         pool.connect(&pool, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));

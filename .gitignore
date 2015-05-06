@@ -4,7 +4,10 @@
 *.moc
 *.autosave
 *.csv
+*.dump
+*.npy
 scripts/clfs/*
 scripts/roc/*
 doc/html/*
 scripts/clfs*
+scripts/testSet/*

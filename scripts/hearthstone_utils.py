@@ -26,10 +26,11 @@ import csv
 DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
 MAT_PATH = "roc/"
 ENV_SIZE = 176
+TARGET_SIZE = 5
 CHARACTERDESC_SIZE = 4
 PLAYACTION_SIZE = 1
-TARGETEDACTION_SIZE = 1 + CHARACTERDESC_SIZE
-ATKACTION_SIZE = 2 * CHARACTERDESC_SIZE
+TARGETEDACTION_SIZE = 1 + TARGET_SIZE
+ATKACTION_SIZE = CHARACTERDESC_SIZE + TARGET_SIZE
 
 dbs = ["boardCtrl.db.play", "boardCtrl.db.target", "boardCtrl.db.atk"]#, "aggro.db.play", "aggro.db.target"]
 dbsCustom = ["play", "target", "atk"]
@@ -59,6 +60,10 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         with open(DB_PATH + db, mode='r') as f:
             reader = csv.reader(f)
             for i, row in enumerate(reader):
+                if (i % 25000 == 0):
+                    print("Line {}".format(i))
+                if (i > 400000):
+                    break
                 loaded[i, :] = np.array(row[0].split(), dtype=np.float64)
         
         # Replace zeroes by random, small uncertain values (else we would have 3 classes)
@@ -84,7 +89,98 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
     else:
         raise ValueError("Missing {}, aborting".format(DB_PATH + db))
 
+def loadFinalClassifiedDB(db, genTest=False, random_state=0):
+    random_state = check_random_state(random_state)
+    
+    if (os.path.exists(DB_PATH + db)):
+        n = n_features[dbs[1]]
+        if "play" in db:
+            n = n_features[dbs[0]]
+        elif "atk" in db:
+            n = n_features[dbs[2]]
+        
+        nbSamples = 800000
+        byClass = nbSamples / 2
+        genTestStart = 5000000 #worst was gen training set of atk, which went up to 4,200,000 !
+        
+        loaded = np.zeros((nbSamples, n + 1))
+        
+        j = 0
+        nbPos = 0
+        nbNeg = 0
+        if "target" in db:
+            genTestStart = 4250000 #gen training set of target went up to 4,200,000 !
+            if (genTest):
+                nbSamples = 230000
+            else:
+                nbSamples = 400000
+            byClass = nbSamples / 2
+            loaded = np.zeros((nbSamples, n + 1))
+            
+            #with open(DB_PATH + db, mode='r') as f:
+            #    reader = csv.reader(f)
+            #    for i, row in enumerate(reader):
+            #        if (i % 50000 == 0):
+            #            print("Line {}, j is {}, nbNeg is {} and nbPos is {}".format(i, j, nbNeg, nbPos))
+            #        if (genTest and i < genTestStart):
+            #            continue
+            #        if (j >= nbSamples):
+            #            break
+            #        loaded[j, :] = np.array(row[0].split(), dtype=np.float64)
+            #        if (loaded[j, -1] >= 0):
+            #            if (nbPos < byClass):
+            #                j += 1
+            #                nbPos += 1
+            #        elif (nbNeg < byClass):
+            #            j += 1
+            #            nbNeg += 1
+                
+        with open(DB_PATH + db, mode='r') as f:
+            reader = csv.reader(f)
+            for i, row in enumerate(reader):
+                if (i % 50000 == 0):
+                    print("Line {}, j is {}".format(i, j))
+                if (genTest and i < genTestStart):
+                    continue
+                if (j >= nbSamples):
+                    break
+                loaded[j, :] = np.array(row[0].split(), dtype=np.float64)
+                if (loaded[j, -1] == 0):
+                    continue
+                    
+                if (loaded[j, -1] > 0):
+                    if (nbPos < byClass):
+                        j += 1
+                        nbPos += 1
+                elif (nbNeg < byClass):
+                    j += 1
+                    nbNeg += 1
+        
+        mask = loaded[:, -1] >= 0
+        loaded[mask, -1] = 1
+        loaded[mask == False, -1] = -1
+        
+        sum = mask.sum()
+        print("There are {} positive samples and {} negative ones".format(sum, nbSamples - sum))
+        print("nbNeg is {} and nbPos is {}".format(nbNeg, nbPos))
+        
+        return loaded
+    else:
+        raise ValueError("Missing {}, aborting".format(DB_PATH + db))
 
+def trainFinalClassifier(db):
+    clf = ExtraTreesClassifier(n_estimators=100, random_state=0, verbose=100, n_jobs=-1)
+    print("Loading training set...")
+    loaded = joblib.load(db + ".dump")
+    print("Fitting...")
+    clf.fit(loaded[:, 0:-1], loaded[:, -1])
+    loaded = 0
+    print("Saving...")
+    if (os.path.exists("clfs/") == False):
+        os.mkdir("clfs")
+    clf.verbose = 0
+    joblib.dump(clf, "clfs/" + db)
+        
 def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=False):
     if (os.path.exists(MAT_PATH) == False):
         os.mkdir(MAT_PATH)
@@ -146,6 +242,50 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
         for i in range(0, thresholds.size):
             plt.annotate(str(thresholds[i]), xy=(recall[i], precision[i]), xytext=(10,10), textcoords='offset points', arrowprops=dict(facecolor='black', shrink=0.025))
         plt.show()
+        
+def roc_precision_final(db):
+    if (os.path.exists(MAT_PATH) == False):
+        os.mkdir(MAT_PATH)
+        
+    random_state = check_random_state(0)
+    
+    clf = 0
+    if (not os.path.exists("clfs/" + db)):
+        clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1)
+        print("Loading training set...")
+        loaded = loadClassifiedDB(db + ".train.csv", random_state=random_state, usecols=usecols)#, skipheader=234100)
+        print("Fitting...")
+        clf.fit(loaded[:, 0:-1], loaded[:, -1])
+        loaded = 0
+        print("Saving...")
+        if (os.path.exists("clfs/") == False):
+            os.mkdir("clfs")
+        clf.verbose = 0
+        joblib.dump(clf, "clfs/" + db)
+    else:
+        print("Loading {}...".format(db))
+        clf = joblib.load("clfs/" + db)
+        
+    classes = clf.classes_
+    
+    print("Loading test set...")
+    loaded = joblib.load("testSet/" + db)
+    y_true = loaded[:, -1]
+
+    
+    print("Predict proba...")
+    y_score = clf.predict_proba(loaded[:, 0:-1])
+    loaded = 0
+    clf = 0
+    y_score = y_score[:, classes == 1]
+    
+    print("ROC...")
+    fpr, tpr, thresholds = roc_curve(y_true, y_score)
+    sio.savemat(MAT_PATH + 'final.roc.' + db + '.mat', {'fpr':fpr, 'tpr':tpr, 'thresholds':thresholds})
+    
+    print("Precision/Recall...")
+    precision, recall, thresholds = precision_recall_curve(y_true, y_score)
+    sio.savemat(MAT_PATH + 'final.precall.' + db + '.mat', {'precision':precision, 'recall':recall, 'thresholds':thresholds})
     
 def saveTrainedClassifier(db, clf):
     print("Loading data for classifier on " + db)

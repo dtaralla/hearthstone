@@ -8,8 +8,10 @@
 
 GameThreadPool::GameThreadPool(const QString& p1Hero, const QString& p2Hero,
                                const QString& p1Deck, const QString& p2Deck,
-                               int howMany, uint maxThreadCount, QObject* parent) :
+                               int howMany, uint maxThreadCount,
+                               bool againstScriptedPlayer, QObject* parent) :
     QThread(parent),
+    mAgainstScriptedPlayer(againstScriptedPlayer),
     mP1Hero(p1Hero),
     mP2Hero(p2Hero),
     mP1Deck(p1Deck),
@@ -37,7 +39,11 @@ void GameThreadPool::run()
     while (remaining-- > 0) {
         mSem.acquire();
         Aaron* p1Input = new Aaron(true);
-        RandomPlayer* p2Input = new RandomPlayer();
+        PlayerInput* p2Input;
+        if (mAgainstScriptedPlayer)
+            p2Input = new ScriptedPlayer();
+        else
+            p2Input = new RandomPlayer();
         p1Input->moveToThread(thread()); // Moves p1Input in QCoreApp thread
         p2Input->moveToThread(thread()); // Moves p2Input in QCoreApp thread
         Game* g = new Game("Player 1", CardDB::Instance()->buildHero(mP1Hero), mP1Deck, p1Input,

@@ -11,6 +11,9 @@
 #include <QLockFile>
 #include <iostream>
 
+#define THRESHOLD_ATK    0.51
+#define THRESHOLD_TARGET 0.55
+#define THRESHOLD_PLAY   0.4
 #define PYCHECK if (PyErr_Occurred() != NULL) { \
         std::cout << "Python error\n"; \
         PyErr_Print(); \
@@ -35,9 +38,9 @@ Aaron::Aaron(bool writeResult, QObject* parent) :
         qDebug() << "Initializing Python Interpreter...";
         Py_SetProgramName(const_cast<char*>(QCoreApplication::arguments().at(0).toStdString().data()));
         Py_Initialize();
-        PyRun_SimpleString("import sys\nsys.path.append('D:\\David\\SVN\\ULg\\hearthstone\\scripts')");
+        //PyRun_SimpleString("import sys\nsys.path.append('D:\\David\\SVN\\ULg\\hearthstone\\scripts')");
         //PyRun_SimpleString("import sys\nsys.path.append('D:\\Dev\\hearthstone\\scripts')");
-        //PyRun_SimpleString("import sys\nsys.path.append('C:\\Users\\Administrateur\\Documents\\dtaralla\\hearthstone\\scripts')");
+        PyRun_SimpleString("import sys\nsys.path.append('C:\\Users\\Administrateur\\Documents\\dtaralla\\hearthstone\\scripts')");
 
 
         // Import init module
@@ -190,7 +193,7 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
             QVector<Character*>* atkables = m_me->opponent()->attackableCharacters();
             targetsByAtk[j++] = atkables;
             foreach (Character* c, *atkables) {
-                PyObject* pyFeatures = PyList_New(ENV_SIZE + 8);
+                PyObject* pyFeatures = PyList_New(ENV_SIZE + 9);
 
                 // Put environment features in the list
                 for (int i = 0; i < ENV_SIZE; i += 1) {
@@ -198,14 +201,16 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
                 }
 
                 // Put action-related features in the list
+                int owner = c->owner() == atker->owner();
                 PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(atker->base()->id()));
                 PyList_SET_ITEM(pyFeatures, ENV_SIZE + 1, PyLong_FromLong(atker->hp()));
                 PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(atker->atk()));
                 PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(atker->isSilenced()));
                 PyList_SET_ITEM(pyFeatures, ENV_SIZE + 4, PyLong_FromLong(c->base()->id()));
-                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 5, PyLong_FromLong(c->hp()));
-                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 6, PyLong_FromLong(c->atk()));
-                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 7, PyLong_FromLong(c->isSilenced()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 5, PyLong_FromLong(owner));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 6, PyLong_FromLong(c->hp()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 7, PyLong_FromLong(c->atk()));
+                PyList_SET_ITEM(pyFeatures, ENV_SIZE + 8, PyLong_FromLong(c->isSilenced()));
 
                 // Put the sample in the list of targetted actions to predict
                 PyList_Append(pyAtkToPredict, pyFeatures);
@@ -226,7 +231,6 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
         QMutableListIterator<AttackAction*> curActionIt(atkActions);
         curActionIt.next();
         Py_ssize_t size = PyList_Size(pyAtkProbas);
-        const double THRESHOLD = 0.65;
         int k = 0;
         for (int i = 0; i < size; i += 1) {
             if (i >= cumulativeTargetsPassed + targetsByAtk[k]->size()) {
@@ -241,7 +245,7 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
                 std::cout << '\t' << curActionIt.value()->toString().toStdString() << ' '
                           << targetsByAtk[k]->at(i - cumulativeTargetsPassed)->toString().toStdString()
                           << " (Confidence in board control: " << p * 100.0 << "%)\n";
-            if (p >= THRESHOLD) {
+            if (p >= THRESHOLD_ATK) {
                 goodAttacks << curActionIt.value();
                 goodAttacks_target << targetsByAtk[k]->at(i - cumulativeTargetsPassed);
                 goodAttacks_probas << p;
@@ -286,13 +290,12 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
 
         // Find acceptable play actions
         Py_ssize_t size = PyList_Size(pyPlayProbas);
-        const double THRESHOLD = 0.68;
         for (int i = 0; i < size; i += 1) {
             double p = PyFloat_AsDouble(PyList_GetItem(pyPlayProbas, i));
             if (!mWriteResult)
                 std::cout << '\t' << playActions.at(i)->toString().toStdString()
                           << " (Confidence in board control: " << p * 100.0 << "%)\n";
-            if (p >= THRESHOLD) {
+            if (p >= THRESHOLD_PLAY) {
                 goodPlays << playActions.at(i);
                 goodPlays_probas << p;
             }
@@ -430,7 +433,7 @@ void Aaron::askForTarget(IORequest* ir)
         PyObject* pyTargetToPredict = PyList_New(targets->size());
         int i = 0;
         foreach (Character* c, *targets) {
-            PyObject* pyFeatures = PyList_New(ENV_SIZE + 5);
+            PyObject* pyFeatures = PyList_New(ENV_SIZE + 6);
 
             // Put environment features in the list
             for (int j = 0; j < ENV_SIZE; j += 1) {
@@ -438,11 +441,13 @@ void Aaron::askForTarget(IORequest* ir)
             }
 
             // Put action-related features in the list
+            int owner = c->owner() == action->source()->owner();
             PyList_SET_ITEM(pyFeatures, ENV_SIZE, PyLong_FromLong(((TargetedAction*) action)->id()));
             PyList_SET_ITEM(pyFeatures, ENV_SIZE + 1, PyLong_FromLong(c->base()->id()));
-            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(c->hp()));
-            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(c->atk()));
-            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 4, PyLong_FromLong(c->isSilenced()));
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 2, PyLong_FromLong(owner));
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 3, PyLong_FromLong(c->hp()));
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 4, PyLong_FromLong(c->atk()));
+            PyList_SET_ITEM(pyFeatures, ENV_SIZE + 5, PyLong_FromLong(c->isSilenced()));
 
             // Put the sample in the list of targetted actions to predict
             PyList_SET_ITEM(pyTargetToPredict, i++, pyFeatures);
@@ -476,10 +481,15 @@ void Aaron::askForTarget(IORequest* ir)
         // Free memory
         Py_DecRef(pyTargetProbas);
 
-        if (!mWriteResult)
+        if (!mWriteResult) {
             std::cout << m_me->name().toStdString()
                       << ": I select " << ((Character*) ir->response())->toString().toStdString()
                       << " and I am " << bestProba * 100 << "% confident in this choice.\n";
+
+            if (bestProba < THRESHOLD_TARGET)
+                std::cout << m_me->name().toStdString()
+                          << ": I'm not sure this is a good thing, but I was forced to take the least bad...\n";
+        }
 
         fflush(stdout);
     }

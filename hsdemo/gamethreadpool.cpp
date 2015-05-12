@@ -1,7 +1,7 @@
 #include "gamethreadpool.h"
 #include "game.h"
 #include "carddb.h"
-#include "inputs/aaron.h"
+#include "inputs/nora.h"
 #include "inputs/randomplayer.h"
 #include "gamecontroller.h"
 #include <QCoreApplication>
@@ -38,7 +38,7 @@ void GameThreadPool::run()
     int remaining = mHowMany;
     while (remaining-- > 0) {
         mSem.acquire();
-        PlayerInput* p1Input = new Aaron(true);//new RandomPlayer(true);
+        PlayerInput* p1Input = new Nora(true);//new RandomPlayer(true);
         PlayerInput* p2Input;
         if (mAgainstScriptedPlayer)
             p2Input = new ScriptedPlayer();

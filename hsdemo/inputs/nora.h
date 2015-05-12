@@ -1,5 +1,5 @@
-#ifndef AARON_H
-#define AARON_H
+#ifndef NORA_H
+#define NORA_H
 
 #include "scriptedplayer.h"
 #include <Python.h>
@@ -7,18 +7,18 @@
 class Player;
 class Character;
 
-class Aaron : public ScriptedPlayer
+class Nora : public ScriptedPlayer
 {
     Q_OBJECT
 
 public:
-    Aaron(bool writeResult = false, QObject* parent = NULL);
-    virtual ~Aaron();
+    Nora(bool writeResult = false, QObject* parent = NULL);
+    virtual ~Nora();
 
 private:
     bool mWriteResult;
     Character* m_preselectedAttackTarget;
-    static uint m_nbAarons;
+    static uint m_nbNoras;
     static PyObject* m_pyModule;
     static PyObject* m_pyPredBoardCtrlPlayFunc;
     static PyObject* m_pyPredBoardCtrlTargetFunc;
@@ -36,4 +36,4 @@ public slots:
     void askForTarget(IORequest* ir);
 };
 
-#endif // AARON_H
+#endif // NORA_H

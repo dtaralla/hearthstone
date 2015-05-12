@@ -28,7 +28,6 @@ RESOURCES += \
     res/res.qrc
 
 HEADERS += \
-    inputs/aaron.h \
     inputs/randomplayer.h \
     inputs/scriptedplayer.h \
     inputs/baseHumanPlayer/cardwidget.h \
@@ -38,10 +37,10 @@ HEADERS += \
     inputs/baseHumanPlayer/selectactiontargetdialog.h \
     inputs/baseHumanPlayer/selectpositiondialog.h \
     consoleprogressbar.h \
-    gamethreadpool.h
+    gamethreadpool.h \
+    inputs/nora.h
 
 SOURCES += \
-    inputs/aaron.cpp \
     inputs/randomplayer.cpp \
     inputs/scriptedplayer.cpp \
     main.cpp \
@@ -52,7 +51,8 @@ SOURCES += \
     inputs/baseHumanPlayer/selectactiontargetdialog.cpp \
     inputs/baseHumanPlayer/selectpositiondialog.cpp \
     consoleprogressbar.cpp \
-    gamethreadpool.cpp
+    gamethreadpool.cpp \
+    inputs/nora.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../hsengine/release/ -lhsengine
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../hsengine/debug/ -lhsengine

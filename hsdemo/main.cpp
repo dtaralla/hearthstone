@@ -6,7 +6,7 @@
 #include "inputs/baseHumanPlayer/logichumanplayer.h"
 #include "inputs/scriptedplayer.h"
 #include "inputs/randomplayer.h"
-#include "inputs/aaron.h"
+#include "inputs/nora.h"
 #include "gamecontroller.h"
 #include <Python.h>
 #include <iostream>
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
         switch (ARGS.at(6).toInt()) {
             case 0:
             default:
-                p2Input = new Aaron();
+                p2Input = new Nora();
                 break;
 
             case 1:
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 
         Game* g = new Game(
             "David", CARD_DB->buildHero(ARGS.at(2)), PATH + ARGS.at(4), p1Input,
-            "Aaron", CARD_DB->buildHero(ARGS.at(3)), PATH + ARGS.at(5), p2Input);
+            "Nora", CARD_DB->buildHero(ARGS.at(3)), PATH + ARGS.at(5), p2Input);
         GameController game(g);
         game.connect(&game, SIGNAL(finished()), (QCoreApplication*)&a, SLOT(quit()));
         game.startGame();

@@ -1,4 +1,4 @@
-#include "aaron.h"
+#include "nora.h"
 #include "player.h"
 #include "game.h"
 #include "hero.h"
@@ -20,20 +20,20 @@
         fflush(stdout); \
     }
 
-uint Aaron::m_nbAarons = 0;
-PyObject* Aaron::m_pyModule = NULL;
-PyObject* Aaron::m_pyPredBoardCtrlPlayFunc = NULL;
-PyObject* Aaron::m_pyPredBoardCtrlTargetFunc = NULL;
-PyObject* Aaron::m_pyPredBoardCtrlAtkFunc = NULL;
-PyObject* Aaron::m_pyPredAggroPlayFunc = NULL;
-PyObject* Aaron::m_pyPredAggroTargetFunc = NULL;
+uint Nora::m_nbNoras = 0;
+PyObject* Nora::m_pyModule = NULL;
+PyObject* Nora::m_pyPredBoardCtrlPlayFunc = NULL;
+PyObject* Nora::m_pyPredBoardCtrlTargetFunc = NULL;
+PyObject* Nora::m_pyPredBoardCtrlAtkFunc = NULL;
+PyObject* Nora::m_pyPredAggroPlayFunc = NULL;
+PyObject* Nora::m_pyPredAggroTargetFunc = NULL;
 
-Aaron::Aaron(bool writeResult, QObject* parent) :
+Nora::Nora(bool writeResult, QObject* parent) :
     ScriptedPlayer(parent),
     mWriteResult(writeResult),
     m_preselectedAttackTarget(NULL)
 {
-    m_nbAarons += 1;
+    m_nbNoras += 1;
     if (!Py_IsInitialized()) {
         qDebug() << "Initializing Python Interpreter...";
         Py_SetProgramName(const_cast<char*>(QCoreApplication::arguments().at(0).toStdString().data()));
@@ -86,10 +86,10 @@ Aaron::Aaron(bool writeResult, QObject* parent) :
     }
 }
 
-Aaron::~Aaron()
+Nora::~Nora()
 {
-    m_nbAarons -= 1;
-    if (m_nbAarons == 0) {
+    m_nbNoras -= 1;
+    if (m_nbNoras == 0) {
         Py_DecRef(m_pyPredBoardCtrlPlayFunc);
         Py_DecRef(m_pyPredBoardCtrlTargetFunc);
         Py_DecRef(m_pyPredAggroPlayFunc);
@@ -106,9 +106,9 @@ Aaron::~Aaron()
     }
 }
 
-void Aaron::onGameEnded(IORequest* ir)
+void Nora::onGameEnded(IORequest* ir)
 {
-    QFile f("aaron_result.txt");
+    QFile f("nora_result.txt");
     QLockFile lock(f.fileName() + ".lock");
 
     lock.lock();
@@ -137,7 +137,7 @@ void Aaron::onGameEnded(IORequest* ir)
     ir->clearRef();
 }
 
-void Aaron::mSelectBestBCAction(IORequest *ir)
+void Nora::mSelectBestBCAction(IORequest *ir)
 {
     // actions only contains PlayActions, AttackActions and 1 EndTurnAction
     QVector<Action*>* actions = VPtr<QVector<Action*> >::AsPtr(ir->extra("availableActions"));
@@ -403,12 +403,12 @@ void Aaron::mSelectBestBCAction(IORequest *ir)
     fflush(stdout);
 }
 
-void Aaron::askForAction(IORequest* ir)
+void Nora::askForAction(IORequest* ir)
 {
     mSelectBestBCAction(ir);
 }
 
-void Aaron::askForTarget(IORequest* ir)
+void Nora::askForTarget(IORequest* ir)
 {
     if (m_preselectedAttackTarget != NULL) {
         // Consume the preselected target: the action for which we ask a target is an attack

@@ -3,7 +3,7 @@
 	"type": 2,
 	"name": "Jaina",
 	"power": {
-		"name": "Fireball",
+		"name": "Fireblast",
 		"text": "Deal 1 dmg to a target.",
 		"cost": 2,
 		"actions": {

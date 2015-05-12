@@ -52,12 +52,19 @@ void DatabaseBuilder::askForAction(IORequest *ir)
     delete bScore2;
 
     QVector<Action*>* actions = VPtr<QVector<Action*> >::AsPtr(ir->extra("availableActions"));
-    mLastAction = actions->at(qrand() % actions->size());
 
-    // Only one chance on 5 to indeed play fireball (else too much samples will have this action taken)
-    if (actions->size() > 1 && mLastAction->type() == ActionTypes::SPECIAL_POWER && qrand() % 5)
-        mLastAction = actions->at(qrand() % actions->size());
+    if (actions->size() == 1)
+        mLastAction = actions->first();
+    else {
+        do {
+            mLastAction = actions->at(qrand() % actions->size());
 
+            // Only one chance on 5 to indeed play fireball (else too much samples will have this action taken)
+            if (mLastAction->type() == ActionTypes::SPECIAL_POWER && actions->size() > 2 && qrand() % 3)
+                mLastAction = actions->at(qrand() % actions->size());
+
+        } while (mLastAction->type() == ActionTypes::END_TURN);
+    }
     ir->setResponse(mLastAction);
 }
 

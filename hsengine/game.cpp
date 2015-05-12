@@ -26,10 +26,14 @@ int bestTrade(Player* atker, Player* target, bool ignoreHasAttacked)
 
     QVector<Minion*> curAllies;
     foreach (Minion* m, *atker->minions()) {
-        if ((ignoreHasAttacked || !m->hasAttacked()) && !m->hasAbility(Abilities::FROZEN))
+        if (m->hp() > 0 && (ignoreHasAttacked || !m->hasAttacked()) && !m->hasAbility(Abilities::FROZEN))
             curAllies << m;
     }
-    QVector<Minion*> curEnemies(*target->minions());
+    QVector<Minion*> curEnemies;
+    foreach (Minion* m, *target->minions()) {
+        if (m->hp() > 0)
+            curEnemies << m;
+    }
 
     if (curEnemies.size() == 0) {
         if (atker->minions()->size() == 0)
@@ -819,12 +823,20 @@ Game::BoardControlScore* Game::meta_BoardControlScore()
     score->toughMinionsScore = 0;
     int toughEnem = 0;
     int toughAllies = 0;
-    foreach (Minion* m, *curPl->minions())
+    int enemMinionsQ = 0;
+    int allyMinionsQ = 0;
+    foreach (Minion* m, *curPl->minions()) {
         if (m->hp() > 4)
             toughAllies += 1;
-    foreach (Minion* m, *oppPl->minions())
+        if (m->hp() > 0)
+            allyMinionsQ += 1;
+    }
+    foreach (Minion* m, *oppPl->minions()) {
         if (m->hp() > 4)
             toughEnem += 1;
+        if (m->hp() > 0)
+            enemMinionsQ += 1;
+    }
 
     int toughDeltaQ = toughAllies - toughEnem;
     if (toughDeltaQ == 1)
@@ -868,8 +880,6 @@ Game::BoardControlScore* Game::meta_BoardControlScore()
 
 
     /* Minions score = (#allyMinions - #enemyMinions) / (#allyMinions + #enemyMinions) */
-    int enemMinionsQ = oppPl->minions()->size();
-    int allyMinionsQ = curPl->minions()->size();
     score->minionsScore = ((float)(allyMinionsQ - enemMinionsQ)) / (allyMinionsQ + enemMinionsQ);
     if (allyMinionsQ + enemMinionsQ == 0)
         score->minionsScore = 0;

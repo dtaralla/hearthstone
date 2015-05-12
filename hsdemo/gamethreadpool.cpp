@@ -38,7 +38,7 @@ void GameThreadPool::run()
     int remaining = mHowMany;
     while (remaining-- > 0) {
         mSem.acquire();
-        Aaron* p1Input = new Aaron(true);
+        PlayerInput* p1Input = new Aaron(true);//new RandomPlayer(true);
         PlayerInput* p2Input;
         if (mAgainstScriptedPlayer)
             p2Input = new ScriptedPlayer();

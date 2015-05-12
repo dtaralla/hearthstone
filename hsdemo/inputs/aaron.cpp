@@ -11,9 +11,9 @@
 #include <QLockFile>
 #include <iostream>
 
-#define THRESHOLD_ATK    0.51
-#define THRESHOLD_TARGET 0.55
-#define THRESHOLD_PLAY   0.4
+#define THRESHOLD_ATK    0.001
+#define THRESHOLD_TARGET 0.001
+#define THRESHOLD_PLAY   0.001
 #define PYCHECK if (PyErr_Occurred() != NULL) { \
         std::cout << "Python error\n"; \
         PyErr_Print(); \

@@ -23,7 +23,7 @@ from matplotlib import pyplot as plt
 import scipy.io as sio
 import csv
 
-DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator/release/generated/"
+DB_PATH  = "../../build-hearthstone-MinGW_64-Release/hsdatabasegenerator_wMinionScore/release/generated/"
 MAT_PATH = "roc/"
 ENV_SIZE = 176
 TARGET_SIZE = 5
@@ -60,10 +60,10 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         with open(DB_PATH + db, mode='r') as f:
             reader = csv.reader(f)
             for i, row in enumerate(reader):
-                if (i % 25000 == 0):
+                if (i % 50000 == 0):
                     print("Line {}".format(i))
-                if (i > 400000):
-                    break
+                #if (i > 400000):
+                #    break
                 loaded[i, :] = np.array(row[0].split(), dtype=np.float64)
         
         # Replace zeroes by random, small uncertain values (else we would have 3 classes)
@@ -75,13 +75,13 @@ def loadClassifiedDB(db, usecols=None, skipheader=0, skipfooter=0, random_state=
         #loaded = loaded[loaded[:, -1] != 0, :]
         
         
-        if "target" in db:
-            loaded[loaded[:, -1] >= 0, -1] = 1
-            loaded[loaded[:, -1] < 0, -1] = -1
-        else:
-            loaded = loaded[loaded[:, -1] != 0, :]
-            loaded[loaded[:, -1] > 0, -1] = 1
-            loaded[loaded[:, -1] < 0, -1] = -1
+        #if "target" in db:
+        #    loaded[loaded[:, -1] >= 0, -1] = 1
+        #    loaded[loaded[:, -1] < 0, -1] = -1
+        #else:
+        loaded = loaded[loaded[:, -1] != 0, :]
+        loaded[loaded[:, -1] > 0, -1] = 1
+        loaded[loaded[:, -1] < 0, -1] = -1
             
         print("Pruned sample space: {}.".format(loaded.shape[0]))
         
@@ -101,39 +101,21 @@ def loadFinalClassifiedDB(db, genTest=False, random_state=0):
         
         nbSamples = 800000
         byClass = nbSamples / 2
-        genTestStart = 5000000 #worst was gen training set of atk, which went up to 4,200,000 !
+        genTestStart = 4550000 #worst was gen training set of target, which went up to 4,500,000 !
         
         loaded = np.zeros((nbSamples, n + 1))
         
         j = 0
         nbPos = 0
         nbNeg = 0
-        if "target" in db:
-            genTestStart = 4250000 #gen training set of target went up to 4,200,000 !
-            if (genTest):
-                nbSamples = 230000
-            else:
-                nbSamples = 400000
-            byClass = nbSamples / 2
-            loaded = np.zeros((nbSamples, n + 1))
-            
-            #with open(DB_PATH + db, mode='r') as f:
-            #    reader = csv.reader(f)
-            #    for i, row in enumerate(reader):
-            #        if (i % 50000 == 0):
-            #            print("Line {}, j is {}, nbNeg is {} and nbPos is {}".format(i, j, nbNeg, nbPos))
-            #        if (genTest and i < genTestStart):
-            #            continue
-            #        if (j >= nbSamples):
-            #            break
-            #        loaded[j, :] = np.array(row[0].split(), dtype=np.float64)
-            #        if (loaded[j, -1] >= 0):
-            #            if (nbPos < byClass):
-            #                j += 1
-            #                nbPos += 1
-            #        elif (nbNeg < byClass):
-            #            j += 1
-            #            nbNeg += 1
+        #if "target" in db:
+        #    genTestStart = 4250000 #gen training set of target went up to 4,200,000 !
+        #    if (genTest):
+        #        nbSamples = 230000
+        #    else:
+        #        nbSamples = 400000
+        #    byClass = nbSamples / 2
+        #    loaded = np.zeros((nbSamples, n + 1))
                 
         with open(DB_PATH + db, mode='r') as f:
             reader = csv.reader(f)
@@ -243,28 +225,14 @@ def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=F
             plt.annotate(str(thresholds[i]), xy=(recall[i], precision[i]), xytext=(10,10), textcoords='offset points', arrowprops=dict(facecolor='black', shrink=0.025))
         plt.show()
         
-def roc_precision_final(db):
+def roc_precision_final(db, fac=1):
     if (os.path.exists(MAT_PATH) == False):
         os.mkdir(MAT_PATH)
         
     random_state = check_random_state(0)
     
-    clf = 0
-    if (not os.path.exists("clfs/" + db)):
-        clf = ExtraTreesClassifier(n_estimators=100, random_state=0, n_jobs=-1)
-        print("Loading training set...")
-        loaded = loadClassifiedDB(db + ".train.csv", random_state=random_state, usecols=usecols)#, skipheader=234100)
-        print("Fitting...")
-        clf.fit(loaded[:, 0:-1], loaded[:, -1])
-        loaded = 0
-        print("Saving...")
-        if (os.path.exists("clfs/") == False):
-            os.mkdir("clfs")
-        clf.verbose = 0
-        joblib.dump(clf, "clfs/" + db)
-    else:
-        print("Loading {}...".format(db))
-        clf = joblib.load("clfs/" + db)
+    print("Loading {}...".format(db))
+    clf = joblib.load("clfs/" + db)
         
     classes = clf.classes_
     
@@ -277,9 +245,11 @@ def roc_precision_final(db):
     y_score = clf.predict_proba(loaded[:, 0:-1])
     loaded = 0
     clf = 0
-    y_score = y_score[:, classes == 1]
+    y_score = y_score[:, classes == 1] * fac
     
     print("ROC...")
+    if (fac != 1):
+        db = db + str(fac)
     fpr, tpr, thresholds = roc_curve(y_true, y_score)
     sio.savemat(MAT_PATH + 'final.roc.' + db + '.mat', {'fpr':fpr, 'tpr':tpr, 'thresholds':thresholds})
     

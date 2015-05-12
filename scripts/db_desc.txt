@@ -20,10 +20,10 @@ FPR and (1-Precision) or the False Discovery Rate: Give insight about the chance
 
 Target: 
 --------
-Thresh: 0.55 (but no choice, we always take the best even if it is baaaad as in Hearthstone simu you cannot avoid selection once the action is triggered)
-FPR:           11% -> 11%
-TPR == Recall: 70% -> 30% = FNR
-Precision:     87% -> 13% = FDR
+Thresh: 0.5 (but no choice, we always take the best even if it is baaaad as in Hearthstone simu you cannot avoid selection once the action is triggered)
+FPR:           5%
+TPR == Recall: 94.5% -> 5.5% = FNR
+Precision:     95%   -> 5%   = FDR
 
 Atk:
 --------

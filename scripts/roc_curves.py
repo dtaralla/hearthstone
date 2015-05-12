@@ -25,7 +25,12 @@ if __name__ == "__main__":
     for f in glob.glob("roc/*.roc.*.mat"):
         print(f)
         contents = sio.loadmat(f)
-        plt.plot(contents['fpr'][0], contents['tpr'][0], label=f)
+        lab = "Attack Actions"
+        if "target" in f:
+            lab = "Target Selections"
+        elif "play" in f:
+            lab = "Play Actions"
+        plt.plot(contents['fpr'][0], contents['tpr'][0], label=lab)
         if sys.argv[1] in f:
             i = 0
             for t in contents['thresholds'][0]:
@@ -47,7 +52,12 @@ if __name__ == "__main__":
     for f in glob.glob("roc/*.precall.*.mat"):
         print(f)
         contents = sio.loadmat(f)
-        plt.plot(contents['recall'][0], contents['precision'][0], label=f)
+        lab = "Attack Actions"
+        if "target" in f:
+            lab = "Target Selections"
+        elif "play" in f:
+            lab = "Play Actions"
+        plt.plot(contents['recall'][0], contents['precision'][0], label=lab)
         if sys.argv[1] in f:
             i = 0
             for t in contents['thresholds'][0]:

@@ -150,18 +150,19 @@ def loadFinalClassifiedDB(db, genTest=False, random_state=0):
     else:
         raise ValueError("Missing {}, aborting".format(DB_PATH + db))
 
-def trainFinalClassifier(db):
-    clf = ExtraTreesClassifier(n_estimators=100, random_state=0, verbose=100, n_jobs=-1)
+def trainFinalClassifier(db, random_state=0):
+    clf = ExtraTreesClassifier(n_estimators=100, random_state=random_state, verbose=100, n_jobs=-1)
     print("Loading training set...")
     loaded = joblib.load(db + ".dump")
     print("Fitting...")
     clf.fit(loaded[:, 0:-1], loaded[:, -1])
     loaded = 0
     print("Saving...")
-    if (os.path.exists("clfs/") == False):
-        os.mkdir("clfs")
+    path = "clfs{}/".format(random_state)
+    if (os.path.exists(path) == False):
+        os.mkdir(path)
     clf.verbose = 0
-    joblib.dump(clf, "clfs/" + db)
+    joblib.dump(clf, path + db)
         
 def roc_precision(db, usecols=None, test="unnamed", random_state=0, show_plots=False):
     if (os.path.exists(MAT_PATH) == False):

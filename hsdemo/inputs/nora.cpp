@@ -108,31 +108,35 @@ Nora::~Nora()
 
 void Nora::onGameEnded(IORequest* ir)
 {
-    QFile f("nora_result.txt");
+    /*QFile f("nora2rand.txt");
     QLockFile lock(f.fileName() + ".lock");
 
     lock.lock();
     bool opened = f.open(QFile::Append);
-    Q_ASSERT(opened);
+    Q_ASSERT(opened);*/
     switch (ir->type()) {
         case IORequest::LOST:
-            f.write("0\n");
+            //f.write("0\n");
+            qDebug() << "0\n";
             break;
 
         case IORequest::WON:
-            f.write("1\n");
+            //f.write("1\n");
+            qDebug() << "1\n";
             break;
 
         case IORequest::TIE:
-            f.write("2\n");
+            //f.write("2\n");
+            qDebug() << "2\n";
             break;
 
         default:
-            f.write("-1\n");
+            //f.write("-1\n");
+            qDebug() << "-1\n";
             break;
     }
-    f.close();
-    lock.unlock();
+    /*f.close();
+    lock.unlock();*/
 
     ir->clearRef();
 }

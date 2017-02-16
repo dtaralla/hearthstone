@@ -11,8 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = hsdemo
 TEMPLATE = app
 
-INCLUDEPATH += C:/Anaconda/include
-LIBS += -LC:/Anaconda/libs -lpython27
+win32:INCLUDEPATH += C:/Anaconda/include
+win32:LIBS += -LC:/Anaconda/libs -lpython27
+unix:INCLUDEPATH += /usr/include/python2.7
+unix:LIBS += -lpython2.7 -lpthread -ldl  -lutil -lm
 
 DEFINES += QT_USE_QSTRINGBUILDER
 

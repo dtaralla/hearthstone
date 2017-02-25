@@ -485,10 +485,10 @@ public:
      * board control value function.
      */
     struct BoardControlScore {
-        static constexpr const float TOUGH_MINIONS_MULT = 2.5; //!< Multiplier for the "tough minions" factor
-        static constexpr const float HAND_MULT = 1;            //!< Multiplier for the "hand" factor
-        static constexpr const float MINIONS_MULT = 1.75;      //!< Multiplier for the "minions number" factor
-        static constexpr const float SITUATION_MULT = 3.75;    //!< Multiplier for the "situation" factor
+        static Q_DECL_CONSTEXPR const float TOUGH_MINIONS_MULT = 2.5; //!< Multiplier for the "tough minions" factor
+        static Q_DECL_CONSTEXPR const float HAND_MULT = 1;            //!< Multiplier for the "hand" factor
+        static Q_DECL_CONSTEXPR const float MINIONS_MULT = 1.75;      //!< Multiplier for the "minions number" factor
+        static Q_DECL_CONSTEXPR const float SITUATION_MULT = 3.75;    //!< Multiplier for the "situation" factor
 
         /**
          * @brief The score of the "tough minions" factor, in [-1; 1].
